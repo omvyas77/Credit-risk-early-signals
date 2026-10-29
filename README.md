@@ -26,6 +26,15 @@ This notebook covers:
 9. calibration analysis,
 10. robustness checks including cross-product generalization.
 
+## How to run
+The analysis is in [CFPB_Credit_Risk_Early_Signals.ipynb](CFPB_Credit_Risk_Early_Signals.ipynb), written for Google Colab. It reads the full CFPB consumer complaint database as a CSV, available from the [CFPB](https://www.consumerfinance.gov/data-research/consumer-complaints/). Set `DATA_PATH` in the first cell, then:
+
+```bash
+pip install -r requirements.txt
+```
+
+The written report is [cfpb_report.pdf](cfpb_report.pdf).
+
 ## Final Takeaway
 The strongest overall model in this workflow is an interpretable logistic regression model using lexicon and structured features, with LightGBM as a high-performance challenger. The overall pipeline is designed to demonstrate practical data science, applied NLP, and risk-modeling skills relevant to credit, fraud, and financial decision-support teams.
 ## 2. Text preprocessing and proxy label construction

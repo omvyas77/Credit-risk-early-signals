@@ -1,0 +1,14 @@
+# The notebook was run in Google Colab, which supplies google.colab; elsewhere, replace the
+# drive.mount cell with a local path to the CFPB complaints CSV.
+datasets
+lightgbm
+matplotlib
+nltk
+numpy
+pandas
+scikit-learn
+scipy
+sentence-transformers
+shap
+torch
+transformers
