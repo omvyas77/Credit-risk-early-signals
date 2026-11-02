@@ -27,7 +27,7 @@ This notebook covers:
 10. robustness checks including cross-product generalization.
 
 ## How to run
-The analysis is in [CFPB_Credit_Risk_Early_Signals.ipynb](CFPB_Credit_Risk_Early_Signals.ipynb), written for Google Colab. It reads the full CFPB consumer complaint database as a CSV, available from the [CFPB](https://www.consumerfinance.gov/data-research/consumer-complaints/). Set `DATA_PATH` in the first cell, then:
+The analysis is in [CFPB_Credit_Risk_Early_Signals.ipynb](CFPB_Credit_Risk_Early_Signals.ipynb), written for Google Colab. It reads the full CFPB consumer complaint database as a CSV, available from the [CFPB](https://www.consumerfinance.gov/data-research/consumer-complaints/). The CFPB's public export no longer includes complaint narratives, and the model is built on them, so the notebook needs a saved copy of an earlier export. The results here come from an export running through October 15, 2025. Set `DATA_PATH` in the first cell, then:
 
 ```bash
 pip install -r requirements.txt
