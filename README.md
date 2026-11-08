@@ -17,7 +17,7 @@ Tested on the latest period: 40,659 complaints, 0.7% flagged.
 
 At the F2-optimal threshold of 0.80, logistic regression scores F2 0.39. Trained on one product and tested on another, PR-AUC falls to 0.12.
 
-![Probability calibration](images/Probabilitycalibration_4.png)
+![Probability calibration](archive/images/Probabilitycalibration_4.png)
 
 ## Business Objective
 Financial institutions receive large volumes of consumer complaints, but only a small fraction may indicate meaningful operational, compliance, or credit-risk concerns. A model that flags high-risk complaint narratives can support:
@@ -43,13 +43,13 @@ This notebook covers:
 10. robustness checks including cross-product generalization.
 
 ## How to run
-The analysis is in [CFPB_Credit_Risk_Early_Signals.ipynb](CFPB_Credit_Risk_Early_Signals.ipynb), written for Google Colab. It reads the full CFPB consumer complaint database as a CSV, available from the [CFPB](https://www.consumerfinance.gov/data-research/consumer-complaints/). The CFPB's public export no longer includes complaint narratives, and the model is built on them, so the notebook needs a saved copy of an earlier export. The results here come from an export running through October 15, 2025. Set `DATA_PATH` in the first cell, then:
+The analysis is in [CFPB_Credit_Risk_Early_Signals.ipynb](archive/CFPB_Credit_Risk_Early_Signals.ipynb), written for Google Colab. It reads the full CFPB consumer complaint database as a CSV, available from the [CFPB](https://www.consumerfinance.gov/data-research/consumer-complaints/). The CFPB's public export no longer includes complaint narratives, and the model is built on them, so the notebook needs a saved copy of an earlier export. The results here come from an export running through October 15, 2025. Set `DATA_PATH` in the first cell, then:
 
 ```bash
-pip install -r requirements.txt
+pip install -r archive/requirements.txt
 ```
 
-The written report is [cfpb_report.pdf](cfpb_report.pdf).
+The written report is [cfpb_report.pdf](archive/cfpb_report.pdf).
 
 ## Final Takeaway
 LightGBM on TF-IDF and structured features scores highest (PR-AUC 0.31). Logistic regression on the same features is close behind (0.29) and easier to explain, so it is the better choice when reviewers need to see why a complaint was flagged.
@@ -106,13 +106,13 @@ This section examines:
 - risk rate over time
 - distribution across products and companies
 
-![Exploratorygoals_1.png](images/Exploratorygoals_1.png)
+![Exploratorygoals_1.png](archive/images/Exploratorygoals_1.png)
 
 
-![Exploratorygoals_2.png](images/Exploratorygoals_2.png)
+![Exploratorygoals_2.png](archive/images/Exploratorygoals_2.png)
 
 
-![Exploratorygoals_3.png](images/Exploratorygoals_3.png)
+![Exploratorygoals_3.png](archive/images/Exploratorygoals_3.png)
 
 ## 4. Feature engineering
 
@@ -195,10 +195,10 @@ For deployment in risk monitoring systems, probability estimates must be reliabl
 - reliability curves
 - calibrated probability models
 
-![Probabilitycalibration_4.png](images/Probabilitycalibration_4.png)
+![Probabilitycalibration_4.png](archive/images/Probabilitycalibration_4.png)
 
 
-![Probabilitycalibration_5.png](images/Probabilitycalibration_5.png)
+![Probabilitycalibration_5.png](archive/images/Probabilitycalibration_5.png)
 
 ## 6. Model interpretability and feature importance
 
@@ -225,13 +225,13 @@ Interpretability is essential for:
 - stakeholder trust
 - diagnosing model bias
 
-![SHAPAnalysis_6.png](images/SHAPAnalysis_6.png)
+![SHAPAnalysis_6.png](archive/images/SHAPAnalysis_6.png)
 
 
-![SHAPAnalysis_7.png](images/SHAPAnalysis_7.png)
+![SHAPAnalysis_7.png](archive/images/SHAPAnalysis_7.png)
 
 
-![SHAPAnalysis_8.png](images/SHAPAnalysis_8.png)
+![SHAPAnalysis_8.png](archive/images/SHAPAnalysis_8.png)
 
 ## 7. Dense semantic embeddings with MiniLM
 
@@ -258,7 +258,7 @@ Two classical models are trained on MiniLM embeddings:
 
 This comparison helps determine whether semantic embeddings outperform sparse hybrid feature pipelines in this task.
 
-![Modelstested_9.png](images/Modelstested_9.png)
+![Modelstested_9.png](archive/images/Modelstested_9.png)
 
 ## 8. Fine-tuned transformer classifier
 
@@ -307,7 +307,7 @@ For real-world deployment:
 - Heavy reliance on product identifiers may reduce portability.
 - Domain shift analysis helps assess how models behave outside the training distribution.
 
-![Whythismatters_10.png](images/Whythismatters_10.png)
+![Whythismatters_10.png](archive/images/Whythismatters_10.png)
 
 ## 10. Final conclusions
 
