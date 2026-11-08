@@ -3,6 +3,20 @@
 ## Project Overview
 This project builds an early-warning machine learning pipeline to detect elevated credit-risk signals from CFPB consumer complaint narratives. The goal is not to predict confirmed fraud directly, but to identify complaints associated with risky downstream outcomes using proxy supervisory signals derived from complaint resolution fields.
 
+## Results
+
+Tested on the latest period: 40,659 complaints, 0.7% flagged.
+
+| Model | PR-AUC | AUROC |
+| --- | --- | --- |
+| LightGBM, TF-IDF + structured features | 0.314 | 0.966 |
+| Logistic regression, same features | 0.286 | 0.955 |
+| Fine-tuned transformer (balanced subsample) | 0.121 | 0.905 |
+| MiniLM embeddings + logistic regression | 0.077 | 0.874 |
+| MiniLM embeddings + LightGBM | 0.067 | 0.880 |
+
+At the F2-optimal threshold of 0.80, logistic regression scores F2 0.39. Trained on one product and tested on another, PR-AUC falls to 0.12.
+
 ## Business Objective
 Financial institutions receive large volumes of consumer complaints, but only a small fraction may indicate meaningful operational, compliance, or credit-risk concerns. A model that flags high-risk complaint narratives can support:
 - early triage and prioritization,
