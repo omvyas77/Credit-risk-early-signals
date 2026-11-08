@@ -24,14 +24,30 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m cres", description=__doc__)
     parser.add_argument("--config", default=str(config.DEFAULT), help="path to config YAML")
     sub = parser.add_subparsers(dest="stage", required=True, metavar="stage")
-    for name, text in STAGES.items():
-        sub.add_parser(name, help=text, description=text)
+    stages = {
+        name: sub.add_parser(name, help=text, description=text) for name, text in STAGES.items()
+    }
+    stages["download"].add_argument(
+        "--only", nargs="+", metavar="KEY", help="download only files whose name contains KEY"
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    config.load(args.config)
+    cfg = config.load(args.config)
+    if args.stage == "download":
+        from cres import download
+
+        return download.main(cfg, args.only)
+    if args.stage == "ingest":
+        from cres import ingest
+
+        return ingest.main(cfg)
+    if args.stage == "label":
+        from cres import label
+
+        return label.main(cfg)
     print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
     return 1
 
