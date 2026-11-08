@@ -17,6 +17,8 @@ Tested on the latest period: 40,659 complaints, 0.7% flagged.
 
 At the F2-optimal threshold of 0.80, logistic regression scores F2 0.39. Trained on one product and tested on another, PR-AUC falls to 0.12.
 
+![Probability calibration](images/Probabilitycalibration_4.png)
+
 ## Business Objective
 Financial institutions receive large volumes of consumer complaints, but only a small fraction may indicate meaningful operational, compliance, or credit-risk concerns. A model that flags high-risk complaint narratives can support:
 - early triage and prioritization,
@@ -50,7 +52,7 @@ pip install -r requirements.txt
 The written report is [cfpb_report.pdf](cfpb_report.pdf).
 
 ## Final Takeaway
-The strongest overall model in this workflow is an interpretable logistic regression model using lexicon and structured features, with LightGBM as a high-performance challenger. The overall pipeline is designed to demonstrate practical data science, applied NLP, and risk-modeling skills relevant to credit, fraud, and financial decision-support teams.
+LightGBM on TF-IDF and structured features scores highest (PR-AUC 0.31). Logistic regression on the same features is close behind (0.29) and easier to explain, so it is the better choice when reviewers need to see why a complaint was flagged.
 ## 2. Text preprocessing and proxy label construction
 
 This section prepares the raw CFPB complaint shard for modeling.
@@ -342,14 +344,4 @@ For real financial complaint monitoring systems:
 - transformer models can provide improvements when computational resources allow
 - domain shift should be monitored when deploying models across product categories
 
-### Skills demonstrated
 
-This project demonstrates practical data science capabilities including:
-
-- large-scale text preprocessing
-- rare-event classification
-- feature engineering for financial text
-- model comparison across classical and deep learning approaches
-- probability calibration and threshold optimization
-- model interpretability using coefficients and SHAP
-- robustness analysis under domain shift
