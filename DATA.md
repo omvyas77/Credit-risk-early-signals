@@ -104,3 +104,8 @@ The `data_end` rule compares each month with the median of the six before it, so
 the new level and does not flag this drop: it chooses 2026-06-30 (July 2026, about 10,000
 narratives, is the first month to fail). Any test window from 2026 is drawn from the thin
 subset; results should be read per window with that in mind.
+
+Decision: keep the rule and its `data_end` of 2026-06-30, and flag the shift wherever results
+are shown rather than cutting the data early. The monthly series in `reports/data_profile.json`
+(`label.timeline`) carries total complaints, narrative share and both late rates, so the flag is
+drawn from pipeline output.

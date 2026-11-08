@@ -176,832 +176,1291 @@
     },
     "timeline": [
       {
+        "month": "2015-01",
+        "complaints": 12608,
+        "complaints_late_rate": 0.028791243654822336,
+        "narratives": 0,
+        "narrative_share": 0.0,
+        "settled": null,
+        "late_rate": null
+      },
+      {
+        "month": "2015-02",
+        "complaints": 12656,
+        "complaints_late_rate": 0.029551201011378002,
+        "narratives": 0,
+        "narrative_share": 0.0,
+        "settled": null,
+        "late_rate": null
+      },
+      {
         "month": "2015-03",
+        "complaints": 14489,
+        "complaints_late_rate": 0.027745186003174823,
         "narratives": 2375,
+        "narrative_share": 0.16391745462074678,
         "settled": 2375,
         "late_rate": 0.03031578947368421
       },
       {
         "month": "2015-04",
+        "complaints": 13729,
+        "complaints_late_rate": 0.030810692694296746,
         "narratives": 5376,
+        "narrative_share": 0.39157986743389905,
         "settled": 5376,
         "late_rate": 0.03943452380952381
       },
       {
         "month": "2015-05",
+        "complaints": 13671,
+        "complaints_late_rate": 0.026333113890717578,
         "narratives": 5643,
+        "narrative_share": 0.412771560236998,
         "settled": 5643,
         "late_rate": 0.037391458444090024
       },
       {
         "month": "2015-06",
+        "complaints": 14502,
+        "complaints_late_rate": 0.02723762239691077,
         "narratives": 5904,
+        "narrative_share": 0.40711625982623084,
         "settled": 5904,
         "late_rate": 0.036585365853658534
       },
       {
         "month": "2015-07",
+        "complaints": 15895,
+        "complaints_late_rate": 0.02768166089965398,
         "narratives": 6627,
+        "narrative_share": 0.41692356086819754,
         "settled": 6627,
         "late_rate": 0.03470650369699713
       },
       {
         "month": "2015-08",
+        "complaints": 15756,
+        "complaints_late_rate": 0.02602183295252602,
         "narratives": 6452,
+        "narrative_share": 0.4094947956334095,
         "settled": 6452,
         "late_rate": 0.033632982021078735
       },
       {
         "month": "2015-09",
+        "complaints": 14320,
+        "complaints_late_rate": 0.024022346368715083,
         "narratives": 5759,
+        "narrative_share": 0.4021648044692737,
         "settled": 5759,
         "late_rate": 0.02899808994617121
       },
       {
         "month": "2015-10",
+        "complaints": 14879,
+        "complaints_late_rate": 0.02553935076282008,
         "narratives": 6258,
+        "narrative_share": 0.4205927817729686,
         "settled": 6258,
         "late_rate": 0.0311601150527325
       },
       {
         "month": "2015-11",
+        "complaints": 12890,
+        "complaints_late_rate": 0.030256012412723042,
         "narratives": 5136,
+        "narrative_share": 0.39844840961986033,
         "settled": 5136,
         "late_rate": 0.03699376947040498
       },
       {
         "month": "2015-12",
+        "complaints": 12877,
+        "complaints_late_rate": 0.026403665450027182,
         "narratives": 5193,
+        "narrative_share": 0.40327716082938575,
         "settled": 5193,
         "late_rate": 0.033699210475640284
       },
       {
         "month": "2016-01",
+        "complaints": 13827,
+        "complaints_late_rate": 0.03196644246763578,
         "narratives": 5649,
+        "narrative_share": 0.40854849208071164,
         "settled": 5649,
         "late_rate": 0.04230837316339175
       },
       {
         "month": "2016-02",
+        "complaints": 14131,
+        "complaints_late_rate": 0.028872691246196305,
         "narratives": 5578,
+        "narrative_share": 0.39473497983157596,
         "settled": 5578,
         "late_rate": 0.03495876658300466
       },
       {
         "month": "2016-03",
+        "complaints": 16599,
+        "complaints_late_rate": 0.029278872221218145,
         "narratives": 6406,
+        "narrative_share": 0.38592686306404,
         "settled": 6406,
         "late_rate": 0.03902591320636903
       },
       {
         "month": "2016-04",
+        "complaints": 15595,
+        "complaints_late_rate": 0.0272523244629689,
         "narratives": 6212,
+        "narrative_share": 0.3983327989740301,
         "settled": 6212,
         "late_rate": 0.034932388924661946
       },
       {
         "month": "2016-05",
+        "complaints": 15510,
+        "complaints_late_rate": 0.02630560928433269,
         "narratives": 6192,
+        "narrative_share": 0.39922630560928435,
         "settled": 6192,
         "late_rate": 0.03375322997416021
       },
       {
         "month": "2016-06",
+        "complaints": 16054,
+        "complaints_late_rate": 0.025476516755948673,
         "narratives": 6332,
+        "narrative_share": 0.39441883642705866,
         "settled": 6332,
         "late_rate": 0.032217308907138344
       },
       {
         "month": "2016-07",
+        "complaints": 16032,
+        "complaints_late_rate": 0.02438872255489022,
         "narratives": 6561,
+        "narrative_share": 0.40924401197604793,
         "settled": 6561,
         "late_rate": 0.025758268556622468
       },
       {
         "month": "2016-08",
+        "complaints": 17678,
+        "complaints_late_rate": 0.02805747256476977,
         "narratives": 7086,
+        "narrative_share": 0.40083719877814233,
         "settled": 7086,
         "late_rate": 0.03429297205757832
       },
       {
         "month": "2016-09",
+        "complaints": 17559,
+        "complaints_late_rate": 0.03952389088216869,
         "narratives": 7484,
+        "narrative_share": 0.42622017199157125,
         "settled": 7484,
         "late_rate": 0.043025120256547304
       },
       {
         "month": "2016-10",
+        "complaints": 17788,
+        "complaints_late_rate": 0.049977512930065214,
         "narratives": 7541,
+        "narrative_share": 0.4239374859455813,
         "settled": 7541,
         "late_rate": 0.05344118817133006
       },
       {
         "month": "2016-11",
+        "complaints": 15194,
+        "complaints_late_rate": 0.05252073186784257,
         "narratives": 6140,
+        "narrative_share": 0.4041068842964328,
         "settled": 6140,
         "late_rate": 0.055863192182410426
       },
       {
         "month": "2016-12",
+        "complaints": 15325,
+        "complaints_late_rate": 0.04247960848287113,
         "narratives": 6585,
+        "narrative_share": 0.42969004893964113,
         "settled": 6585,
         "late_rate": 0.042976461655277146
       },
       {
         "month": "2017-01",
+        "complaints": 20988,
+        "complaints_late_rate": 0.035067657709167144,
         "narratives": 9473,
+        "narrative_share": 0.4513531541833429,
         "settled": 9473,
         "late_rate": 0.03420247017840177
       },
       {
         "month": "2017-02",
+        "complaints": 18078,
+        "complaints_late_rate": 0.0334107755282664,
         "narratives": 7656,
+        "narrative_share": 0.4234981745768337,
         "settled": 7656,
         "late_rate": 0.038531870428422155
       },
       {
         "month": "2017-03",
+        "complaints": 19740,
+        "complaints_late_rate": 0.03059777102330294,
         "narratives": 8462,
+        "narrative_share": 0.4286727456940223,
         "settled": 8462,
         "late_rate": 0.03391633183644528
       },
       {
         "month": "2017-04",
+        "complaints": 18533,
+        "complaints_late_rate": 0.022500404683537475,
         "narratives": 8539,
+        "narrative_share": 0.4607456968650515,
         "settled": 8539,
         "late_rate": 0.02377327555919897
       },
       {
         "month": "2017-05",
+        "complaints": 19278,
+        "complaints_late_rate": 0.043624857350347546,
         "narratives": 9696,
+        "narrative_share": 0.5029567382508559,
         "settled": 9696,
         "late_rate": 0.04651402640264026
       },
       {
         "month": "2017-06",
+        "complaints": 18546,
+        "complaints_late_rate": 0.019788633667637227,
         "narratives": 9183,
+        "narrative_share": 0.4951472015528955,
         "settled": 9183,
         "late_rate": 0.022650549929217032
       },
       {
         "month": "2017-07",
+        "complaints": 20418,
+        "complaints_late_rate": 0.017729454402977764,
         "narratives": 10022,
+        "narrative_share": 0.49084141443824075,
         "settled": 10022,
         "late_rate": 0.018658950309319498
       },
       {
         "month": "2017-08",
+        "complaints": 21381,
+        "complaints_late_rate": 0.019737149805902438,
         "narratives": 10315,
+        "narrative_share": 0.48243767831252043,
         "settled": 10315,
         "late_rate": 0.02035870092098885
       },
       {
         "month": "2017-09",
+        "complaints": 27336,
+        "complaints_late_rate": 0.01130377524143986,
         "narratives": 13598,
+        "narrative_share": 0.49743927421714956,
         "settled": 13598,
         "late_rate": 0.013310780997205472
       },
       {
         "month": "2017-10",
+        "complaints": 20444,
+        "complaints_late_rate": 0.03052240266092741,
         "narratives": 9945,
+        "narrative_share": 0.4864507924085306,
         "settled": 9945,
         "late_rate": 0.03469079939668175
       },
       {
         "month": "2017-11",
+        "complaints": 18980,
+        "complaints_late_rate": 0.05816649104320337,
         "narratives": 9186,
+        "narrative_share": 0.4839831401475237,
         "settled": 9186,
         "late_rate": 0.05704332680165469
       },
       {
         "month": "2017-12",
+        "complaints": 19023,
+        "complaints_late_rate": 0.02134258529148925,
         "narratives": 9236,
+        "narrative_share": 0.48551753140934656,
         "settled": 9236,
         "late_rate": 0.024469467301862276
       },
       {
         "month": "2018-01",
+        "complaints": 23633,
+        "complaints_late_rate": 0.018702661532602718,
         "narratives": 11465,
+        "narrative_share": 0.48512672957305464,
         "settled": 11464,
         "late_rate": 0.02206716092455299
       },
       {
         "month": "2018-02",
+        "complaints": 21959,
+        "complaints_late_rate": 0.01839792340270504,
         "narratives": 10508,
+        "narrative_share": 0.4785281661277836,
         "settled": 10508,
         "late_rate": 0.02188808526836696
       },
       {
         "month": "2018-03",
+        "complaints": 23620,
+        "complaints_late_rate": 0.01651143099068586,
         "narratives": 11139,
+        "narrative_share": 0.4715918712955123,
         "settled": 11139,
         "late_rate": 0.01858335577699973
       },
       {
         "month": "2018-04",
+        "complaints": 24313,
+        "complaints_late_rate": 0.013408464607411673,
         "narratives": 10662,
+        "narrative_share": 0.4385308271295192,
         "settled": 10662,
         "late_rate": 0.016507221909585444
       },
       {
         "month": "2018-05",
+        "complaints": 22321,
+        "complaints_late_rate": 0.01545629676089781,
         "narratives": 10389,
+        "narrative_share": 0.46543613637381837,
         "settled": 10389,
         "late_rate": 0.018673597073828086
       },
       {
         "month": "2018-06",
+        "complaints": 20092,
+        "complaints_late_rate": 0.018713915986462274,
         "narratives": 9038,
+        "narrative_share": 0.4498307784192713,
         "settled": 9038,
         "late_rate": 0.023235229032971896
       },
       {
         "month": "2018-07",
+        "complaints": 20945,
+        "complaints_late_rate": 0.02076867987586536,
         "narratives": 9492,
+        "narrative_share": 0.4531869181188828,
         "settled": 9492,
         "late_rate": 0.025073746312684365
       },
       {
         "month": "2018-08",
+        "complaints": 21710,
+        "complaints_late_rate": 0.018747121142330722,
         "narratives": 9833,
+        "narrative_share": 0.45292491939198526,
         "settled": 9833,
         "late_rate": 0.021661751245804942
       },
       {
         "month": "2018-09",
+        "complaints": 19064,
+        "complaints_late_rate": 0.01904112463281578,
         "narratives": 8339,
+        "narrative_share": 0.43742131766680653,
         "settled": 8339,
         "late_rate": 0.02266458808010553
       },
       {
         "month": "2018-10",
+        "complaints": 21883,
+        "complaints_late_rate": 0.014806013800667185,
         "narratives": 10049,
+        "narrative_share": 0.45921491568797695,
         "settled": 10049,
         "late_rate": 0.017912230072644045
       },
       {
         "month": "2018-11",
+        "complaints": 19046,
+        "complaints_late_rate": 0.016223879029717527,
         "narratives": 8830,
+        "narrative_share": 0.4636144072246141,
         "settled": 8830,
         "late_rate": 0.01766704416761042
       },
       {
         "month": "2018-12",
+        "complaints": 18544,
+        "complaints_late_rate": 0.015207075064710958,
         "narratives": 8649,
+        "narrative_share": 0.4664042277825712,
         "settled": 8649,
         "late_rate": 0.01711180483292866
       },
       {
         "month": "2019-01",
+        "complaints": 18926,
+        "complaints_late_rate": 0.01431892634471098,
         "narratives": 8530,
+        "narrative_share": 0.45070273697558916,
         "settled": 8530,
         "late_rate": 0.017819460726846426
       },
       {
         "month": "2019-02",
+        "complaints": 20194,
+        "complaints_late_rate": 0.020303060314945033,
         "narratives": 9609,
+        "narrative_share": 0.4758344062592849,
         "settled": 9609,
         "late_rate": 0.024039962535123322
       },
       {
         "month": "2019-03",
+        "complaints": 23400,
+        "complaints_late_rate": 0.015085470085470086,
         "narratives": 10363,
+        "narrative_share": 0.4428632478632479,
         "settled": 10363,
         "late_rate": 0.01785197336678568
       },
       {
         "month": "2019-04",
+        "complaints": 22905,
+        "complaints_late_rate": 0.01401440733464309,
         "narratives": 10090,
+        "narrative_share": 0.4405151713599651,
         "settled": 10090,
         "late_rate": 0.016154608523290388
       },
       {
         "month": "2019-05",
+        "complaints": 23841,
+        "complaints_late_rate": 0.015813095088293275,
         "narratives": 10473,
+        "narrative_share": 0.4392852648798289,
         "settled": 10473,
         "late_rate": 0.019765110283586365
       },
       {
         "month": "2019-06",
+        "complaints": 23335,
+        "complaints_late_rate": 0.013970430683522606,
         "narratives": 10606,
+        "narrative_share": 0.45451039211484895,
         "settled": 10606,
         "late_rate": 0.016782953045445973
       },
       {
         "month": "2019-07",
+        "complaints": 25070,
+        "complaints_late_rate": 0.013242919824491424,
         "narratives": 11160,
+        "narrative_share": 0.4451535700039888,
         "settled": 11160,
         "late_rate": 0.015232974910394265
       },
       {
         "month": "2019-08",
+        "complaints": 26042,
+        "complaints_late_rate": 0.012479840258044697,
         "narratives": 12056,
+        "narrative_share": 0.4629444743107288,
         "settled": 12056,
         "late_rate": 0.014432647644326476
       },
       {
         "month": "2019-09",
+        "complaints": 23565,
+        "complaints_late_rate": 0.014300869934224485,
         "narratives": 10345,
+        "narrative_share": 0.438998514746446,
         "settled": 10345,
         "late_rate": 0.015949734171097147
       },
       {
         "month": "2019-10",
+        "complaints": 25624,
+        "complaints_late_rate": 0.015571947078796394,
         "narratives": 11708,
+        "narrative_share": 0.4569153918201686,
         "settled": 11708,
         "late_rate": 0.01776563033823027
       },
       {
         "month": "2019-11",
+        "complaints": 22641,
+        "complaints_late_rate": 0.015635351795415395,
         "narratives": 10243,
+        "narrative_share": 0.4524093458769489,
         "settled": 10243,
         "late_rate": 0.017768231963292004
       },
       {
         "month": "2019-12",
+        "complaints": 21696,
+        "complaints_late_rate": 0.015855457227138645,
         "narratives": 9660,
+        "narrative_share": 0.4452433628318584,
         "settled": 9660,
         "late_rate": 0.016977225672877846
       },
       {
         "month": "2020-01",
+        "complaints": 26394,
+        "complaints_late_rate": 0.014889747669924984,
         "narratives": 11575,
+        "narrative_share": 0.43854663938773963,
         "settled": 11575,
         "late_rate": 0.019524838012958963
       },
       {
         "month": "2020-02",
+        "complaints": 25079,
+        "complaints_late_rate": 0.012400813429562582,
         "narratives": 10955,
+        "narrative_share": 0.4368196499062961,
         "settled": 10955,
         "late_rate": 0.015061615700593337
       },
       {
         "month": "2020-03",
+        "complaints": 29480,
+        "complaints_late_rate": 0.011736770691994573,
         "narratives": 13133,
+        "narrative_share": 0.44548846675712345,
         "settled": 13133,
         "late_rate": 0.015533389172314019
       },
       {
         "month": "2020-04",
+        "complaints": 34794,
+        "complaints_late_rate": 0.012645858481347359,
         "narratives": 15201,
+        "narrative_share": 0.43688566994309364,
         "settled": 15201,
         "late_rate": 0.014209591474245116
       },
       {
         "month": "2020-05",
+        "complaints": 36987,
+        "complaints_late_rate": 0.012707167383134614,
         "narratives": 16347,
+        "narrative_share": 0.4419660961959607,
         "settled": 16347,
         "late_rate": 0.014314553129014498
       },
       {
         "month": "2020-06",
+        "complaints": 37888,
+        "complaints_late_rate": 0.010847761824324325,
         "narratives": 15710,
+        "narrative_share": 0.41464315878378377,
         "settled": 15710,
         "late_rate": 0.013112667091024825
       },
       {
         "month": "2020-07",
+        "complaints": 40639,
+        "complaints_late_rate": 0.00871084426290017,
         "narratives": 17255,
+        "narrative_share": 0.4245921405546396,
         "settled": 17255,
         "late_rate": 0.011532889017676035
       },
       {
         "month": "2020-08",
+        "complaints": 39187,
+        "complaints_late_rate": 0.008191492076453926,
         "narratives": 15862,
+        "narrative_share": 0.4047770944445862,
         "settled": 15862,
         "late_rate": 0.011158744168452906
       },
       {
         "month": "2020-09",
+        "complaints": 39874,
+        "complaints_late_rate": 0.009479861563926368,
         "narratives": 14206,
+        "narrative_share": 0.35627225761147613,
         "settled": 14206,
         "late_rate": 0.01428973673095875
       },
       {
         "month": "2020-10",
+        "complaints": 43975,
+        "complaints_late_rate": 0.008368391131324615,
         "narratives": 14333,
+        "narrative_share": 0.32593519044911884,
         "settled": 14333,
         "late_rate": 0.01388404381497244
       },
       {
         "month": "2020-11",
+        "complaints": 41540,
+        "complaints_late_rate": 0.00869041887337506,
         "narratives": 13860,
+        "narrative_share": 0.333654309099663,
         "settled": 13860,
         "late_rate": 0.013492063492063493
       },
       {
         "month": "2020-12",
+        "complaints": 48375,
+        "complaints_late_rate": 0.008310077519379845,
         "narratives": 15859,
+        "narrative_share": 0.3278346253229974,
         "settled": 15859,
         "late_rate": 0.012674191310927549
       },
       {
         "month": "2021-01",
+        "complaints": 42475,
+        "complaints_late_rate": 0.007792819305473808,
         "narratives": 16436,
+        "narrative_share": 0.38695703354914657,
         "settled": 16436,
         "late_rate": 0.01101241177902166
       },
       {
         "month": "2021-02",
+        "complaints": 33262,
+        "complaints_late_rate": 0.010823161565750706,
         "narratives": 14975,
+        "narrative_share": 0.45021345679754676,
         "settled": 14975,
         "late_rate": 0.014624373956594324
       },
       {
         "month": "2021-03",
+        "complaints": 41172,
+        "complaints_late_rate": 0.012095598950743223,
         "narratives": 18519,
+        "narrative_share": 0.4497959778490236,
         "settled": 18519,
         "late_rate": 0.015119606890220854
       },
       {
         "month": "2021-04",
+        "complaints": 39665,
+        "complaints_late_rate": 0.01278204966595235,
         "narratives": 16171,
+        "narrative_share": 0.4076893987142317,
         "settled": 16171,
         "late_rate": 0.015397934574237833
       },
       {
         "month": "2021-05",
+        "complaints": 41313,
+        "complaints_late_rate": 0.010747222423934355,
         "narratives": 16321,
+        "narrative_share": 0.3950572459032266,
         "settled": 16321,
         "late_rate": 0.014276086024140678
       },
       {
         "month": "2021-06",
+        "complaints": 45732,
+        "complaints_late_rate": 0.017383888743112044,
         "narratives": 17374,
+        "narrative_share": 0.37990903524884106,
         "settled": 17374,
         "late_rate": 0.020605502474962588
       },
       {
         "month": "2021-07",
+        "complaints": 45075,
+        "complaints_late_rate": 0.0129783693843594,
         "narratives": 18406,
+        "narrative_share": 0.4083416528008874,
         "settled": 18406,
         "late_rate": 0.017168314679995654
       },
       {
         "month": "2021-08",
+        "complaints": 42584,
+        "complaints_late_rate": 0.013690588014277662,
         "narratives": 16926,
+        "narrative_share": 0.3974732293819275,
         "settled": 16926,
         "late_rate": 0.0163062743707905
       },
       {
         "month": "2021-09",
+        "complaints": 40371,
+        "complaints_late_rate": 0.013673519940549913,
         "narratives": 16588,
+        "narrative_share": 0.4108890044834163,
         "settled": 16588,
         "late_rate": 0.015915119363395226
       },
       {
         "month": "2021-10",
+        "complaints": 39295,
+        "complaints_late_rate": 0.012927853416465199,
         "narratives": 16708,
+        "narrative_share": 0.42519404504389874,
         "settled": 16708,
         "late_rate": 0.014244673210438114
       },
       {
         "month": "2021-11",
+        "complaints": 39069,
+        "complaints_late_rate": 0.010724615423993448,
         "narratives": 16969,
+        "narrative_share": 0.4343341268013003,
         "settled": 16969,
         "late_rate": 0.011904060345335612
       },
       {
         "month": "2021-12",
+        "complaints": 45927,
+        "complaints_late_rate": 0.012606963224247175,
         "narratives": 18177,
+        "narrative_share": 0.3957802599777908,
         "settled": 18177,
         "late_rate": 0.015789184133795455
       },
       {
         "month": "2022-01",
+        "complaints": 53229,
+        "complaints_late_rate": 0.0068008040729677435,
         "narratives": 19547,
+        "narrative_share": 0.3672246331886753,
         "settled": 19547,
         "late_rate": 0.009464367933698266
       },
       {
         "month": "2022-02",
+        "complaints": 53185,
+        "complaints_late_rate": 0.006844034972266617,
         "narratives": 21486,
+        "narrative_share": 0.4039860863025289,
         "settled": 21486,
         "late_rate": 0.009075677185143814
       },
       {
         "month": "2022-03",
+        "complaints": 61896,
+        "complaints_late_rate": 0.008514282021455344,
         "narratives": 24261,
+        "narrative_share": 0.39196393951143854,
         "settled": 24261,
         "late_rate": 0.011252627674044764
       },
       {
         "month": "2022-04",
+        "complaints": 72243,
+        "complaints_late_rate": 0.00776545824508949,
         "narratives": 30346,
+        "narrative_share": 0.4200545381559459,
         "settled": 30346,
         "late_rate": 0.009754168588940881
       },
       {
         "month": "2022-05",
+        "complaints": 60376,
+        "complaints_late_rate": 0.007072346627799125,
         "narratives": 24790,
+        "narrative_share": 0.4105936133563005,
         "settled": 24790,
         "late_rate": 0.007946752722872126
       },
       {
         "month": "2022-06",
+        "complaints": 61869,
+        "complaints_late_rate": 0.006432947033247668,
         "narratives": 26607,
+        "narrative_share": 0.4300538234010571,
         "settled": 26607,
         "late_rate": 0.00838125305370767
       },
       {
         "month": "2022-07",
+        "complaints": 64438,
+        "complaints_late_rate": 0.006145442130419939,
         "narratives": 29107,
+        "narrative_share": 0.4517055153791241,
         "settled": 29107,
         "late_rate": 0.0068368433710104095
       },
       {
         "month": "2022-08",
+        "complaints": 69257,
+        "complaints_late_rate": 0.006165441760399671,
         "narratives": 32055,
+        "narrative_share": 0.4628413012403078,
         "settled": 32055,
         "late_rate": 0.0069255966307908284
       },
       {
         "month": "2022-09",
+        "complaints": 65777,
+        "complaints_late_rate": 0.005640269395077307,
         "narratives": 29786,
+        "narrative_share": 0.45283305714763517,
         "settled": 29786,
         "late_rate": 0.00688242798630229
       },
       {
         "month": "2022-10",
+        "complaints": 75791,
+        "complaints_late_rate": 0.005185312240239606,
         "narratives": 32592,
+        "narrative_share": 0.430024673114222,
         "settled": 32592,
         "late_rate": 0.006872852233676976
       },
       {
         "month": "2022-11",
+        "complaints": 77038,
+        "complaints_late_rate": 0.005854253744905112,
         "narratives": 31533,
+        "narrative_share": 0.4093174796853501,
         "settled": 31533,
         "late_rate": 0.008055053436082834
       },
       {
         "month": "2022-12",
+        "complaints": 85146,
+        "complaints_late_rate": 0.005144105418927489,
         "narratives": 35163,
+        "narrative_share": 0.41297301106335,
         "settled": 35163,
         "late_rate": 0.006427210420043796
       },
       {
         "month": "2023-01",
+        "complaints": 93933,
+        "complaints_late_rate": 0.006259780907668232,
         "narratives": 39586,
+        "narrative_share": 0.42142803913427657,
         "settled": 39586,
         "late_rate": 0.008614156519981812
       },
       {
         "month": "2023-02",
+        "complaints": 86539,
+        "complaints_late_rate": 0.0046915263638359584,
         "narratives": 35023,
+        "narrative_share": 0.40470770404095263,
         "settled": 35023,
         "late_rate": 0.006652771036176227
       },
       {
         "month": "2023-03",
+        "complaints": 110635,
+        "complaints_late_rate": 0.004537442943010801,
         "narratives": 41060,
+        "narrative_share": 0.37113029330681974,
         "settled": 41060,
         "late_rate": 0.006843643448611787
       },
       {
         "month": "2023-04",
+        "complaints": 97084,
+        "complaints_late_rate": 0.003605125458365951,
         "narratives": 36594,
+        "narrative_share": 0.3769313172098389,
         "settled": 36594,
         "late_rate": 0.005192107995846314
       },
       {
         "month": "2023-05",
+        "complaints": 106211,
+        "complaints_late_rate": 0.003182344578245191,
         "narratives": 41134,
+        "narrative_share": 0.38728568604005237,
         "settled": 41134,
         "late_rate": 0.004740603880001945
       },
       {
         "month": "2023-06",
+        "complaints": 104424,
+        "complaints_late_rate": 0.002566459817666437,
         "narratives": 41319,
+        "narrative_share": 0.39568490002298323,
         "settled": 41319,
         "late_rate": 0.00326726203441516
       },
       {
         "month": "2023-07",
+        "complaints": 106773,
+        "complaints_late_rate": 0.003128131643767619,
         "narratives": 40771,
+        "narrative_share": 0.3818474708025437,
         "settled": 40771,
         "late_rate": 0.004218684849525398
       },
       {
         "month": "2023-08",
+        "complaints": 119711,
+        "complaints_late_rate": 0.002998888990986626,
         "narratives": 46311,
+        "narrative_share": 0.3868566798372748,
         "settled": 46310,
         "late_rate": 0.004728898101962816
       },
       {
         "month": "2023-09",
+        "complaints": 112887,
+        "complaints_late_rate": 0.004358340641526483,
         "narratives": 42517,
+        "narrative_share": 0.3766332704385802,
         "settled": 42517,
         "late_rate": 0.006844321095091375
       },
       {
         "month": "2023-10",
+        "complaints": 117420,
+        "complaints_late_rate": 0.00598705501618123,
         "narratives": 43349,
+        "narrative_share": 0.36917901549991483,
         "settled": 43349,
         "late_rate": 0.009550393319338393
       },
       {
         "month": "2023-11",
+        "complaints": 113365,
+        "complaints_late_rate": 0.005327923080315794,
         "narratives": 38894,
+        "narrative_share": 0.3430864905394081,
         "settled": 38894,
         "late_rate": 0.008561731886666323
       },
       {
         "month": "2023-12",
+        "complaints": 123066,
+        "complaints_late_rate": 0.004680415386865584,
         "narratives": 40851,
+        "narrative_share": 0.3319438350153576,
         "settled": 40851,
         "late_rate": 0.007906783187682065
       },
       {
         "month": "2024-01",
+        "complaints": 143365,
+        "complaints_late_rate": 0.004568758065078646,
         "narratives": 43920,
+        "narrative_share": 0.30635092247061696,
         "settled": 43918,
         "late_rate": 0.00849271402550091
       },
       {
         "month": "2024-02",
+        "complaints": 157614,
+        "complaints_late_rate": 0.004098620680903981,
         "narratives": 48111,
+        "narrative_share": 0.3052457269024325,
         "settled": 48110,
         "late_rate": 0.007295628858265262
       },
       {
         "month": "2024-03",
+        "complaints": 177815,
+        "complaints_late_rate": 0.004167252481511684,
         "narratives": 61162,
+        "narrative_share": 0.34396423248882263,
         "settled": 61161,
         "late_rate": 0.006376508289460776
       },
       {
         "month": "2024-04",
+        "complaints": 191120,
+        "complaints_late_rate": 0.0036626203432398494,
         "narratives": 63970,
+        "narrative_share": 0.33471117622436164,
         "settled": 63969,
         "late_rate": 0.005017977176801626
       },
       {
         "month": "2024-05",
+        "complaints": 211961,
+        "complaints_late_rate": 0.0026938918008501565,
         "narratives": 71313,
+        "narrative_share": 0.336443968465897,
         "settled": 71311,
         "late_rate": 0.004206806613099996
       },
       {
         "month": "2024-06",
+        "complaints": 204168,
+        "complaints_late_rate": 0.0021501900395752517,
         "narratives": 68200,
+        "narrative_share": 0.3340386348497316,
         "settled": 68200,
         "late_rate": 0.0035777126099706745
       },
       {
         "month": "2024-07",
+        "complaints": 232654,
+        "complaints_late_rate": 0.002484375940237434,
         "narratives": 72849,
+        "narrative_share": 0.31312163126359316,
         "settled": 72849,
         "late_rate": 0.0037474776592678004
       },
       {
         "month": "2024-08",
+        "complaints": 263816,
+        "complaints_late_rate": 0.00262304030081572,
         "narratives": 75894,
+        "narrative_share": 0.28767777541923156,
         "settled": 75894,
         "late_rate": 0.004348169815795715
       },
       {
         "month": "2024-09",
+        "complaints": 264820,
+        "complaints_late_rate": 0.002488482742995242,
         "narratives": 74366,
+        "narrative_share": 0.2808171588248622,
         "settled": 74366,
         "late_rate": 0.004060995616276255
       },
       {
         "month": "2024-10",
+        "complaints": 295877,
+        "complaints_late_rate": 0.002332050142457846,
         "narratives": 79684,
+        "narrative_share": 0.26931461384291444,
         "settled": 79684,
         "late_rate": 0.003639375533356759
       },
       {
         "month": "2024-11",
+        "complaints": 287077,
+        "complaints_late_rate": 0.0024697206672774203,
         "narratives": 73591,
+        "narrative_share": 0.25634585842822655,
         "settled": 73591,
         "late_rate": 0.0044706553790545035
       },
       {
         "month": "2024-12",
+        "complaints": 303981,
+        "complaints_late_rate": 0.002158029613692961,
         "narratives": 81325,
+        "narrative_share": 0.267533168191433,
         "settled": 81325,
         "late_rate": 0.004143867199508146
       },
       {
         "month": "2025-01",
+        "complaints": 475783,
+        "complaints_late_rate": 0.0034427459577160177,
         "narratives": 172937,
+        "narrative_share": 0.3634787287481898,
         "settled": 172937,
         "late_rate": 0.00458548488756021
       },
       {
         "month": "2025-02",
+        "complaints": 335236,
+        "complaints_late_rate": 0.004205992196542137,
         "narratives": 92468,
+        "narrative_share": 0.27582956484387117,
         "settled": 92468,
         "late_rate": 0.007267378985162435
       },
       {
         "month": "2025-03",
+        "complaints": 396973,
+        "complaints_late_rate": 0.006854370448368025,
         "narratives": 105164,
+        "narrative_share": 0.26491474231244944,
         "settled": 105164,
         "late_rate": 0.01239017154159218
       },
       {
         "month": "2025-04",
+        "complaints": 406099,
+        "complaints_late_rate": 0.006340818371874838,
         "narratives": 104983,
+        "narrative_share": 0.2585157806347713,
         "settled": 104983,
         "late_rate": 0.01133516855109875
       },
       {
         "month": "2025-05",
+        "complaints": 415181,
+        "complaints_late_rate": 0.005443409019198856,
         "narratives": 106947,
+        "narrative_share": 0.2575912674231239,
         "settled": 106947,
         "late_rate": 0.010565981280447324
       },
       {
         "month": "2025-06",
+        "complaints": 412160,
+        "complaints_late_rate": 0.00523825698757764,
         "narratives": 112684,
+        "narrative_share": 0.2733986801242236,
         "settled": 112684,
         "late_rate": 0.009602073053849703
       },
       {
         "month": "2025-07",
+        "complaints": 473181,
+        "complaints_late_rate": 0.004226712399694832,
         "narratives": 125532,
+        "narrative_share": 0.26529383047924576,
         "settled": 125532,
         "late_rate": 0.00826880795335054
       },
       {
         "month": "2025-08",
+        "complaints": 495567,
+        "complaints_late_rate": 0.003993405533459653,
         "narratives": 108863,
+        "narrative_share": 0.21967362637140891,
         "settled": 108863,
         "late_rate": 0.007918209125230795
       },
       {
         "month": "2025-09",
+        "complaints": 503847,
+        "complaints_late_rate": 0.003352633971372595,
         "narratives": 81659,
+        "narrative_share": 0.16207102552957545,
         "settled": 81625,
         "late_rate": 0.008453292496171516
       },
       {
         "month": "2025-10",
+        "complaints": 519780,
+        "complaints_late_rate": 0.0031064208988604014,
         "narratives": 76157,
+        "narrative_share": 0.14651775751279386,
         "settled": 76084,
         "late_rate": 0.006965984963987172
       },
       {
         "month": "2025-11",
+        "complaints": 496654,
+        "complaints_late_rate": 0.004047083079971167,
         "narratives": 78128,
+        "narrative_share": 0.15730870988656087,
         "settled": 78128,
         "late_rate": 0.00881886135572394
       },
       {
         "month": "2025-12",
+        "complaints": 512470,
+        "complaints_late_rate": 0.00480418365953129,
         "narratives": 56507,
+        "narrative_share": 0.1102640154545632,
         "settled": 56507,
         "late_rate": 0.011821544233457802
       },
       {
         "month": "2026-01",
+        "complaints": 541260,
+        "complaints_late_rate": 0.005156496243018592,
         "narratives": 22226,
+        "narrative_share": 0.0410634445552969,
         "settled": 22226,
         "late_rate": 0.03468910285251507
       },
       {
         "month": "2026-02",
+        "complaints": 497118,
+        "complaints_late_rate": 0.0048600131155983085,
         "narratives": 12123,
+        "narrative_share": 0.024386564155793995,
         "settled": 12123,
         "late_rate": 0.035634743875278395
       },
       {
         "month": "2026-03",
+        "complaints": 614959,
+        "complaints_late_rate": 0.004801953954579012,
         "narratives": 21639,
+        "narrative_share": 0.035187711701105275,
         "settled": 21639,
         "late_rate": 0.033273256619991684
       },
       {
         "month": "2026-04",
+        "complaints": 618315,
+        "complaints_late_rate": 0.00527406199812715,
         "narratives": 21049,
+        "narrative_share": 0.0340425187808803,
         "settled": 21049,
         "late_rate": 0.03800655613093259
       },
       {
         "month": "2026-05",
+        "complaints": 619994,
+        "complaints_late_rate": 0.005269533322902873,
         "narratives": 17520,
+        "narrative_share": 0.028258337983915974,
         "settled": 17520,
         "late_rate": 0.03898401826484018
       },
       {
         "month": "2026-06",
+        "complaints": 620905,
+        "complaints_late_rate": 0.00511696377376481,
         "narratives": 16811,
+        "narrative_share": 0.027074995369662024,
         "settled": 16811,
         "late_rate": 0.045030039854856936
       },
       {
         "month": "2026-07",
+        "complaints": 670121,
+        "complaints_late_rate": 0.0042297181730124875,
         "narratives": 9999,
+        "narrative_share": 0.014921185875386683,
         "settled": 9999,
         "late_rate": 0.0306030603060306
       },
       {
         "month": "2026-08",
+        "complaints": 637678,
+        "complaints_late_rate": 0.0037645152833355048,
         "narratives": 1,
+        "narrative_share": 1.5681895878484124e-06,
         "settled": 1,
         "late_rate": 0.0
+      },
+      {
+        "month": "2026-09",
+        "complaints": 660841,
+        "complaints_late_rate": 0.0031654169585204066,
+        "narratives": 0,
+        "narrative_share": 0.0,
+        "settled": null,
+        "late_rate": null
+      },
+      {
+        "month": "2026-10",
+        "complaints": 753340,
+        "complaints_late_rate": 0.003514814944993146,
+        "narratives": 0,
+        "narrative_share": 0.0,
+        "settled": null,
+        "late_rate": null
+      },
+      {
+        "month": "2026-11",
+        "complaints": 103273,
+        "complaints_late_rate": 0.0,
+        "narratives": 0,
+        "narrative_share": 0.0,
+        "settled": null,
+        "late_rate": null
       }
     ]
   }

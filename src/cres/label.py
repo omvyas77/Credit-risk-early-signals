@@ -3,6 +3,7 @@
 import calendar
 import datetime as dt
 import statistics
+from pathlib import Path
 
 import duckdb
 
@@ -93,7 +94,12 @@ def main(cfg: dict) -> int:
     from cres.ingest import INTERIM, write_profile
 
     out = INTERIM / "labelled.parquet"
-    inputs = [INTERIM / "complaints.parquet", INTERIM / "narratives.parquet", DEFAULT]
+    inputs = [
+        INTERIM / "complaints.parquet",
+        INTERIM / "narratives.parquet",
+        DEFAULT,
+        Path(__file__),
+    ]
     if out.exists() and all(out.stat().st_mtime > p.stat().st_mtime for p in inputs):
         print("label: labelled.parquet is newer than its inputs, nothing to do")
         return 0
@@ -117,18 +123,26 @@ def main(cfg: dict) -> int:
     drops = apply_label(con, complaints, received_from, data_end, lab["drop_company_response"])
     con.execute(f"copy labelled to '{out}' (format parquet)")
 
+    # Monthly series for the site's timeline: all complaints (live) next to narrative complaints,
+    # so the drop in the narrative share is visible from pipeline output.
+    live = f"read_parquet('{INTERIM / 'live.parquet'}')"
     settled = ", ".join("'" + r + "'" for r in lab["drop_company_response"])
-    timeline = con.execute(f"""
-        select strftime(date_trunc('month', date_received), '%Y-%m') as month,
-          count(*) as narratives,
+    late_if_settled = f"""avg(case when timely_response is null
+                     or company_response_to_consumer in ({settled}) then null
+                   else (timely_response = 'No')::int end)"""
+    monthly_sql = """
+        select strftime(date_trunc('month', date_received), '%Y-%m') as month, count(*) as n,
           count(*) filter (where timely_response is not null
                            and company_response_to_consumer not in ({settled})) as settled,
-          avg(case when timely_response is null
-                     or company_response_to_consumer in ({settled}) then null
-                   else (timely_response = 'No')::int end) as late_rate
-        from {complaints}
-        where date_received >= date '2015-01-01'
-        group by 1 order by 1""").fetchall()
+          {late} as late_rate
+        from {src} where date_received >= date '2015-01-01' group by 1"""
+    timeline = con.execute(f"""
+        select month, l.n, l.late_rate, coalesce(c.n, 0), coalesce(c.n, 0) / l.n,
+          c.settled, c.late_rate
+        from ({monthly_sql.format(settled=settled, late=late_if_settled, src=live)}) l
+        left join ({monthly_sql.format(settled=settled, late=late_if_settled, src=complaints)}) c
+          using (month)
+        order by month""").fetchall()
     late_rate = con.execute("select avg(late::int), sum(late::int) from labelled").fetchone()
     total = sum(monthly.values())
     write_profile(
@@ -145,8 +159,16 @@ def main(cfg: dict) -> int:
             "narratives_vs_reference": total - NARRATIVES_REF,
             "narratives_per_month": {m.strftime("%Y-%m"): n for m, n in monthly.items()},
             "timeline": [
-                {"month": m, "narratives": n, "settled": s, "late_rate": r}
-                for m, n, s, r in timeline
+                {
+                    "month": m,
+                    "complaints": cn,
+                    "complaints_late_rate": cr,
+                    "narratives": n,
+                    "narrative_share": share,
+                    "settled": s,
+                    "late_rate": r,
+                }
+                for m, cn, cr, n, share, s, r in timeline
             ],
         },
     )
