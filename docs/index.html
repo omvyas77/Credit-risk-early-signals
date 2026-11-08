@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit-risk early signals</title>
+<meta name="description" content="Five models that flag CFPB consumer complaints headed for a dispute or a late response, by Om Hitesh Vyas.">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container">
+    <a class="wordmark" href="#top">Credit-risk early signals</a>
+    <nav aria-label="Page">
+      <a href="#evidence">Evidence</a>
+      <a href="#limits">Limits</a>
+      <a href="#run">Run it</a>
+      <a href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/cfpb_report.pdf">Report (PDF)</a>
+      <a href="https://github.com/omvyas77/Credit-risk-early-signals">Code</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <h1>Flagging complaints headed for disputes or delays</h1>
+      <p class="lead">Five models trained on 639,149 CFPB complaints, tested on the months after.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/cfpb_report.pdf">Read the report</a>
+        <a class="btn" href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/CFPB_Credit_Risk_Early_Signals.ipynb">Open the notebook</a>
+      </div>
+    </div>
+    <table class="board">
+      <caption>Test months: July 1 to October 15, 2025, 40,659 complaints.</caption>
+      <thead><tr><th scope="col">Model</th><th scope="col"><span class="visually-hidden">PR-AUC as a bar</span></th><th scope="col" class="num">PR-AUC</th><th scope="col" class="num">AUROC</th></tr></thead>
+      <tbody>
+<tr class="lead-row"><td class="model">LightGBM<small>TF-IDF, product, company and state</small></td><td><span class="meter"><i style="width: 89.7%"></i></span></td><td class="num measured big">0.314</td><td class="num measured">0.966</td></tr>
+<tr><td class="model">Logistic regression<small>Same features</small></td><td><span class="meter"><i style="width: 81.7%"></i></span></td><td class="num measured">0.286</td><td class="num measured">0.955</td></tr>
+<tr><td class="model">Fine-tuned transformer<small>Balanced subsample</small></td><td><span class="meter"><i style="width: 34.6%"></i></span></td><td class="num measured">0.121</td><td class="num measured">0.905</td></tr>
+<tr><td class="model">MiniLM + logistic regression<small>Sentence embeddings</small></td><td><span class="meter"><i style="width: 22.0%"></i></span></td><td class="num measured">0.077</td><td class="num measured">0.874</td></tr>
+<tr><td class="model">MiniLM + LightGBM<small>Sentence embeddings</small></td><td><span class="meter"><i style="width: 19.1%"></i></span></td><td class="num measured">0.067</td><td class="num measured">0.880</td></tr>
+<tr class="chance"><td class="model">Chance<small>The share flagged in the test months</small></td><td><span class="meter"><i style="width: 2.0%"></i></span></td><td class="num measured">0.007</td><td class="num measured">0.500</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="evidence" id="evidence">
+  <div class="container pair pair--lead">
+    <div>
+      <h2>Simpler features beat bigger models</h2>
+      <p>TF-IDF word features plus product, company and state reached <span class="measured">0.314</span>. A fine-tuned transformer reached <span class="measured">0.121</span>.</p>
+    </div>
+    <figure class="plate">
+      <img src="images/pr-all-models.png" width="889" height="590" alt="Precision against recall for four models on the test months. The two TF-IDF models stay well above the transformer and the MiniLM model at every recall, and all sit far above the chance line at 0.007.">
+      <figcaption>Precision against recall in the test months. The dashed line is chance.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="evidence">
+  <div class="container pair">
+    <div>
+      <h2>Raw scores overstate the risk</h2>
+      <p>Complaints scored near 0.9 were positive about a third of the time. Isotonic calibration cut the Brier score from <span class="measured">0.068</span> to <span class="measured">0.006</span>.</p>
+    </div>
+    <figure class="plate plate--narrow">
+      <img src="images/reliability.png" width="458" height="470" alt="Reliability curve for logistic regression. Observed frequency stays near zero until predicted probability passes 0.8, and reaches only about 0.32 at a predicted 0.94, far below the diagonal.">
+      <figcaption>Logistic regression before calibration. The diagonal is a perfect fit.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="evidence">
+  <div class="container pair">
+    <div>
+      <h2>It leans on company names</h2>
+      <p>The strongest features are the product and the company, such as Experian, TransUnion and Equifax. Trained on credit reporting and tested on debt collection, PR-AUC fell to <span class="measured">0.124</span>.</p>
+    </div>
+    <figure class="plate">
+      <img src="images/shap-importance.png" width="1231" height="547" alt="LightGBM feature importance. The top features are the credit card product and the companies Experian, TransUnion and Equifax, followed by more product and company indicators; a word count is the only text feature near the top.">
+      <figcaption>LightGBM feature importance, strongest at the top.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="evidence">
+  <div class="container pair">
+    <div>
+      <h2>The label shifted in 2017</h2>
+      <p>A complaint counts as risky if the consumer disputed the response or it came late. The CFPB stopped taking disputes on April 24, 2017, and the flagged share fell from about 25% to 2%.</p>
+    </div>
+    <figure class="plate">
+      <img src="images/risk-rate-over-time.png" width="855" height="393" alt="Monthly share of complaints flagged, 2015 to 2025. It sits between 0.23 and 0.30 until early 2017, drops sharply, and stays near 0.02 afterwards.">
+      <figcaption>Share of complaints flagged each month.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="limits" id="limits">
+  <div class="container">
+    <h2>What this can’t tell you</h2>
+    <div class="row"><h3>The label is a proxy</h3><p>It marks disputes and late responses, not fraud or default.</p></div>
+    <div class="row"><h3>It uses one shard</h3><p>Every fifth row: 679,808 complaints with a narrative.</p></div>
+    <div class="row"><h3>The narratives are gone</h3><p>The CFPB removed them in September 2026, so a rerun needs a saved export.</p></div>
+  </div>
+</section>
+
+<section class="run" id="run">
+  <div class="container">
+    <h2>Run the notebook</h2>
+    <div class="run-grid">
+      <ul class="facts">
+        <li>Written for Google Colab</li>
+        <li>An export running to <span class="measured">2025-10-15</span></li>
+        <li>Split by date on <span class="measured">2025-07-01</span></li>
+        <li>F2-best threshold <span class="measured">0.80</span>, F2 <span class="measured">0.39</span></li>
+      </ul>
+<pre class="code"><span class="c"># install the dependencies</span>
+pip install -r requirements.txt
+<span class="c"># in the first cell, point at your saved export</span>
+DATA_PATH = Path("/content/drive/MyDrive/complaints.csv")
+<span class="c"># outside Colab, drop the drive.mount line and use a local path</span></pre>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="colophon">
+  <div class="container">
+    <p>Credit-risk early signals is by Om Hitesh Vyas. The code is on <a href="https://github.com/omvyas77/Credit-risk-early-signals">GitHub</a> under the MIT license, the method is in <a href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/cfpb_report.pdf">the written report</a>, and the data comes from the CFPB Consumer Complaint Database. Reach me on <a href="https://www.linkedin.com/in/om-hitesh-vyas-97340a204/">LinkedIn</a>.</p>
+  </div>
+</footer>
+</body>
+</html>
