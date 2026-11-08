@@ -1,0 +1,35 @@
+[project]
+name = "cres"
+version = "2.0.0.dev0"
+description = "Predict late company responses to CFPB consumer complaints from what is known at intake."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "duckdb==2.0.0",
+    "lightgbm==4.7.0",
+    "pyyaml==6.0.3",
+    "scikit-learn==1.9.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.10"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["archive"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "ruff==0.17.4",
+]

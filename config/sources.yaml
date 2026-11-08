@@ -1,0 +1,4 @@
+# Download URLs. The archive list is copied from the CFPB Narratives Archive page:
+# https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/
+live: https://files.consumerfinance.gov/ccdb/complaints.csv.zip
+archive: []

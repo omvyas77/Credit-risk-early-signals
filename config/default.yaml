@@ -1,0 +1,28 @@
+# All randomness reads this seed.
+seed: 42
+
+# Raw downloads go to $CRES_DATA_DIR/raw/; everything derived goes under data/.
+data_dir_env: CRES_DATA_DIR
+
+label:
+  # late = timely_response == "No", taken from the live complaints file.
+  received_from: "2017-05-01"
+  # Dropped before labelling, and counted in reports/data_profile.json.
+  drop_company_response: ["In progress"]
+
+data_end:
+  # Chosen from the data: the last month whose narrative count is at least
+  # min_ratio times the median of the trailing_months before it.
+  min_ratio: 0.7
+  trailing_months: 6
+
+windows:
+  # Generated from data_end in split.py; never written out by hand.
+  n_windows: 5
+  test_months: 3
+  val_months: 3
+  gap_days: 30
+
+evaluate:
+  capacity: [0.01, 0.05]
+  bootstrap_resamples: 1000
