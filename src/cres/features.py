@@ -373,11 +373,14 @@ def build_window(con: duckdb.DuckDBPyConnection, win: dict, cfg: dict, labelled:
     return meta
 
 
-def load(window: str, featureset: str, split_name: str) -> dict:
+def load(window: str, featureset: str, split_name: str, max_terms: int | None = None) -> dict:
     """Assemble one feature set for one window and split.
 
+    `max_terms` keeps only the first (most frequent) TF-IDF terms of the vocabulary.
+
     Returns X (CSR, float32), y, ids, feature names, and the column indices of the numeric
-    block, which models should scale inside their Pipeline.
+    block, which models should scale inside their Pipeline. The numeric block is the last
+    columns, and each of its entries is stored even when it is zero.
     """
     if featureset not in FEATURE_SETS:
         raise ValueError(f"unknown feature set {featureset!r}")
@@ -387,7 +390,11 @@ def load(window: str, featureset: str, split_name: str) -> dict:
     num = np.load(d / f"num_{split_name}.npy")
     blocks, names = [], []
     if featureset in ("text", "both"):
-        blocks.append(sp.load_npz(d / f"tfidf_{split_name}.npz"))
+        x_text = sp.load_npz(d / f"tfidf_{split_name}.npz")
+        if max_terms is not None and max_terms < len(vocab):
+            x_text, vocab = x_text[:, :max_terms], vocab[:max_terms]
+        blocks.append(x_text)
+        del x_text
         names += [f"tfidf:{t}" for t in vocab]
     if featureset in ("struct", "both"):
         blocks.append(sp.load_npz(d / f"cat_{split_name}.npz"))
@@ -395,7 +402,15 @@ def load(window: str, featureset: str, split_name: str) -> dict:
     numeric = {"text": TEXT_NUMERIC, "struct": STRUCT_NUMERIC, "both": NUMERIC}[featureset]
     cols = [NUMERIC.index(c) for c in numeric]
     first_numeric = len(names)
-    blocks.append(sp.csr_matrix(num[:, cols]))
+    # Every numeric entry is stored, zeros included, so a model can center the block in place.
+    block = num[:, cols]
+    n, k = block.shape
+    blocks.append(
+        sp.csr_matrix(
+            (block.ravel(), np.tile(np.arange(k, dtype=np.int32), n), np.arange(0, n * k + 1, k)),
+            shape=(n, k),
+        )
+    )
     names += [f"num:{c}" for c in numeric]
     return {
         "X": sp.hstack(blocks, format="csr", dtype=np.float32),

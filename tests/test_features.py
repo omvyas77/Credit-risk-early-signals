@@ -131,7 +131,16 @@ def test_load_assembles_each_feature_set(tmp_path, monkeypatch):
         # "late" as a word in the vocabulary is fine; no column may be an outcome.
         cols = [n.split(":", 1)[1] for n in m["names"] if not n.startswith("tfidf:")]
         assert not set(cols) & BANNED
+        # The numeric block is stored densely (the 0 in row 0 is an explicit entry).
+        numeric = m["X"][:, m["numeric_cols"]]
+        assert numeric.nnz == 2 * len(m["numeric_cols"])
     assert shapes == {"text": (2, 6), "struct": (2, 5), "both": (2, 11)}
+    capped = features.load("W1", "both", "val", max_terms=2)
+    assert capped["X"].shape == (2, 10)
+    assert [n for n in capped["names"] if n.startswith("tfidf:")] == [
+        "tfidf:fraud",
+        "tfidf:not mine",
+    ]
     text_names = features.load("W1", "text", "val")["names"]
     assert not any(n.startswith("cat:") for n in text_names)
     assert "num:company_late_rate" not in text_names
