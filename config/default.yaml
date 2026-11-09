@@ -4,6 +4,9 @@ seed: 42
 # Raw downloads go to $CRES_DATA_DIR/raw/; everything derived goes under data/.
 data_dir_env: CRES_DATA_DIR
 
+# DuckDB spills to disk past this instead of pushing an 8 GB laptop into swap.
+duckdb_memory_limit: 2GB
+
 label:
   # late = timely_response == "No", taken from the live complaints file.
   received_from: "2017-05-01"
@@ -22,6 +25,21 @@ windows:
   test_months: 3
   val_months: 3
   gap_days: 30
+  # Training uses only the most recent train_years before each window's training cutoff,
+  # so the TF-IDF matrices fit in memory on an 8 GB laptop.
+  train_years: 1
+
+features:
+  tfidf:
+    vocab_sample: 150000     # train documents sampled (with seed) to choose the vocabulary
+    min_df: 5                # in that sample
+    max_features: 100000
+    sublinear_tf: true       # tf -> 1 + ln(tf); idf = ln((1 + n) / (1 + df)) + 1; rows L2-normalised
+  categorical_min_frequency: 20   # rarer categories share one "infrequent" column
+  company_history:
+    days: 365                # trailing window ending gap_days before the complaint
+    prior_strength: 50       # additive prior: (late + a * overall_rate) / (n + a)
+  workers: 7
 
 evaluate:
   capacity: [0.01, 0.05]

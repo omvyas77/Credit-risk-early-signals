@@ -48,6 +48,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import label
 
         return label.main(cfg)
+    if args.stage == "features":
+        from cres import features
+
+        return features.main(cfg)
     print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
     return 1
 

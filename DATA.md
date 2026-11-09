@@ -27,7 +27,7 @@ April 2021: 439,860 of 1,041,632).
 | Sub-product | `sub_product` | text | A few nulls; "I do not know" is a real value |
 | Issue | `issue` | text | |
 | Sub-issue | `sub_issue` | text | Null in about 1% (file 17) to 11% (file 2) of rows |
-| Consumer complaint narrative | `narrative` | text | Archive only. Redactions appear as `XXXX` runs |
+| Consumer complaint narrative | `narrative` | text | Archive only. Redactions are runs of capital X (`XXXX`, `XX/XX/XXXX`), often glued to digits or words (`XXXX1234`, `XXXXaccount`); in a 30,000-narrative sample there were 440,593 capital-X runs and 6 lowercase ones. `text.py` removes the capital runs |
 | Company public response | `company_public_response` | text | Outcome; banned as a feature |
 | Company | `company` | text | Some names carry a leading non-breaking space |
 | State | `state` | text | Includes military and territory codes (AA, AE, ...) |
@@ -109,3 +109,39 @@ Decision: keep the rule and its `data_end` of 2026-06-30, and flag the shift whe
 are shown rather than cutting the data early. The monthly series in `reports/data_profile.json`
 (`label.timeline`) carries total complaints, narrative share and both late rates, so the flag is
 drawn from pipeline output.
+
+## Windows
+
+`split.py` generates five rolling windows from `data_end` and `config/default.yaml`. The test
+periods are the last five whole quarters; validation is the three months ending 31 days before
+test starts, and training ends 31 days before validation starts, so 30 clear days separate each
+split (an outcome is known about 15 days after a complaint arrives). Training is capped at the
+most recent year before that cutoff (`windows.train_years`), so each window's TF-IDF matrix fits
+in memory on an 8 GB laptop; earlier complaints are not used for training. Row counts,
+prevalence and narrative share per split are in `reports/windows.json`; every row's window tags
+are in `data/features/splits.parquet`.
+
+## Features
+
+Only fields known when a complaint arrives. Outcome columns are dropped by `label.py`, and
+`features.py` refuses a source that still has them.
+
+| Block | Columns | Fitted on |
+|---|---|---|
+| TF-IDF | word 1-2 grams from `text.py`; vocabulary of up to 100,000 terms chosen from a seeded 150,000-document train sample (min df 5); idf from all train rows; sublinear tf, L2 rows | train rows of the window |
+| Categorical | product, sub-product, issue, sub-issue, state, submitted via, tags; one-hot, categories seen fewer than 20 times share an "infrequent" column, missing is its own category | train rows of the window |
+| Structured numeric | days from receipt to sending to the company; company late rate; company log volume | nothing (scaled inside the model Pipeline) |
+| Text numeric | urgency and harm lexicon counts (`text.LEXICON`, whole-token matches, negations kept); VADER compound score on the raw narrative | nothing |
+
+Company history uses the live file (complaints with and without narratives). For a complaint
+received on day d, it counts the same company's settled complaints received in the 365 days
+before d - 30, and smooths the late rate toward the late rate of all companies over the same
+days: (late + 50 x overall) / (n + 50). The volume feature is ln(1 + n).
+
+Feature sets: `text` = TF-IDF + text numerics; `struct` = categorical + structured numerics;
+`both` = all of them.
+
+The days-to-company feature is known only once the CFPB forwards the complaint. For complaints
+received from November 2023, 95.2% were sent the same day and 96.5% within a day; the 99th
+percentile is 16 days and the maximum 446. It is kept as a field of intake, as planned, with
+that caveat.
