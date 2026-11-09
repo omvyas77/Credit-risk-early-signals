@@ -44,7 +44,7 @@ def apply_label(
     data_end: dt.date,
     drop_company_response: list[str],
 ) -> dict[str, int]:
-    """Create table `labelled` from `source` and return how many rows each rule dropped.
+    """Create view `labelled` from `source` and return how many rows each rule dropped.
 
     Rules, applied in this order: no narrative, received before `received_from`, received
     after `data_end`, missing timely_response, company response in `drop_company_response`.
@@ -79,7 +79,7 @@ def apply_label(
     if bad:
         raise ValueError(f"unexpected timely_response values: {bad}")
     con.execute(f"""
-        create or replace table labelled as
+        create or replace temp view labelled as
         select * exclude ({", ".join(OUTCOME_COLUMNS)}), timely_response = 'No' as late
         from label_step_{len(rules)}""")
     drops["rows_out"] = con.execute("select count(*) from labelled").fetchone()[0]
@@ -105,6 +105,9 @@ def main(cfg: dict) -> int:
         return 0
 
     con = duckdb.connect()
+    con.execute(f"set memory_limit = '{cfg['duckdb_memory_limit']}'")
+    con.execute(f"set temp_directory = '{INTERIM / 'tmp'}'")
+    con.execute("set threads = 4")  # each thread holds a row group of long narratives
     narratives = f"read_parquet('{INTERIM / 'narratives.parquet'}')"
     complaints = f"read_parquet('{INTERIM / 'complaints.parquet'}')"
 
@@ -121,7 +124,14 @@ def main(cfg: dict) -> int:
     lab = cfg["label"]
     received_from = dt.date.fromisoformat(lab["received_from"])
     drops = apply_label(con, complaints, received_from, data_end, lab["drop_company_response"])
-    con.execute(f"copy labelled to '{out}' (format parquet)")
+    # Sorted by complaint_id so later stages can stream it in a fixed order without sorting
+    # the text again. Two threads keep the sort inside the memory limit.
+    con.execute("set threads = 2")
+    con.execute(
+        f"copy (select * from labelled order by complaint_id) to '{out}' "
+        "(format parquet, row_group_size 20000)"
+    )
+    con.execute("set threads = 4")
 
     # Monthly series for the site's timeline: all complaints (live) next to narrative complaints,
     # so the drop in the narrative share is visible from pipeline output.
@@ -143,7 +153,9 @@ def main(cfg: dict) -> int:
         left join ({monthly_sql.format(settled=settled, late=late_if_settled, src=complaints)}) c
           using (month)
         order by month""").fetchall()
-    late_rate = con.execute("select avg(late::int), sum(late::int) from labelled").fetchone()
+    late_rate = con.execute(
+        f"select avg(late::int), sum(late::int) from read_parquet('{out}')"
+    ).fetchone()
     total = sum(monthly.values())
     write_profile(
         "label",
