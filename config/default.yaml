@@ -44,3 +44,22 @@ features:
 evaluate:
   capacity: [0.01, 0.05]
   bootstrap_resamples: 1000
+
+models:
+  lr:
+    C: [0.01, 0.1, 1.0, 10.0]  # chosen per cell on validation average precision (hill climb)
+    max_iter: 2000           # lbfgs iterations; the run fails if the model hasn't converged
+    tol: 1.0e-6
+  lgbm:
+    max_text_terms: 20000    # most frequent TF-IDF terms LightGBM sees; LR uses all of them
+    learning_rate: 0.05
+    num_leaves: 63
+    min_child_samples: 100
+    feature_fraction: 0.5
+    lambda_l2: 1.0
+    max_bin: 63
+    force_col_wise: true     # the row-wise layout takes many minutes to build for 100k sparse columns
+    num_threads: 7
+    num_boost_round: 2000
+    early_stopping_rounds: 100   # on validation average precision
+  calibration_folds: 5       # cross-fitting of validation scores for the recalibrated LR

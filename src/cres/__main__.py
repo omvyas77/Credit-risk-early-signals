@@ -30,6 +30,11 @@ def build_parser() -> argparse.ArgumentParser:
     stages["download"].add_argument(
         "--only", nargs="+", metavar="KEY", help="download only files whose name contains KEY"
     )
+    train = stages["train"]
+    train.add_argument("--models", nargs="+", metavar="MODEL", help="models to train")
+    train.add_argument("--featuresets", nargs="+", metavar="SET", help="text, struct, both")
+    train.add_argument("--windows", nargs="+", metavar="W", help="windows, e.g. W1 W5")
+    train.add_argument("--force", action="store_true", help="retrain cells that are current")
     return parser
 
 
@@ -52,6 +57,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import features
 
         return features.main(cfg)
+    if args.stage == "train":
+        from cres import models
+
+        return models.main(cfg, args.models, args.featuresets, args.windows, args.force)
     print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
     return 1
 
