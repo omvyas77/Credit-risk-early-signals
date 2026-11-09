@@ -61,6 +61,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import models
 
         return models.main(cfg, args.models, args.featuresets, args.windows, args.force)
+    if args.stage == "evaluate":
+        from cres import evaluate
+
+        return evaluate.main(cfg)
     print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
     return 1
 

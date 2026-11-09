@@ -42,8 +42,12 @@ features:
   workers: 7
 
 evaluate:
-  capacity: [0.01, 0.05]
-  bootstrap_resamples: 1000
+  capacity: [0.01, 0.05]     # review capacity: share of complaints flagged
+  bootstrap_resamples: 1000  # stratified by label, on the test split
+  ece_bins: 10               # equal-count bins of test scores
+  costs:                     # for the cost-optimal threshold; only the ratio matters
+    fp: 1                    # a complaint flagged for review that was answered on time
+    fn: 10                   # a late response the model missed
 
 models:
   lr:
