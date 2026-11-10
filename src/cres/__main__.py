@@ -69,6 +69,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import explain
 
         return explain.main(cfg)
+    if args.stage == "robustness":
+        from cres import robustness
+
+        return robustness.main(cfg)
     print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
     return 1
 
