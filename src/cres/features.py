@@ -379,12 +379,14 @@ def load(
     split_name: str,
     max_terms: int | None = None,
     rows: np.ndarray | None = None,
+    root: Path | None = None,
 ) -> dict:
     """Assemble one feature set for one window and split.
 
     `max_terms` keeps only the first (most frequent) TF-IDF terms of the vocabulary.
     `rows` keeps only these row positions of the split (each block is sliced before stacking,
     so the full matrix is never built).
+    `root` replaces data/features, for a copy of the cache such as the deep-model input.
 
     Returns X (CSR, float32), y, ids, feature names, and the column indices of the numeric
     block, which models should scale inside their Pipeline. The numeric block is the last
@@ -392,13 +394,13 @@ def load(
     """
     if featureset not in FEATURE_SETS:
         raise ValueError(f"unknown feature set {featureset!r}")
-    d = FEATURES / window
+    d = (root or FEATURES) / window
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
-    vocab = json.loads((d / "vocab.json").read_text(encoding="utf-8"))["terms"]
     keep = slice(None) if rows is None else np.asarray(rows)
     num = np.load(d / f"num_{split_name}.npy")[keep]
     blocks, names = [], []
     if featureset in ("text", "both"):
+        vocab = json.loads((d / "vocab.json").read_text(encoding="utf-8"))["terms"]
         x_text = sp.load_npz(d / f"tfidf_{split_name}.npz")
         if rows is not None:
             x_text = x_text[keep]

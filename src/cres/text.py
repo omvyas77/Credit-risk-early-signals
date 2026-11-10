@@ -27,13 +27,21 @@ REDACTION = re.compile(r"X{2,}")
 TOKEN = re.compile(r"[a-z]+(?:'[a-z]+)*")
 
 
-def tokens(text: str) -> list[str]:
-    """Tokens of `text` per the spec above."""
+def clean(text: str) -> str:
+    """Steps 1 to 3 of the spec: the text before lowercasing and tokenising.
+
+    The deep models read this, so they see the same narrative as TF-IDF minus URLs, emails
+    and redactions, with case, punctuation and stopwords intact.
+    """
     text = unicodedata.normalize("NFKC", text)
     text = URL.sub(" ", text)
     text = EMAIL.sub(" ", text)
-    text = REDACTION.sub(" ", text)
-    return TOKEN.findall(text.lower())
+    return REDACTION.sub(" ", text)
+
+
+def tokens(text: str) -> list[str]:
+    """Tokens of `text` per the spec above."""
+    return TOKEN.findall(clean(text).lower())
 
 
 def ngrams(toks: list[str]) -> list[str]:
