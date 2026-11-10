@@ -1,4 +1,4 @@
-.PHONY: download data features train evaluate explain export test lint all
+.PHONY: download data features train deep-input deep-baseline evaluate explain export test lint all
 
 CRES = uv run python -m cres
 
@@ -14,6 +14,13 @@ features:
 
 train:
 	$(CRES) train
+
+# Slim input for the deep models on Colab (notebooks/README.md), and the same-data baseline.
+deep-input:
+	$(CRES) deep-input
+
+deep-baseline:
+	$(CRES) deep --model lr_sub
 
 evaluate:
 	$(CRES) evaluate

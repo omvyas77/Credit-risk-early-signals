@@ -67,3 +67,25 @@ models:
     num_boost_round: 2000
     early_stopping_rounds: 100   # on validation average precision
   calibration_folds: 5       # cross-fitting of validation scores for the recalibrated LR
+
+deep:
+  # Windows the deep models are expected to cover; the summary marks missing files "not run".
+  windows: [W5]
+  # DistilBERT and its same-data TF-IDF baseline (lr_sub) train on every train positive plus
+  # this many train negatives, sampled with the seed. Scores are shifted back to the full
+  # training prior: logit + ln(negatives sampled / negatives available).
+  negatives: 100000
+  minilm:
+    model: sentence-transformers/all-MiniLM-L6-v2
+    max_length: 256          # tokens; longer narratives are truncated
+    batch_size: 256
+    chunk: 50000             # narratives per saved embedding chunk, so a rerun resumes
+  distilbert:
+    model: distilbert-base-uncased
+    max_length: 384
+    batch_size: 32
+    eval_batch_size: 256
+    epochs: 3                # the checkpoint (end of an epoch) is chosen on validation AP
+    learning_rate: 3.0e-5
+    weight_decay: 0.01
+    warmup_ratio: 0.06

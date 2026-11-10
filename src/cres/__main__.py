@@ -12,7 +12,8 @@ STAGES = {
     "label": "build the late-response label and choose data_end",
     "features": "build windows and feature sets",
     "train": "train classical models and write prediction files",
-    "deep": "train MiniLM or DistilBERT (run on a GPU) and write prediction files",
+    "deep-input": "write the slim deep-model input (narratives, window tags) for Colab",
+    "deep": "train MiniLM, DistilBERT (on a GPU) or the same-data LR; write prediction files",
     "evaluate": "score every prediction file into reports/metrics.json",
     "explain": "coefficients by group and SHAP",
     "robustness": "cross-product matrix and test-period drift",
@@ -35,6 +36,13 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--featuresets", nargs="+", metavar="SET", help="text, struct, both")
     train.add_argument("--windows", nargs="+", metavar="W", help="windows, e.g. W1 W5")
     train.add_argument("--force", action="store_true", help="retrain cells that are current")
+    stages["deep-input"].add_argument(
+        "--windows", nargs="+", metavar="W", help="windows to export (default: deep.windows)"
+    )
+    deep = stages["deep"]
+    deep.add_argument("--model", required=True, choices=["minilm", "distilbert", "lr_sub"])
+    deep.add_argument("--window", help="window, e.g. W5 (default: the first of deep.windows)")
+    deep.add_argument("--force", action="store_true", help="redo cells whose files exist")
     return parser
 
 
@@ -61,6 +69,14 @@ def main(argv: list[str] | None = None) -> int:
         from cres import models
 
         return models.main(cfg, args.models, args.featuresets, args.windows, args.force)
+    if args.stage == "deep-input":
+        from cres import deep
+
+        return deep.main_export(cfg, args.windows)
+    if args.stage == "deep":
+        from cres import deep
+
+        return deep.main(cfg, args.model, args.window or cfg["deep"]["windows"][0], args.force)
     if args.stage == "evaluate":
         from cres import evaluate
 
