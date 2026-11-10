@@ -65,6 +65,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import evaluate
 
         return evaluate.main(cfg)
+    if args.stage == "explain":
+        from cres import explain
+
+        return explain.main(cfg)
     print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
     return 1
 
