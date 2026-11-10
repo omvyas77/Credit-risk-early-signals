@@ -271,6 +271,10 @@ def comparisons(window: str, draws: dict, results: dict) -> list[dict]:
     for fs in features.FEATURE_SETS:
         pairs += [("lgbm", fs, "lr", fs), ("lr_balanced", fs, "lr", fs)]
         pairs += [(c, fs, "lr", fs) for c in models.CALIBRATED]
+    for m in TEXT_MODELS:  # better text models against LR on all rows and on the subsample
+        pairs += [(m, "text", "lr", "text"), (m, "both", "lr", "both"), (m, "both", "lr", "struct")]
+        if m != "lr_sub":
+            pairs += [(m, fs, "lr_sub", fs) for fs in ("text", "both")]
     for ma, fa, mb, fb in pairs:
         a, b = models.cell_name(ma, fa, window), models.cell_name(mb, fb, window)
         d = compare(draws, results, a, b)
@@ -302,6 +306,15 @@ def training_log() -> dict:
         m.pop("val_average_precision_by_round", None)
         out[p.stem] = m
     return out
+
+
+def not_run(cfg: dict, cells: dict) -> list[str]:
+    """Deep-model cells the config expects (deep.windows) that have no prediction file."""
+    windows = cfg.get("deep", {}).get("windows", [])
+    expected = [
+        models.cell_name(m, fs, w) for w in windows for m in TEXT_MODELS for fs in ("text", "both")
+    ]
+    return [c for c in expected if c not in cells]
 
 
 def main(cfg: dict) -> int:
@@ -342,6 +355,8 @@ def main(cfg: dict) -> int:
         "cells": cells,
         "across_windows": across_windows(cells),
         "comparisons": comps,
+        "deep_windows": cfg.get("deep", {}).get("windows", []),
+        "not_run": not_run(cfg, cells),
         "training": training_log(),
     }
     METRICS.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
@@ -358,7 +373,12 @@ MODEL_LABELS = {
     "lr_balanced_platt": "LR, class-weighted + Platt",
     "lr_balanced_isotonic": "LR, class-weighted + isotonic",
     "company_rate": "Company late rate alone",
+    "lr_sub": "LR, DistilBERT's training subsample",
+    "minilm": "MiniLM embeddings + LR",
+    "distilbert": "DistilBERT, fine-tuned",
 }
+# Text models compared with LR in the deep-model table, in display order.
+TEXT_MODELS = ("lr_sub", "minilm", "distilbert")
 
 
 def _ci(cell: dict, k: str, digits: int = 3) -> str:
@@ -403,6 +423,74 @@ def training_caveats(report: dict) -> list[str]:
                 "- LR's chosen C sits at the edge of the searched grid "
                 f"({min(grid):g} to {max(grid):g}) for: {', '.join(edge)}."
             )
+    return out
+
+
+TRAINED_ON = {
+    "lr": "all train rows",
+    "minilm": "all train rows",
+    "lr_sub": "train subsample",
+    "distilbert": "train subsample",
+}
+
+
+def text_models_section(report: dict) -> list[str]:
+    """Deep text models and the same-data baseline next to LR; missing files say "not run"."""
+    cells, deep_windows = report["cells"], report.get("deep_windows", [])
+    if not deep_windows:
+        return []
+    sub = next(
+        (m["subsample"] for m in report.get("training", {}).values() if m.get("subsample")),
+        None,
+    )
+    sub_text = (
+        f"every training positive plus {sub['negatives']:,} sampled negatives "
+        f"({sub['rows']:,} rows)"
+        if sub
+        else "every training positive plus a seeded sample of negatives"
+    )
+    out = [
+        "## Better text models (test PR-AUC, 95% bootstrap CI)",
+        "",
+        f"DistilBERT is fine-tuned on {sub_text}. {MODEL_LABELS['lr_sub']} is TF-IDF LR on "
+        "exactly those rows, so the two differ only in model type. MiniLM embeddings feed an LR "
+        "trained on all training rows. For DistilBERT and the subsample LR, `both` stacks the "
+        "text score with the structured fields in an LR fitted on validation (cross-fitted); "
+        "for LR and MiniLM it is one model fitted on the training rows. The stacker learns from "
+        "the validation quarter, which sits closer in time to test, so compare stacked `both` "
+        "cells with each other rather than with LR's `both`.",
+        "",
+        "| Window | Model | Trained on | text | both | text - LR text | both - LR struct |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for w in deep_windows:
+        for m in ("lr", *TEXT_MODELS):
+            row = [w, MODEL_LABELS[m], TRAINED_ON[m]]
+            for fs in ("text", "both"):
+                c = cells.get(models.cell_name(m, fs, w))
+                row.append(_ci(c, "pr_auc") if c else "not run")
+            for a, b in (([m, "text"], ["lr", "text"]), ([m, "both"], ["lr", "struct"])):
+                d = _find(report, w, a, b) if a != b else None
+                row.append(_diff(d["pr_auc"]) if d else "")
+            out.append("| " + " | ".join(row) + " |")
+    out.append("")
+    if report.get("not_run"):
+        out += [
+            f"Not run yet: {', '.join(report['not_run'])}. These need a GPU; "
+            "`notebooks/README.md` has the steps.",
+            "",
+        ]
+    if any(
+        models.cell_name(m, "text", w) in cells
+        for m in ("lr_sub", "distilbert")
+        for w in deep_windows
+    ):
+        out += [
+            "Scores of models trained on the subsample are shifted back to the training prior "
+            "(logit plus the log of the share of negatives kept), which leaves PR-AUC unchanged. "
+            "DistilBERT's checkpoint is the epoch with the best validation average precision.",
+            "",
+        ]
     return out
 
 
@@ -568,6 +656,8 @@ def summary(report: dict) -> str:
                     f"{_ci(c, f'{r}:precision')} | {_ci(c, f'{r}:recall')} |"
                 )
         out.append("")
+
+    out += text_models_section(report)
 
     shifted = [w for w in windows if wins[w]["narrative_share_test"] < 0.1]
     out += [

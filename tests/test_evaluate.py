@@ -161,7 +161,13 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
         ys[s] = (rng.random(n) < 0.1).astype(np.int8)
         np.save(d / f"ids_{s}.npy", ids)
         np.save(d / f"y_{s}.npy", ys[s])
-        for m, fs, strength in (("lr", "struct", 1.0), ("lr", "both", 1.5), ("lr", "text", 0.3)):
+        cells = (
+            ("lr", "struct", 1.0),
+            ("lr", "both", 1.5),
+            ("lr", "text", 0.3),
+            ("lr_sub", "text", 0.4),  # a deep-table cell; the GPU ones are missing
+        )
+        for m, fs, strength in cells:
             score = 1 / (1 + np.exp(-(strength * ys[s] + rng.normal(0, 1, n) - 2)))
             path = models.pred_path(m, fs, "W1")
             if s == "test":
@@ -196,6 +202,7 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
             "ece_bins": 5,
             "costs": {"fp": 1, "fn": 10},
         },
+        "deep": {"windows": ["W1"]},
     }
     assert evaluate.main(cfg) == 0
     report = json.loads(evaluate.METRICS.read_text())
@@ -214,6 +221,18 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
         assert sum(row["test"].values()) == 300 and sum(row["val"].values()) == 400
     text = evaluate.SUMMARY.read_text()
     assert "both - struct" in text and "W1" in text
+    # Deep cells without prediction files are listed and shown as "not run".
+    assert report["not_run"] == [
+        "lr_sub__both__W1",
+        "minilm__text__W1",
+        "minilm__both__W1",
+        "distilbert__text__W1",
+        "distilbert__both__W1",
+    ]
+    assert "| W1 | DistilBERT, fine-tuned | train subsample | not run | not run |  |  |" in text
+    sub_row = next(r for r in text.splitlines() if "DistilBERT's training subsample |" in r)
+    assert sub_row.count("not run") == 1  # text was run, both was not
+    assert "Not run yet: lr_sub__both__W1, minilm__text__W1" in text
 
 
 def test_training_caveats_report_stopping_rounds_and_c_at_the_grid_edge():
