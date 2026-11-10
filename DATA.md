@@ -145,3 +145,13 @@ The days-to-company feature is known only once the CFPB forwards the complaint. 
 received from November 2023, 95.2% were sent the same day and 96.5% within a day; the 99th
 percentile is 16 days and the maximum 446. It is kept as a field of intake, as planned, with
 that caveat.
+
+## Deep-model input
+
+`make deep-input` (`python -m cres deep-input`) writes `data/deep_input/` for the GPU runs on
+Colab: `narratives.parquet` (complaint id and narrative, only for rows in the chosen windows,
+W5 by default), `splits.parquet` (those windows' tags) and, per window, the structured block,
+ids and labels copied from the feature cache. It holds no TF-IDF matrices. The deep models read
+each narrative through `text.clean`, which applies steps 1 to 3 of the tokenizer spec (NFKC,
+URLs, emails and redactions removed) and keeps case, punctuation and stopwords. Upload steps
+are in `notebooks/README.md`.
