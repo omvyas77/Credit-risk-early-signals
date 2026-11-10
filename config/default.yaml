@@ -89,3 +89,19 @@ deep:
     learning_rate: 3.0e-5
     weight_decay: 0.01
     warmup_ratio: 0.06
+
+scorer:
+  # The in-browser scorer (docs/js/scorer.js): an LR on the latest window's train split with
+  # TF-IDF, lexicon counts and the structured fields. VADER is left out (it has no JS port).
+  numeric: [days_to_company, company_late_rate, company_log_volume, urgency, harm]
+  # Terms kept after the first fit, ranked by mean |coefficient x TF-IDF| on train, so the
+  # bundle stays under max_bundle_mb. The model is refitted on just these terms.
+  max_terms: 50000
+  max_bundle_mb: 3
+  digits: 7                  # significant digits of every number in the bundle
+  # The company explorer and the scorer's company lookup cover companies with at least this
+  # many labelled complaints across the latest window's splits.
+  company_min_complaints: 500
+  # Narratives of this many seeded validation rows are re-scored through the reference scorer
+  # to check that the bundle reproduces the fitted model's text part.
+  check_rows: 2000

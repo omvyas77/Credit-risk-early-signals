@@ -14,6 +14,7 @@ STAGES = {
     "train": "train classical models and write prediction files",
     "deep-input": "write the slim deep-model input (narratives, window tags) for Colab",
     "deep": "train MiniLM, DistilBERT (on a GPU) or the same-data LR; write prediction files",
+    "scorer": "fit the in-browser scorer's LR (no VADER, pruned) and write its bundle",
     "evaluate": "score every prediction file into reports/metrics.json",
     "explain": "coefficients by group and SHAP",
     "robustness": "cross-product matrix and test-period drift",
@@ -43,6 +44,7 @@ def build_parser() -> argparse.ArgumentParser:
     deep.add_argument("--model", required=True, choices=["minilm", "distilbert", "lr_sub"])
     deep.add_argument("--window", help="window, e.g. W5 (default: the first of deep.windows)")
     deep.add_argument("--force", action="store_true", help="redo cells whose files exist")
+    stages["scorer"].add_argument("--force", action="store_true", help="refit when current")
     return parser
 
 
@@ -77,6 +79,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import deep
 
         return deep.main(cfg, args.model, args.window or cfg["deep"]["windows"][0], args.force)
+    if args.stage == "scorer":
+        from cres import scorer
+
+        return scorer.main(cfg, args.force)
     if args.stage == "evaluate":
         from cres import evaluate
 

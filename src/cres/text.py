@@ -15,6 +15,8 @@ Spec, version 1:
   6. Features are the unigrams plus adjacent-pair bigrams joined by one space.
 """
 
+import hashlib
+import json
 import re
 import unicodedata
 from itertools import pairwise
@@ -103,3 +105,18 @@ def lexicon_counts(toks: list[str]) -> dict[str, int]:
     """Non-overlapping occurrences of each group's phrases, matched on whole tokens."""
     joined = " " + " ".join(toks) + " "
     return {group: len(p.findall(joined)) for group, p in _PATTERNS.items()}
+
+
+def spec_hash() -> str:
+    """Fingerprint of this tokenizer: the spec above, the patterns and the lexicon.
+
+    The scorer bundle carries it and docs/js/scorer.js refuses a bundle whose hash differs
+    from its own, so a change here can't ship without a matching change there.
+    """
+    spec = {
+        "version": VERSION,
+        "spec": __doc__,
+        "patterns": [URL.pattern, EMAIL.pattern, REDACTION.pattern, TOKEN.pattern],
+        "lexicon": LEXICON,
+    }
+    return hashlib.sha256(json.dumps(spec, sort_keys=True).encode("utf-8")).hexdigest()[:16]
