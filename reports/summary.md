@@ -83,6 +83,21 @@ Costs: false positive 1, false negative 10.
 | W5 | capacity_0.01 | 1.966% | 0.886 (0.867 to 0.905) | 0.431 (0.409 to 0.452) |
 | W5 | capacity_0.05 | 10.023% | 0.332 (0.324 to 0.340) | 0.822 (0.806 to 0.838) |
 
+## Better text models (test PR-AUC, 95% bootstrap CI)
+
+DistilBERT is fine-tuned on every training positive plus 100,000 sampled negatives (109,963 rows). LR, DistilBERT's training subsample is TF-IDF LR on exactly those rows, so the two differ only in model type. MiniLM embeddings feed an LR trained on all training rows. For DistilBERT and the subsample LR, `both` stacks the text score with the structured fields in an LR fitted on validation (cross-fitted); for LR and MiniLM it is one model fitted on the training rows. The stacker learns from the validation quarter, which sits closer in time to test, so compare stacked `both` cells with each other rather than with LR's `both`.
+
+| Window | Model | Trained on | text | both | text - LR text | both - LR struct |
+|---|---|---|---|---|---|---|
+| W5 | LR | all train rows | 0.328 (0.308 to 0.348) | 0.705 (0.687 to 0.724) |  | -0.008 (-0.012 to -0.004) |
+| W5 | LR, DistilBERT's training subsample | train subsample | 0.308 (0.289 to 0.329) | 0.747 (0.730 to 0.764) | -0.020 (-0.023 to -0.015) | +0.034 (+0.027 to +0.041) |
+| W5 | MiniLM embeddings + LR | all train rows | not run | not run |  |  |
+| W5 | DistilBERT, fine-tuned | train subsample | not run | not run |  |  |
+
+Not run yet: minilm__text__W5, minilm__both__W5, distilbert__text__W5, distilbert__both__W5. These need a GPU; `notebooks/README.md` has the steps.
+
+Scores of models trained on the subsample are shifted back to the training prior (logit plus the log of the share of negatives kept), which leaves PR-AUC unchanged. DistilBERT's checkpoint is the epoch with the best validation average precision.
+
 ## Read with care
 
 - Windows W4, W5 test on complaints from the period when only a small share of complaints carried a published narrative, and that subset is late far more often; compare each window's PR-AUC with its own prevalence.
