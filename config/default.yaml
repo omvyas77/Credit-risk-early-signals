@@ -51,7 +51,7 @@ evaluate:
 
 models:
   lr:
-    C: [0.01, 0.1, 1.0, 10.0]  # chosen per cell on validation average precision (hill climb)
+    C: [0.001, 0.01, 0.1, 1.0, 10.0]  # chosen per cell on validation average precision (hill climb)
     max_iter: 2000           # lbfgs iterations; the run fails if the model hasn't converged
     tol: 1.0e-6
   lgbm:
