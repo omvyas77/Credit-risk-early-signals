@@ -13,6 +13,15 @@ dependencies = [
     "vadersentiment==3.3.2",
 ]
 
+[project.optional-dependencies]
+# Only for `python -m cres deep --model minilm|distilbert` on a GPU (Colab); not installed
+# by `uv sync`, and the tests don't need it.
+deep = [
+    "sentence-transformers==6.1.0",
+    "torch==2.14.1",
+    "transformers==5.20.2",
+]
+
 [build-system]
 requires = ["uv_build>=0.9,<0.10"]
 build-backend = "uv_build"
