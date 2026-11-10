@@ -1,0 +1,3998 @@
+{
+  "generated": "2026-11-10",
+  "main_window": "W5",
+  "groups": {
+    "text": "TF-IDF of narrative 1-2 grams",
+    "lexicon": "urgency and harm phrase counts",
+    "sentiment": "VADER compound score",
+    "product": "product and sub-product",
+    "issue": "issue and sub-issue",
+    "company history": "company trailing late rate and log volume",
+    "days to company": "days between receipt and sending to the company",
+    "state": "consumer state",
+    "channel": "how the complaint was submitted",
+    "tags": "older American and servicemember tags"
+  },
+  "method": {
+    "lr": "mean |w_g . (x_g - test mean of x_g)| on the Pipeline's scaled inputs; share = group / sum of groups",
+    "lgbm": "LightGBM TreeSHAP (pred_contrib) on 5,000 seeded test rows, summed within each group; log-odds units"
+  },
+  "lr": {
+    "lr__text__W1": {
+      "window": "W1",
+      "featureset": "text",
+      "C": 1.0,
+      "test_rows": 324614,
+      "intercept": -5.078169345855713,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 1.061640717709768,
+          "share": 0.9508918383346322,
+          "mean_late": 2.0219038989609794,
+          "mean_on_time": -0.02141425931832183
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.050339383668636224,
+          "share": 0.0450880493549305,
+          "mean_late": 0.019983988628989327,
+          "mean_on_time": -0.00021165314283592136
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.00448832847908464,
+          "share": 0.004020112310437251,
+          "mean_late": -3.5558038025206054e-06,
+          "mean_on_time": 3.766000154313365e-08
+        }
+      ]
+    },
+    "lr__struct__W1": {
+      "window": "W1",
+      "featureset": "struct",
+      "C": 0.1,
+      "test_rows": 324614,
+      "intercept": -12.071755409240723,
+      "groups": [
+        {
+          "group": "product",
+          "features": 63,
+          "mean_abs": 0.08340924422906716,
+          "share": 0.02533189989614464,
+          "mean_late": 0.22299379844850503,
+          "mean_on_time": -0.002361757662608536
+        },
+        {
+          "group": "issue",
+          "features": 271,
+          "mean_abs": 0.1284215799560013,
+          "share": 0.03900242278920531,
+          "mean_late": 0.11607893408752173,
+          "mean_on_time": -0.001229407786028377
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.998230179053317,
+          "share": 0.9105809249727075,
+          "mean_late": 11.772808281415465,
+          "mean_on_time": -0.12468741445919086
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.0069319835063533205,
+          "share": 0.0021052859774441323,
+          "mean_late": 0.013918339042135202,
+          "mean_on_time": -0.00014741102269283068
+        },
+        {
+          "group": "state",
+          "features": 59,
+          "mean_abs": 0.06860953041175384,
+          "share": 0.020837135887947094,
+          "mean_late": -0.0002973708398453353,
+          "mean_on_time": 3.149495028687716e-06
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.00705395831621879,
+          "share": 0.0021423304765511818,
+          "mean_late": -0.004442985969879632,
+          "mean_on_time": 4.7056268973545115e-05
+        }
+      ]
+    },
+    "lr__both__W1": {
+      "window": "W1",
+      "featureset": "both",
+      "C": 0.1,
+      "test_rows": 324614,
+      "intercept": -12.118232727050781,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.04968775566407846,
+          "share": 0.014740063722476824,
+          "mean_late": 0.047346071874162406,
+          "mean_on_time": -0.0005014486897015846
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.030972352517155875,
+          "share": 0.009188067435051059,
+          "mean_late": -0.012246307107619233,
+          "mean_on_time": 0.00012970230497438923
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.004081465164094176,
+          "share": 0.0012107823304909433,
+          "mean_late": 3.2334730883285033e-06,
+          "mean_on_time": -3.4246153492333275e-08
+        },
+        {
+          "group": "product",
+          "features": 63,
+          "mean_abs": 0.08908546152131964,
+          "share": 0.026427544613769442,
+          "mean_late": 0.19138333299625065,
+          "mean_on_time": -0.0020269669217004523
+        },
+        {
+          "group": "issue",
+          "features": 271,
+          "mean_abs": 0.11975595081938188,
+          "share": 0.03552606316448381,
+          "mean_late": 0.11057167809885095,
+          "mean_on_time": -0.0011710796884683212
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.9946968898931274,
+          "share": 0.8883883443027019,
+          "mean_late": 11.746633886925135,
+          "mean_on_time": -0.12441019788699331
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.006615006716138094,
+          "share": 0.001962367171093198,
+          "mean_late": 0.013281899207818464,
+          "mean_on_time": -0.00014067040180417939
+        },
+        {
+          "group": "state",
+          "features": 59,
+          "mean_abs": 0.06828742899273159,
+          "share": 0.0202577283144359,
+          "mean_late": -0.0010606081621726893,
+          "mean_on_time": 1.1233045364775361e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.007749904446604127,
+          "share": 0.0022990389454969153,
+          "mean_late": -0.004924722956430347,
+          "mean_on_time": 5.215841094907624e-05
+        }
+      ]
+    },
+    "lr__text__W2": {
+      "window": "W2",
+      "featureset": "text",
+      "C": 1.0,
+      "test_rows": 316020,
+      "intercept": -5.016486644744873,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.9918763469965993,
+          "share": 0.960469834525676,
+          "mean_late": 2.1524146937091904,
+          "mean_on_time": -0.017786281009061707
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.03972044155179125,
+          "share": 0.038462743909616105,
+          "mean_late": 0.01948030610333437,
+          "mean_on_time": -0.00016097371919816868
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0011023253039807248,
+          "share": 0.001067421564707866,
+          "mean_late": -2.1876024207715343e-05,
+          "mean_on_time": 1.807705155921793e-07
+        }
+      ]
+    },
+    "lr__struct__W2": {
+      "window": "W2",
+      "featureset": "struct",
+      "C": 1.0,
+      "test_rows": 316020,
+      "intercept": -12.291994094848633,
+      "groups": [
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.15421670756668024,
+          "share": 0.043515286703820155,
+          "mean_late": 0.07464311817269711,
+          "mean_on_time": -0.0006168065471310545
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.1757277481946693,
+          "share": 0.04958505122540893,
+          "mean_late": 0.10552226562155528,
+          "mean_on_time": -0.0008719735442038872
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 3.0960685534998897,
+          "share": 0.8736168271649586,
+          "mean_late": 11.719407858736854,
+          "mean_on_time": -0.0968422497984224
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.012242194028768088,
+          "share": 0.0034543765811839797,
+          "mean_late": 0.02177197225283877,
+          "mean_on_time": -0.00017991069181021884
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.09498788466535586,
+          "share": 0.02680270574973306,
+          "mean_late": -0.00442494346001732,
+          "mean_on_time": 3.656511361849408e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.01072316501526798,
+          "share": 0.0030257525748953124,
+          "mean_late": -0.008183467457744745,
+          "mean_on_time": 6.762333125596775e-05
+        }
+      ]
+    },
+    "lr__both__W2": {
+      "window": "W2",
+      "featureset": "both",
+      "C": 1.0,
+      "test_rows": 316020,
+      "intercept": -12.269841194152832,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.25513592437621024,
+          "share": 0.06486985473585338,
+          "mean_late": 0.05782425350475315,
+          "mean_on_time": -0.00047782540464969795
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.029488330518528096,
+          "share": 0.007497586715068321,
+          "mean_late": -0.014844481669496947,
+          "mean_on_time": 0.0001226660100469881
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.014785631565645205,
+          "share": 0.003759336417191301,
+          "mean_late": -0.0002934259359637341,
+          "mean_on_time": 2.424698254985098e-06
+        },
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.15134754519746713,
+          "share": 0.03848103043737087,
+          "mean_late": 0.08222142145700231,
+          "mean_on_time": -0.0006794291598558984
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.17287411195111996,
+          "share": 0.043954290471939786,
+          "mean_late": 0.10000793547210189,
+          "mean_on_time": -0.0008264063837946283
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 3.1918029483550896,
+          "share": 0.8115352399372632,
+          "mean_late": 12.065785673215174,
+          "mean_on_time": -0.09970451103442639
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.010909597978204524,
+          "share": 0.0027738313912592863,
+          "mean_late": 0.01940203397462512,
+          "mean_on_time": -0.0001603269246608366
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.09407774510768778,
+          "share": 0.023919836745582956,
+          "mean_late": -0.0029770048716651737,
+          "mean_on_time": 2.4600206162821445e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.01262110785642845,
+          "share": 0.0032089931484709125,
+          "mean_late": -0.009366137010540695,
+          "mean_on_time": 7.739621241521671e-05
+        }
+      ]
+    },
+    "lr__text__W3": {
+      "window": "W3",
+      "featureset": "text",
+      "C": 1.0,
+      "test_rows": 210719,
+      "intercept": -4.802340507507324,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 1.1636048785604551,
+          "share": 0.9495600491451,
+          "mean_late": 2.5445399473550667,
+          "mean_on_time": -0.02299239044133739
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.03669168251153536,
+          "share": 0.029942256594844414,
+          "mean_late": 0.011249720519583397,
+          "mean_on_time": -0.00010165215397568476
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.025118176635290094,
+          "share": 0.020497694260055623,
+          "mean_late": -0.00317005950255556,
+          "mean_on_time": 2.8644567314067565e-05
+        }
+      ]
+    },
+    "lr__struct__W3": {
+      "window": "W3",
+      "featureset": "struct",
+      "C": 0.01,
+      "test_rows": 210719,
+      "intercept": -9.724650382995605,
+      "groups": [
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.0877039580728784,
+          "share": 0.029445159585731653,
+          "mean_late": 0.44866945371658284,
+          "mean_on_time": -0.0040541643960848375
+        },
+        {
+          "group": "issue",
+          "features": 272,
+          "mean_abs": 0.10352297457408928,
+          "share": 0.034756133863316954,
+          "mean_late": 0.09413139284012274,
+          "mean_on_time": -0.0008505685828288391
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.7155613261150577,
+          "share": 0.9117049944981429,
+          "mean_late": 9.078766346371937,
+          "mean_on_time": -0.08203547394840156
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.012481851720658651,
+          "share": 0.004190576160027245,
+          "mean_late": 0.038838604008907505,
+          "mean_on_time": -0.00035094451887059266
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.052090956406597104,
+          "share": 0.01748868076274386,
+          "mean_late": 0.002000998552775537,
+          "mean_on_time": -1.8080965891657976e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.007191581722527429,
+          "share": 0.002414455130037455,
+          "mean_late": -0.004809726469748395,
+          "mean_on_time": 4.346055129681142e-05
+        }
+      ]
+    },
+    "lr__both__W3": {
+      "window": "W3",
+      "featureset": "both",
+      "C": 1.0,
+      "test_rows": 210719,
+      "intercept": -11.027094841003418,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.30146580261769695,
+          "share": 0.07529005109977242,
+          "mean_late": 0.5042943904772436,
+          "mean_on_time": -0.004556789739268798
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.014927671046957983,
+          "share": 0.0037281346878051606,
+          "mean_late": -0.004104851286778034,
+          "mean_on_time": 3.7091319234241175e-05
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.004362382822339611,
+          "share": 0.0010894901602727862,
+          "mean_late": -0.0005505580011056644,
+          "mean_on_time": 4.974826406332933e-06
+        },
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.21772473211847157,
+          "share": 0.05437600571787606,
+          "mean_late": 0.04824707283878899,
+          "mean_on_time": -0.0004359591750631678
+        },
+        {
+          "group": "issue",
+          "features": 272,
+          "mean_abs": 0.17502137215198835,
+          "share": 0.043710987907926435,
+          "mean_late": 0.23804090753021884,
+          "mean_on_time": -0.002150930855948881
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 3.1727165125855583,
+          "share": 0.7923750763219597,
+          "mean_late": 10.5313915247156,
+          "mean_on_time": -0.09516135365796359
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.00950845642011311,
+          "share": 0.0023747044060520917,
+          "mean_late": 0.02958656951716475,
+          "mean_on_time": -0.00026734339889405425
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.0989051437202147,
+          "share": 0.024701220702530734,
+          "mean_late": -0.005581572973607761,
+          "mean_on_time": 5.043493430698598e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.009426872076442607,
+          "share": 0.002354328995804704,
+          "mean_late": -0.006394983275399744,
+          "mean_on_time": 5.778488661066852e-05
+        }
+      ]
+    },
+    "lr__text__W4": {
+      "window": "W4",
+      "featureset": "text",
+      "C": 0.1,
+      "test_rows": 55988,
+      "intercept": -4.567409038543701,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.5787931087475544,
+          "share": 0.8421025259808367,
+          "mean_late": 0.9849058162866051,
+          "mean_on_time": -0.03503142300414304
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.08402858486787546,
+          "share": 0.1222555737143303,
+          "mean_late": 0.017753115843629753,
+          "mean_on_time": -0.0006314481044551831
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.02449735708259142,
+          "share": 0.03564190030483313,
+          "mean_late": 0.0010119659904060446,
+          "mean_on_time": -3.5993907325580844e-05
+        }
+      ]
+    },
+    "lr__struct__W4": {
+      "window": "W4",
+      "featureset": "struct",
+      "C": 0.001,
+      "test_rows": 55988,
+      "intercept": -8.198976516723633,
+      "groups": [
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.12382658437640012,
+          "share": 0.06354107705483386,
+          "mean_late": 0.39470211404588007,
+          "mean_on_time": -0.014038882184596833
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.04537703968650712,
+          "share": 0.02328503196434874,
+          "mean_late": 0.11451699619194004,
+          "mean_on_time": -0.004073174580173882
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 1.7264611814220805,
+          "share": 0.8859260999032099,
+          "mean_late": 4.197578501551032,
+          "mean_on_time": -0.1493007205860745
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.024043675524892602,
+          "share": 0.012337908268265186,
+          "mean_late": 0.020115116285693596,
+          "mean_on_time": -0.000715460438679637
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.01638948291915877,
+          "share": 0.008410192385582996,
+          "mean_late": 0.0006171246377072397,
+          "mean_on_time": -2.1950072659041786e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.012666364845902316,
+          "share": 0.006499690423759357,
+          "mean_late": 3.1843212289292516e-05,
+          "mean_on_time": -1.1326088455079616e-06
+        }
+      ]
+    },
+    "lr__both__W4": {
+      "window": "W4",
+      "featureset": "both",
+      "C": 0.1,
+      "test_rows": 55988,
+      "intercept": -10.330737113952637,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.13091083437131154,
+          "share": 0.04457318610301023,
+          "mean_late": 0.28783439319489273,
+          "mean_on_time": -0.010237779304796196
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.013049135518041446,
+          "share": 0.004443035969653297,
+          "mean_late": -0.0028461256810591536,
+          "mean_on_time": 0.00010123184471819574
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.004711165064298575,
+          "share": 0.0016040814206207457,
+          "mean_late": 0.00019461441510552416,
+          "mean_on_time": -6.922103398645997e-06
+        },
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.3195275767783435,
+          "share": 0.10879437300344744,
+          "mean_late": 0.5165208000289799,
+          "mean_on_time": -0.018371765438929613
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.16545685936060317,
+          "share": 0.05633559223510638,
+          "mean_late": 0.11237392989652213,
+          "mean_on_time": -0.00399694936078817
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.1941319161214716,
+          "share": 0.747069184162721,
+          "mean_late": 5.311260970812466,
+          "mean_on_time": -0.18891250988395195
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.014287498320923384,
+          "share": 0.004864680029451592,
+          "mean_late": 0.011953026477147157,
+          "mean_on_time": -0.0004251488008090961
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.07081018642466315,
+          "share": 0.024109812091970235,
+          "mean_late": 0.002029809568505298,
+          "mean_on_time": -7.219687043810187e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.024101070593700553,
+          "share": 0.008206054984019117,
+          "mean_late": -6.248452760673058e-05,
+          "mean_on_time": 2.222468262051635e-06
+        }
+      ]
+    },
+    "lr__text__W5": {
+      "window": "W5",
+      "featureset": "text",
+      "C": 1.0,
+      "test_rows": 55380,
+      "intercept": -4.551793098449707,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.9823173702968762,
+          "share": 0.9435700741815845,
+          "mean_late": 1.7330359269015612,
+          "mean_on_time": -0.07305232360292724
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.03020953781785305,
+          "share": 0.029017929135436393,
+          "mean_late": 0.006699059823981373,
+          "mean_on_time": -0.0002823841551695109
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.028537658445310903,
+          "share": 0.027411996682979105,
+          "mean_late": 0.0016412899011386344,
+          "mean_on_time": -6.918497136897062e-05
+        }
+      ]
+    },
+    "lr__struct__W5": {
+      "window": "W5",
+      "featureset": "struct",
+      "C": 0.01,
+      "test_rows": 55380,
+      "intercept": -10.067309379577637,
+      "groups": [
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.2588482687621142,
+          "share": 0.09904399730537919,
+          "mean_late": 0.582064313417951,
+          "mean_on_time": -0.024535642868953884
+        },
+        {
+          "group": "issue",
+          "features": 276,
+          "mean_abs": 0.09259307910966277,
+          "share": 0.035429206158849404,
+          "mean_late": 0.17677808636823505,
+          "mean_on_time": -0.0074516920110057625
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.2079630442129847,
+          "share": 0.844840442036656,
+          "mean_late": 5.250031866143734,
+          "mean_on_time": -0.22130356379685473
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 9.949883181658397e-05,
+          "share": 3.8071577907236485e-05,
+          "mean_late": -5.749756082204689e-05,
+          "mean_on_time": 2.4236834069082653e-06
+        },
+        {
+          "group": "state",
+          "features": 61,
+          "mean_abs": 0.039435788021199146,
+          "share": 0.01508945028369774,
+          "mean_late": 0.0033878861840395506,
+          "mean_on_time": -0.00014280890199940924
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.01452782847729235,
+          "share": 0.005558832637510594,
+          "mean_late": -0.0003053798864583402,
+          "mean_on_time": 1.287261847321454e-05
+        }
+      ]
+    },
+    "lr__both__W5": {
+      "window": "W5",
+      "featureset": "both",
+      "C": 0.1,
+      "test_rows": 55380,
+      "intercept": -10.619807243347168,
+      "groups": [
+        {
+          "group": "text",
+          "features": 100000,
+          "mean_abs": 0.1442081732114621,
+          "share": 0.04796217737106907,
+          "mean_late": 0.2838952354977544,
+          "mean_on_time": -0.011966980194107859
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.012982741465182728,
+          "share": 0.004317928277218719,
+          "mean_late": -0.00031511032541119404,
+          "mean_on_time": 1.328278375864645e-05
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0032642395416669244,
+          "share": 0.0010856530000523047,
+          "mean_late": 0.00018773661493293533,
+          "mean_on_time": -7.913624716788878e-06
+        },
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.3117248352524923,
+          "share": 0.10367652197787476,
+          "mean_late": 0.4970246333793666,
+          "mean_on_time": -0.020950981911362094
+        },
+        {
+          "group": "issue",
+          "features": 276,
+          "mean_abs": 0.1552416542724658,
+          "share": 0.05163180138670794,
+          "mean_late": 0.11528490510867485,
+          "mean_on_time": -0.004859581999311858
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.296975869184093,
+          "share": 0.7639509023758754,
+          "mean_late": 5.4364101943990555,
+          "mean_on_time": -0.22915993292168566
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.0019567253390155525,
+          "share": 0.0006507870232758055,
+          "mean_late": -0.0011307362321554596,
+          "mean_on_time": 4.766370267297523e-05
+        },
+        {
+          "group": "state",
+          "features": 61,
+          "mean_abs": 0.058786692839791245,
+          "share": 0.019551858443599773,
+          "mean_late": 0.002856772763152428,
+          "mean_on_time": -0.00012042098211255848
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.021565209354603255,
+          "share": 0.0071723701443262506,
+          "mean_late": -0.0002494267938547016,
+          "mean_on_time": 1.0514038732298796e-05
+        }
+      ]
+    }
+  },
+  "top_terms": {
+    "lr__text__W5": {
+      "up": [
+        {
+          "term": "mohela",
+          "coef": 16.12141227722168,
+          "test_docs": 563
+        },
+        {
+          "term": "credit collection",
+          "coef": 10.855398178100586,
+          "test_docs": 155
+        },
+        {
+          "term": "credit collections",
+          "coef": 7.383133411407471,
+          "test_docs": 23
+        },
+        {
+          "term": "vanilla",
+          "coef": 7.097143173217773,
+          "test_docs": 25
+        },
+        {
+          "term": "ccs",
+          "coef": 5.5573410987854,
+          "test_docs": 33
+        },
+        {
+          "term": "procollect",
+          "coef": 5.532451629638672,
+          "test_docs": 44
+        },
+        {
+          "term": "buyback",
+          "coef": 5.407958984375,
+          "test_docs": 110
+        },
+        {
+          "term": "american credit",
+          "coef": 5.332067012786865,
+          "test_docs": 59
+        },
+        {
+          "term": "collection services",
+          "coef": 5.30259370803833,
+          "test_docs": 123
+        },
+        {
+          "term": "student",
+          "coef": 4.906993389129639,
+          "test_docs": 1390
+        },
+        {
+          "term": "loan",
+          "coef": 4.3845367431640625,
+          "test_docs": 7607
+        },
+        {
+          "term": "robinhood",
+          "coef": 4.357879161834717,
+          "test_docs": 186
+        },
+        {
+          "term": "mosaic",
+          "coef": 4.275659561157227,
+          "test_docs": 35
+        },
+        {
+          "term": "gift",
+          "coef": 3.96682071685791,
+          "test_docs": 350
+        },
+        {
+          "term": "pro collect",
+          "coef": 3.8299074172973633,
+          "test_docs": 19
+        },
+        {
+          "term": "pslf",
+          "coef": 3.7526206970214844,
+          "test_docs": 220
+        },
+        {
+          "term": "loans",
+          "coef": 3.7298200130462646,
+          "test_docs": 1642
+        },
+        {
+          "term": "recovery",
+          "coef": 3.725562810897827,
+          "test_docs": 1413
+        },
+        {
+          "term": "klarna",
+          "coef": 3.5738675594329834,
+          "test_docs": 163
+        },
+        {
+          "term": "solar",
+          "coef": 3.4789912700653076,
+          "test_docs": 226
+        },
+        {
+          "term": "square",
+          "coef": 3.4167113304138184,
+          "test_docs": 105
+        },
+        {
+          "term": "education",
+          "coef": 3.385796546936035,
+          "test_docs": 526
+        },
+        {
+          "term": "reconsideration",
+          "coef": 3.3457181453704834,
+          "test_docs": 555
+        },
+        {
+          "term": "group",
+          "coef": 3.2173140048980713,
+          "test_docs": 389
+        },
+        {
+          "term": "relay",
+          "coef": 3.212548017501831,
+          "test_docs": 56
+        }
+      ],
+      "down": [
+        {
+          "term": "experian",
+          "coef": -8.462115287780762,
+          "test_docs": 726
+        },
+        {
+          "term": "equifax",
+          "coef": -8.401987075805664,
+          "test_docs": 617
+        },
+        {
+          "term": "transunion",
+          "coef": -7.172046661376953,
+          "test_docs": 663
+        },
+        {
+          "term": "nelnet",
+          "coef": -5.819752216339111,
+          "test_docs": 214
+        },
+        {
+          "term": "chase",
+          "coef": -5.641541004180908,
+          "test_docs": 1857
+        },
+        {
+          "term": "bank",
+          "coef": -5.017272472381592,
+          "test_docs": 13410
+        },
+        {
+          "term": "accounts",
+          "coef": -4.646968364715576,
+          "test_docs": 8532
+        },
+        {
+          "term": "capital one",
+          "coef": -4.533059597015381,
+          "test_docs": 1663
+        },
+        {
+          "term": "aidvantage",
+          "coef": -4.364342212677002,
+          "test_docs": 156
+        },
+        {
+          "term": "chime",
+          "coef": -4.27825403213501,
+          "test_docs": 1328
+        },
+        {
+          "term": "paypal",
+          "coef": -4.218086242675781,
+          "test_docs": 1258
+        },
+        {
+          "term": "credit card",
+          "coef": -4.175595283508301,
+          "test_docs": 5420
+        },
+        {
+          "term": "inquiries",
+          "coef": -3.9120490550994873,
+          "test_docs": 1077
+        },
+        {
+          "term": "these",
+          "coef": -3.626345634460449,
+          "test_docs": 14687
+        },
+        {
+          "term": "zelle",
+          "coef": -3.6201324462890625,
+          "test_docs": 89
+        },
+        {
+          "term": "late",
+          "coef": -3.3269271850585938,
+          "test_docs": 4347
+        },
+        {
+          "term": "wells",
+          "coef": -3.261577844619751,
+          "test_docs": 1722
+        },
+        {
+          "term": "american express",
+          "coef": -3.2205545902252197,
+          "test_docs": 678
+        },
+        {
+          "term": "citibank",
+          "coef": -3.210930109024048,
+          "test_docs": 987
+        },
+        {
+          "term": "amex",
+          "coef": -3.1767618656158447,
+          "test_docs": 272
+        },
+        {
+          "term": "wells fargo",
+          "coef": -3.1623330116271973,
+          "test_docs": 1708
+        },
+        {
+          "term": "fargo",
+          "coef": -3.1623101234436035,
+          "test_docs": 1721
+        },
+        {
+          "term": "lvnv",
+          "coef": -3.117574453353882,
+          "test_docs": 718
+        },
+        {
+          "term": "capital",
+          "coef": -3.099606513977051,
+          "test_docs": 3008
+        },
+        {
+          "term": "citi",
+          "coef": -3.038499355316162,
+          "test_docs": 801
+        }
+      ]
+    },
+    "lr__both__W5": {
+      "up": [
+        {
+          "term": "mohela",
+          "coef": 5.831302165985107,
+          "test_docs": 563
+        },
+        {
+          "term": "cash app",
+          "coef": 1.4998949766159058,
+          "test_docs": 1503
+        },
+        {
+          "term": "cash",
+          "coef": 1.4467575550079346,
+          "test_docs": 3075
+        },
+        {
+          "term": "cashapp",
+          "coef": 1.287550449371338,
+          "test_docs": 424
+        },
+        {
+          "term": "app",
+          "coef": 1.154662847518921,
+          "test_docs": 3111
+        },
+        {
+          "term": "credit collection",
+          "coef": 1.0593570470809937,
+          "test_docs": 155
+        },
+        {
+          "term": "forbearance",
+          "coef": 1.001508116722107,
+          "test_docs": 847
+        },
+        {
+          "term": "from mohela",
+          "coef": 0.8754503130912781,
+          "test_docs": 85
+        },
+        {
+          "term": "square",
+          "coef": 0.812053382396698,
+          "test_docs": 105
+        },
+        {
+          "term": "hours",
+          "coef": 0.8045892119407654,
+          "test_docs": 2363
+        },
+        {
+          "term": "student",
+          "coef": 0.744577944278717,
+          "test_docs": 1390
+        },
+        {
+          "term": "my cash",
+          "coef": 0.7235240340232849,
+          "test_docs": 666
+        },
+        {
+          "term": "pslf",
+          "coef": 0.692875862121582,
+          "test_docs": 220
+        },
+        {
+          "term": "on hold",
+          "coef": 0.6726037859916687,
+          "test_docs": 994
+        },
+        {
+          "term": "collection services",
+          "coef": 0.6699249148368835,
+          "test_docs": 123
+        },
+        {
+          "term": "mohela is",
+          "coef": 0.6649448871612549,
+          "test_docs": 68
+        },
+        {
+          "term": "app account",
+          "coef": 0.6630472540855408,
+          "test_docs": 470
+        },
+        {
+          "term": "with mohela",
+          "coef": 0.6297880411148071,
+          "test_docs": 87
+        },
+        {
+          "term": "hold",
+          "coef": 0.6055727005004883,
+          "test_docs": 3053
+        },
+        {
+          "term": "mohela and",
+          "coef": 0.603376030921936,
+          "test_docs": 106
+        },
+        {
+          "term": "wait",
+          "coef": 0.6031196713447571,
+          "test_docs": 1722
+        },
+        {
+          "term": "to mohela",
+          "coef": 0.5794563293457031,
+          "test_docs": 114
+        },
+        {
+          "term": "credit collections",
+          "coef": 0.5793344974517822,
+          "test_docs": 23
+        },
+        {
+          "term": "education",
+          "coef": 0.5783472657203674,
+          "test_docs": 526
+        },
+        {
+          "term": "mohela has",
+          "coef": 0.5651680827140808,
+          "test_docs": 129
+        }
+      ],
+      "down": [
+        {
+          "term": "edfinancial",
+          "coef": -3.280200958251953,
+          "test_docs": 66
+        },
+        {
+          "term": "ed financial",
+          "coef": -1.362449049949646,
+          "test_docs": 11
+        },
+        {
+          "term": "ed",
+          "coef": -0.9094167351722717,
+          "test_docs": 90
+        },
+        {
+          "term": "robinhood",
+          "coef": -0.8462827205657959,
+          "test_docs": 186
+        },
+        {
+          "term": "edfinancial services",
+          "coef": -0.8457222580909729,
+          "test_docs": 21
+        },
+        {
+          "term": "bank",
+          "coef": -0.7507924437522888,
+          "test_docs": 13410
+        },
+        {
+          "term": "netspend",
+          "coef": -0.6586623191833496,
+          "test_docs": 69
+        },
+        {
+          "term": "financial",
+          "coef": -0.6343247294425964,
+          "test_docs": 10516
+        },
+        {
+          "term": "nelnet",
+          "coef": -0.5249121785163879,
+          "test_docs": 214
+        },
+        {
+          "term": "karma",
+          "coef": -0.4758939743041992,
+          "test_docs": 85
+        },
+        {
+          "term": "credit karma",
+          "coef": -0.47059860825538635,
+          "test_docs": 84
+        },
+        {
+          "term": "with edfinancial",
+          "coef": -0.4556760787963867,
+          "test_docs": 10
+        },
+        {
+          "term": "from edfinancial",
+          "coef": -0.4429311752319336,
+          "test_docs": 9
+        },
+        {
+          "term": "google",
+          "coef": -0.42881202697753906,
+          "test_docs": 23
+        },
+        {
+          "term": "of america",
+          "coef": -0.4277455508708954,
+          "test_docs": 1687
+        },
+        {
+          "term": "america",
+          "coef": -0.4149917960166931,
+          "test_docs": 1770
+        },
+        {
+          "term": "bank of",
+          "coef": -0.4133453667163849,
+          "test_docs": 1799
+        },
+        {
+          "term": "sst",
+          "coef": -0.41134631633758545,
+          "test_docs": 8
+        },
+        {
+          "term": "restricted",
+          "coef": -0.36923858523368835,
+          "test_docs": 1073
+        },
+        {
+          "term": "account",
+          "coef": -0.33336734771728516,
+          "test_docs": 36787
+        },
+        {
+          "term": "off",
+          "coef": -0.32698044180870056,
+          "test_docs": 5831
+        },
+        {
+          "term": "my robinhood",
+          "coef": -0.31855887174606323,
+          "test_docs": 68
+        },
+        {
+          "term": "transfer",
+          "coef": -0.31802576780319214,
+          "test_docs": 5108
+        },
+        {
+          "term": "late",
+          "coef": -0.31763750314712524,
+          "test_docs": 4347
+        },
+        {
+          "term": "company",
+          "coef": -0.30818256735801697,
+          "test_docs": 11180
+        }
+      ]
+    }
+  },
+  "lgbm_shap": {
+    "lgbm__text__W1": {
+      "window": "W1",
+      "featureset": "text",
+      "sample_rows": 5000,
+      "sample_late": 62,
+      "seed": [
+        42,
+        1
+      ],
+      "expected_value": -6.771320343017578,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 1.3383563233674076,
+          "share": 0.9960574020357894,
+          "mean_late": 2.112490993418342,
+          "mean_on_time": 0.030963371962720133
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.0020920645913631688,
+          "share": 0.0015569967320221724,
+          "mean_late": -0.001371351943347573,
+          "mean_on_time": -0.00013911523626464707
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0032054221851137753,
+          "share": 0.002385601232188315,
+          "mean_late": 0.0017950031425654391,
+          "mean_on_time": 0.00038488132989124415
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "tfidf:equifax",
+          "group": "text",
+          "mean_abs": 0.219023193359375
+        },
+        {
+          "feature": "tfidf:experian",
+          "group": "text",
+          "mean_abs": 0.19082123107910157
+        },
+        {
+          "feature": "tfidf:items",
+          "group": "text",
+          "mean_abs": 0.16174075317382813
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.1605396728515625
+        },
+        {
+          "feature": "tfidf:transunion",
+          "group": "text",
+          "mean_abs": 0.1505521453857422
+        },
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.1490760498046875
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.11098821105957031
+        },
+        {
+          "feature": "tfidf:credit",
+          "group": "text",
+          "mean_abs": 0.09884610290527343
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.09085535278320313
+        },
+        {
+          "feature": "tfidf:reporting",
+          "group": "text",
+          "mean_abs": 0.08793881378173828
+        },
+        {
+          "feature": "tfidf:inquiries",
+          "group": "text",
+          "mean_abs": 0.05728186340332031
+        },
+        {
+          "feature": "tfidf:loan",
+          "group": "text",
+          "mean_abs": 0.0554778205871582
+        },
+        {
+          "feature": "tfidf:late",
+          "group": "text",
+          "mean_abs": 0.054680023956298826
+        },
+        {
+          "feature": "tfidf:inaccurate",
+          "group": "text",
+          "mean_abs": 0.052182697296142576
+        },
+        {
+          "feature": "tfidf:credit report",
+          "group": "text",
+          "mean_abs": 0.04773971481323242
+        },
+        {
+          "feature": "tfidf:they",
+          "group": "text",
+          "mean_abs": 0.04328573760986328
+        },
+        {
+          "feature": "tfidf:collection",
+          "group": "text",
+          "mean_abs": 0.04015005035400391
+        },
+        {
+          "feature": "tfidf:chase",
+          "group": "text",
+          "mean_abs": 0.03635056915283203
+        },
+        {
+          "feature": "tfidf:late payment",
+          "group": "text",
+          "mean_abs": 0.033692675018310546
+        },
+        {
+          "feature": "tfidf:please",
+          "group": "text",
+          "mean_abs": 0.030250017166137694
+        }
+      ]
+    },
+    "lgbm__struct__W1": {
+      "window": "W1",
+      "featureset": "struct",
+      "sample_rows": 5000,
+      "sample_late": 62,
+      "seed": [
+        42,
+        1
+      ],
+      "expected_value": -5.331615447998047,
+      "groups": [
+        {
+          "group": "product",
+          "features": 63,
+          "mean_abs": 0.012622397149078392,
+          "share": 0.0795337443706117,
+          "mean_late": 0.47872721365947946,
+          "mean_on_time": 0.0022612514352211063
+        },
+        {
+          "group": "issue",
+          "features": 271,
+          "mean_abs": 0.0014790386933113291,
+          "share": 0.009319425142367324,
+          "mean_late": 0.005665352193832881,
+          "mean_on_time": -6.121063664209242e-06
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 0.1429215830987785,
+          "share": 0.9005491208182543,
+          "mean_late": 2.3074651652743574,
+          "mean_on_time": -0.02379036971176481
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.0011946669620623651,
+          "share": 0.0075275984146657045,
+          "mean_late": 0.002934110092258291,
+          "mean_on_time": -0.0002672297935749296
+        },
+        {
+          "group": "state",
+          "features": 59,
+          "mean_abs": 0.00036158154304179104,
+          "share": 0.0022783258737439473,
+          "mean_late": 0.002139554621596891,
+          "mean_on_time": 4.987402697106599e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.00012566024153384207,
+          "share": 0.0007917853803571402,
+          "mean_late": 7.573646562084304e-05,
+          "mean_on_time": -2.0154399585240493e-05
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.13496028289794923
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.01321229887008667
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.01138684425354004
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.003024167442321777
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.002436861419677734
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.0015183509588241578
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.001194663953781128
+        },
+        {
+          "feature": "cat:sub_product_Federal student loan servicing",
+          "group": "product",
+          "mean_abs": 0.0009789348721504212
+        },
+        {
+          "feature": "cat:product_Mortgage",
+          "group": "product",
+          "mean_abs": 0.0009352765202522278
+        },
+        {
+          "feature": "cat:sub_product_Telecommunications debt",
+          "group": "product",
+          "mean_abs": 0.0008754781723022461
+        },
+        {
+          "feature": "cat:product_Vehicle loan or lease",
+          "group": "product",
+          "mean_abs": 0.0006251269221305847
+        },
+        {
+          "feature": "cat:sub_product_Checking account",
+          "group": "product",
+          "mean_abs": 0.0003805928111076355
+        },
+        {
+          "feature": "cat:issue_Took or threatened to take negative or legal action",
+          "group": "issue",
+          "mean_abs": 0.00033798477947711946
+        },
+        {
+          "feature": "cat:state_CA",
+          "group": "state",
+          "mean_abs": 0.00031384466886520386
+        },
+        {
+          "feature": "cat:sub_issue_Account status incorrect",
+          "group": "issue",
+          "mean_abs": 0.00027782482504844664
+        },
+        {
+          "feature": "cat:sub_issue_Their investigation did not fix an error on your report",
+          "group": "issue",
+          "mean_abs": 0.00022262110412120818
+        },
+        {
+          "feature": "cat:sub_product_Rental debt",
+          "group": "product",
+          "mean_abs": 0.0002210986942052841
+        },
+        {
+          "feature": "cat:sub_product_Government benefit card",
+          "group": "product",
+          "mean_abs": 0.00020950509905815124
+        },
+        {
+          "feature": "cat:issue_Incorrect information on your report",
+          "group": "issue",
+          "mean_abs": 0.00019986740201711654
+        },
+        {
+          "feature": "cat:sub_issue_(missing)",
+          "group": "issue",
+          "mean_abs": 0.00018286725431680679
+        }
+      ]
+    },
+    "lgbm__both__W1": {
+      "window": "W1",
+      "featureset": "both",
+      "sample_rows": 5000,
+      "sample_late": 62,
+      "seed": [
+        42,
+        1
+      ],
+      "expected_value": -7.095628261566162,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.09342122529297092,
+          "share": 0.11451990788704841,
+          "mean_late": 0.295959400905959,
+          "mean_on_time": 0.02501865683675912
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.0009660684310314536,
+          "share": 0.0011842498039107995,
+          "mean_late": -0.00016525438178588604,
+          "mean_on_time": -0.00016115215962479265
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0008115985818374157,
+          "share": 0.0009948937678970172,
+          "mean_late": 0.0007044389557772627,
+          "mean_on_time": -5.4069103128224e-05
+        },
+        {
+          "group": "product",
+          "features": 63,
+          "mean_abs": 0.0806452912196782,
+          "share": 0.09885859763708993,
+          "mean_late": 0.23477730234951688,
+          "mean_on_time": -0.0006739167583445429
+        },
+        {
+          "group": "issue",
+          "features": 271,
+          "mean_abs": 0.015736545327648194,
+          "share": 0.019290559674539274,
+          "mean_late": 0.13500027843399348,
+          "mean_on_time": -0.0036904483008802914
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 0.6207404669784592,
+          "share": 0.7609313716150243,
+          "mean_late": 3.210668375204888,
+          "mean_on_time": -0.1336919117260087
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.0033508959728998887,
+          "share": 0.00410767785320891,
+          "mean_late": 0.006941483956442455,
+          "mean_on_time": 0.0005069672459874006
+        },
+        {
+          "group": "state",
+          "features": 59,
+          "mean_abs": 6.415838644225004e-05,
+          "share": 7.864821385618195e-05,
+          "mean_late": -9.554133535974899e-05,
+          "mean_on_time": -1.577326525097108e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 2.7812290751990078e-05,
+          "share": 3.40935474251948e-05,
+          "mean_late": 1.573629270428829e-05,
+          "mean_on_time": 4.053660522372063e-06
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.3913140380859375
+        },
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.25253997497558595
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.046018876647949215
+        },
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.02590679054260254
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.021002259063720705
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.019231389236450194
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.01628403377532959
+        },
+        {
+          "feature": "tfidf:items",
+          "group": "text",
+          "mean_abs": 0.009026732635498047
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.007317308235168457
+        },
+        {
+          "feature": "tfidf:of america",
+          "group": "text",
+          "mean_abs": 0.007254933071136474
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.007191915702819824
+        },
+        {
+          "feature": "cat:sub_issue_(missing)",
+          "group": "issue",
+          "mean_abs": 0.006681572246551514
+        },
+        {
+          "feature": "cat:issue_Dealing with your lender or servicer",
+          "group": "issue",
+          "mean_abs": 0.006655343532562256
+        },
+        {
+          "feature": "tfidf:the",
+          "group": "text",
+          "mean_abs": 0.005515659809112549
+        },
+        {
+          "feature": "tfidf:inaccurate",
+          "group": "text",
+          "mean_abs": 0.004980711364746094
+        },
+        {
+          "feature": "tfidf:my credit",
+          "group": "text",
+          "mean_abs": 0.004873811531066895
+        },
+        {
+          "feature": "tfidf:student",
+          "group": "text",
+          "mean_abs": 0.004825858449935913
+        },
+        {
+          "feature": "tfidf:amount",
+          "group": "text",
+          "mean_abs": 0.004603891658782959
+        },
+        {
+          "feature": "tfidf:loans",
+          "group": "text",
+          "mean_abs": 0.004457313251495361
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.0038761712074279783
+        }
+      ]
+    },
+    "lgbm__text__W2": {
+      "window": "W2",
+      "featureset": "text",
+      "sample_rows": 5000,
+      "sample_late": 39,
+      "seed": [
+        42,
+        2
+      ],
+      "expected_value": -5.561034679412842,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.3560532363101175,
+          "share": 0.9997752566003091,
+          "mean_late": 0.7676051116219003,
+          "mean_on_time": 0.010956942955365697
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 8.003860294702463e-05,
+          "share": 0.00022474339969092417,
+          "mean_late": 0.0007873393809253079,
+          "mean_on_time": 1.1330166097538716e-05
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.12134791107177734
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.07256992797851562
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.06767957687377929
+        },
+        {
+          "feature": "tfidf:credit",
+          "group": "text",
+          "mean_abs": 0.06524119033813476
+        },
+        {
+          "feature": "tfidf:loan",
+          "group": "text",
+          "mean_abs": 0.03670177688598633
+        },
+        {
+          "feature": "tfidf:consumer",
+          "group": "text",
+          "mean_abs": 0.028357808685302733
+        },
+        {
+          "feature": "tfidf:collection",
+          "group": "text",
+          "mean_abs": 0.027462234115600587
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.024133404159545898
+        },
+        {
+          "feature": "tfidf:reporting",
+          "group": "text",
+          "mean_abs": 0.022101766586303712
+        },
+        {
+          "feature": "tfidf:am",
+          "group": "text",
+          "mean_abs": 0.019238726806640623
+        },
+        {
+          "feature": "tfidf:they",
+          "group": "text",
+          "mean_abs": 0.015668332481384276
+        },
+        {
+          "feature": "tfidf:company",
+          "group": "text",
+          "mean_abs": 0.013241217041015624
+        },
+        {
+          "feature": "tfidf:them",
+          "group": "text",
+          "mean_abs": 0.010967169952392579
+        },
+        {
+          "feature": "tfidf:received",
+          "group": "text",
+          "mean_abs": 0.01071840362548828
+        },
+        {
+          "feature": "tfidf:loans",
+          "group": "text",
+          "mean_abs": 0.010087478828430176
+        },
+        {
+          "feature": "tfidf:a debt",
+          "group": "text",
+          "mean_abs": 0.008899053382873535
+        },
+        {
+          "feature": "tfidf:late",
+          "group": "text",
+          "mean_abs": 0.007481585788726807
+        },
+        {
+          "feature": "tfidf:credit report",
+          "group": "text",
+          "mean_abs": 0.007430913257598877
+        },
+        {
+          "feature": "tfidf:services",
+          "group": "text",
+          "mean_abs": 0.007276422500610351
+        },
+        {
+          "feature": "tfidf:money",
+          "group": "text",
+          "mean_abs": 0.006407341957092285
+        }
+      ]
+    },
+    "lgbm__struct__W2": {
+      "window": "W2",
+      "featureset": "struct",
+      "sample_rows": 5000,
+      "sample_late": 39,
+      "seed": [
+        42,
+        2
+      ],
+      "expected_value": -5.571277141571045,
+      "groups": [
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.07367207245484468,
+          "share": 0.26759874480452484,
+          "mean_late": 0.5110899378729921,
+          "mean_on_time": 0.0009879027623118529
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.014302789005744774,
+          "share": 0.05195195760899989,
+          "mean_late": 0.001911365210114232,
+          "mean_on_time": 0.0014039409677486555
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 0.17808211601937074,
+          "share": 0.6468468869004051,
+          "mean_late": 2.6416226629502115,
+          "mean_on_time": 0.005213185619546016
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.005084911577912135,
+          "share": 0.018469901963533025,
+          "mean_late": 0.0019757202639877317,
+          "mean_on_time": 0.0011125593563723621
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.002315526959422891,
+          "share": 0.008410678392173512,
+          "mean_late": 0.0012348790452074937,
+          "mean_on_time": 0.00016155626767531245
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.001850573594765774,
+          "share": 0.006721830330363584,
+          "mean_late": 0.0007707532277914325,
+          "mean_on_time": -6.641934962621423e-05
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.1692971435546875
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.04437508163452149
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.023501476287841796
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.011384636878967284
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.007105362606048584
+        },
+        {
+          "feature": "cat:sub_product_Domestic (US) money transfer",
+          "group": "product",
+          "mean_abs": 0.005885576152801514
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.005289544773101807
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.005084921884536743
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.005074150943756103
+        },
+        {
+          "feature": "cat:sub_issue_Information belongs to someone else",
+          "group": "issue",
+          "mean_abs": 0.0036106399059295654
+        },
+        {
+          "feature": "cat:sub_product_General-purpose credit card or charge card",
+          "group": "product",
+          "mean_abs": 0.0029105584144592284
+        },
+        {
+          "feature": "cat:sub_issue_(missing)",
+          "group": "issue",
+          "mean_abs": 0.002811039876937866
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.002298010540008545
+        },
+        {
+          "feature": "cat:issue_Improper use of your report",
+          "group": "issue",
+          "mean_abs": 0.0018260876655578613
+        },
+        {
+          "feature": "cat:issue_Problem with a company's investigation into an existing problem",
+          "group": "issue",
+          "mean_abs": 0.001537364959716797
+        },
+        {
+          "feature": "cat:sub_issue_Overdrafts and overdraft fees",
+          "group": "issue",
+          "mean_abs": 0.0013278148412704468
+        },
+        {
+          "feature": "cat:sub_issue_Account information incorrect",
+          "group": "issue",
+          "mean_abs": 0.001152680492401123
+        },
+        {
+          "feature": "cat:state_TX",
+          "group": "state",
+          "mean_abs": 0.0011478095889091492
+        },
+        {
+          "feature": "cat:product_Debt or credit management",
+          "group": "product",
+          "mean_abs": 0.0011137720227241516
+        },
+        {
+          "feature": "cat:issue_Trouble during payment process",
+          "group": "issue",
+          "mean_abs": 0.0010830715775489808
+        }
+      ]
+    },
+    "lgbm__both__W2": {
+      "window": "W2",
+      "featureset": "both",
+      "sample_rows": 5000,
+      "sample_late": 39,
+      "seed": [
+        42,
+        2
+      ],
+      "expected_value": -13.109909057617188,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.7745710059094459,
+          "share": 0.4065494416080939,
+          "mean_late": 0.5671144597045907,
+          "mean_on_time": 0.16284348617383304
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.008432324248750775,
+          "share": 0.004425877922919308,
+          "mean_late": -0.0005497547815302357,
+          "mean_on_time": 0.0008609845603780522
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.041174491233560546,
+          "share": 0.021611274230239372,
+          "mean_late": -0.0034977832618050086,
+          "mean_on_time": -0.007251841508659863
+        },
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.0783264219192148,
+          "share": 0.041111225247875506,
+          "mean_late": 0.24043878959705375,
+          "mean_on_time": 0.016059798713773686
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.05004259197601459,
+          "share": 0.026265878362672534,
+          "mean_late": 0.02313538493695597,
+          "mean_on_time": -0.0015863516754673714
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 0.9119638266518713,
+          "share": 0.47866287488618403,
+          "mean_late": 8.145485516542044,
+          "mean_on_time": 0.738321820255598
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.010389643092825718,
+          "share": 0.005453216768598612,
+          "mean_late": 0.004874504755067532,
+          "mean_on_time": 0.0034290604689411444
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.02688855755055953,
+          "share": 0.0141130096200697,
+          "mean_late": 0.003528339665288117,
+          "mean_on_time": 0.0024028290627807272
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.0034431378496205638,
+          "share": 0.0018072013533470459,
+          "mean_late": -0.0007288973641455717,
+          "mean_on_time": 0.00022342016694342173
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.907850537109375
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.8492999145507812
+        },
+        {
+          "feature": "tfidf:and",
+          "group": "text",
+          "mean_abs": 0.06399120483398438
+        },
+        {
+          "feature": "tfidf:report is",
+          "group": "text",
+          "mean_abs": 0.04479624176025391
+        },
+        {
+          "feature": "tfidf:as well",
+          "group": "text",
+          "mean_abs": 0.042126366424560545
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.041439010620117185
+        },
+        {
+          "feature": "num:vader",
+          "group": "sentiment",
+          "mean_abs": 0.0411745246887207
+        },
+        {
+          "feature": "tfidf:to",
+          "group": "text",
+          "mean_abs": 0.04107795181274414
+        },
+        {
+          "feature": "tfidf:this",
+          "group": "text",
+          "mean_abs": 0.03764853897094726
+        },
+        {
+          "feature": "tfidf:accurate",
+          "group": "text",
+          "mean_abs": 0.03650735931396484
+        },
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.03514874801635742
+        },
+        {
+          "feature": "tfidf:under the",
+          "group": "text",
+          "mean_abs": 0.03348068618774414
+        },
+        {
+          "feature": "tfidf:by",
+          "group": "text",
+          "mean_abs": 0.03283085250854492
+        },
+        {
+          "feature": "tfidf:are",
+          "group": "text",
+          "mean_abs": 0.03224924201965332
+        },
+        {
+          "feature": "tfidf:that i",
+          "group": "text",
+          "mean_abs": 0.030792439651489256
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.028860783767700196
+        },
+        {
+          "feature": "tfidf:letters",
+          "group": "text",
+          "mean_abs": 0.028289914321899413
+        },
+        {
+          "feature": "tfidf:my",
+          "group": "text",
+          "mean_abs": 0.0277682559967041
+        },
+        {
+          "feature": "tfidf:the ftc",
+          "group": "text",
+          "mean_abs": 0.02758884353637695
+        },
+        {
+          "feature": "tfidf:the late",
+          "group": "text",
+          "mean_abs": 0.02655590782165527
+        }
+      ]
+    },
+    "lgbm__text__W3": {
+      "window": "W3",
+      "featureset": "text",
+      "sample_rows": 5000,
+      "sample_late": 37,
+      "seed": [
+        42,
+        3
+      ],
+      "expected_value": -5.9705657958984375,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.7931275539578019,
+          "share": 0.9976231897909393,
+          "mean_late": 2.2195589032272904,
+          "mean_on_time": 0.1818270821998528
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.0008722784776377466,
+          "share": 0.001097181951256799,
+          "mean_late": 0.0029224626149747615,
+          "mean_on_time": -0.00019833434977564713
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0010173264219129124,
+          "share": 0.0012796282578039907,
+          "mean_late": -0.0007067990825915429,
+          "mean_on_time": -0.0003672917638424408
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.18186318359375
+        },
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.15697645263671875
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.12379452514648437
+        },
+        {
+          "feature": "tfidf:credit",
+          "group": "text",
+          "mean_abs": 0.079437744140625
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.07213084030151368
+        },
+        {
+          "feature": "tfidf:consumer",
+          "group": "text",
+          "mean_abs": 0.06628576049804688
+        },
+        {
+          "feature": "tfidf:reporting",
+          "group": "text",
+          "mean_abs": 0.050973537445068356
+        },
+        {
+          "feature": "tfidf:experian",
+          "group": "text",
+          "mean_abs": 0.05050617065429688
+        },
+        {
+          "feature": "tfidf:equifax",
+          "group": "text",
+          "mean_abs": 0.046267721557617186
+        },
+        {
+          "feature": "tfidf:collection",
+          "group": "text",
+          "mean_abs": 0.0459414779663086
+        },
+        {
+          "feature": "tfidf:loan",
+          "group": "text",
+          "mean_abs": 0.041424996948242185
+        },
+        {
+          "feature": "tfidf:transunion",
+          "group": "text",
+          "mean_abs": 0.04053243026733398
+        },
+        {
+          "feature": "tfidf:company",
+          "group": "text",
+          "mean_abs": 0.03044754981994629
+        },
+        {
+          "feature": "tfidf:late",
+          "group": "text",
+          "mean_abs": 0.029099384689331053
+        },
+        {
+          "feature": "tfidf:inquiries",
+          "group": "text",
+          "mean_abs": 0.027189662170410155
+        },
+        {
+          "feature": "tfidf:items",
+          "group": "text",
+          "mean_abs": 0.023210392761230467
+        },
+        {
+          "feature": "tfidf:they",
+          "group": "text",
+          "mean_abs": 0.021855353927612304
+        },
+        {
+          "feature": "tfidf:inaccurate",
+          "group": "text",
+          "mean_abs": 0.020458821868896485
+        },
+        {
+          "feature": "tfidf:please",
+          "group": "text",
+          "mean_abs": 0.01925708808898926
+        },
+        {
+          "feature": "tfidf:credit report",
+          "group": "text",
+          "mean_abs": 0.019235046005249022
+        }
+      ]
+    },
+    "lgbm__struct__W3": {
+      "window": "W3",
+      "featureset": "struct",
+      "sample_rows": 5000,
+      "sample_late": 37,
+      "seed": [
+        42,
+        3
+      ],
+      "expected_value": -6.27400541305542,
+      "groups": [
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.1381271232824102,
+          "share": 0.19120688530495084,
+          "mean_late": 0.9289589957336775,
+          "mean_on_time": 0.023566793902181155
+        },
+        {
+          "group": "issue",
+          "features": 272,
+          "mean_abs": 0.06954278805510242,
+          "share": 0.09626682713323248,
+          "mean_late": 0.13880519410979353,
+          "mean_on_time": 0.026158690842594232
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 0.4959232942768009,
+          "share": 0.6864976710979762,
+          "mean_late": 3.173566427182507,
+          "mean_on_time": 0.0385228855628033
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.0060397276118258104,
+          "share": 0.008360685992036331,
+          "mean_late": 0.00509508977002288,
+          "mean_on_time": 0.0023161386468660587
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.0052403562569883575,
+          "share": 0.007254130644119866,
+          "mean_late": 0.0017693601487219377,
+          "mean_on_time": 0.0007226954128313904
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.007522889201101554,
+          "share": 0.010413799827684206,
+          "mean_late": 0.0012531402644219418,
+          "mean_on_time": -0.00041111803648446815
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.26904034423828127
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.24920277709960936
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.05717651672363281
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.04892434616088867
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.027372173309326172
+        },
+        {
+          "feature": "cat:sub_product_Domestic (US) money transfer",
+          "group": "product",
+          "mean_abs": 0.021608474731445313
+        },
+        {
+          "feature": "cat:sub_issue_Information belongs to someone else",
+          "group": "issue",
+          "mean_abs": 0.017073923110961915
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.014978521347045899
+        },
+        {
+          "feature": "cat:issue_Other transaction problem",
+          "group": "issue",
+          "mean_abs": 0.013452604866027833
+        },
+        {
+          "feature": "cat:sub_product_Checking account",
+          "group": "product",
+          "mean_abs": 0.012136864471435548
+        },
+        {
+          "feature": "cat:issue_Problem with a company's investigation into an existing problem",
+          "group": "issue",
+          "mean_abs": 0.010154313278198242
+        },
+        {
+          "feature": "cat:issue_Incorrect information on your report",
+          "group": "issue",
+          "mean_abs": 0.007740489959716797
+        },
+        {
+          "feature": "cat:sub_product_I do not know",
+          "group": "product",
+          "mean_abs": 0.0076693471908569335
+        },
+        {
+          "feature": "cat:sub_issue_Reporting company used your report improperly",
+          "group": "issue",
+          "mean_abs": 0.007019964122772217
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.006039727210998535
+        },
+        {
+          "feature": "cat:issue_Attempts to collect debt not owed",
+          "group": "issue",
+          "mean_abs": 0.006039651870727539
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.005903460502624512
+        },
+        {
+          "feature": "cat:product_Money transfer, virtual currency, or money service",
+          "group": "product",
+          "mean_abs": 0.005824550724029541
+        },
+        {
+          "feature": "cat:sub_product_Federal student loan servicing",
+          "group": "product",
+          "mean_abs": 0.005739959907531738
+        },
+        {
+          "feature": "cat:sub_issue_Their investigation did not fix an error on your report",
+          "group": "issue",
+          "mean_abs": 0.00522390947341919
+        }
+      ]
+    },
+    "lgbm__both__W3": {
+      "window": "W3",
+      "featureset": "both",
+      "sample_rows": 5000,
+      "sample_late": 37,
+      "seed": [
+        42,
+        3
+      ],
+      "expected_value": -9.687873840332031,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.24004098279326228,
+          "share": 0.12634246087568152,
+          "mean_late": 0.7701940406884759,
+          "mean_on_time": 0.1567741534199502
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.0001162715564193661,
+          "share": 6.11980270907335e-05,
+          "mean_late": 0.0003358155703903616,
+          "mean_on_time": 1.2281654984898565e-05
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.002550695034627256,
+          "share": 0.0013425252799258026,
+          "mean_late": 0.0003557846587657853,
+          "mean_on_time": -0.00014911549557907963
+        },
+        {
+          "group": "product",
+          "features": 64,
+          "mean_abs": 0.1310680077622941,
+          "share": 0.06898594752473232,
+          "mean_late": 0.6939116176845899,
+          "mean_on_time": 0.01004216077016246
+        },
+        {
+          "group": "issue",
+          "features": 272,
+          "mean_abs": 0.02806991212779217,
+          "share": 0.014774234522459826,
+          "mean_late": 0.04941144295588629,
+          "mean_on_time": -0.0004084949317248644
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 1.478244139046967,
+          "share": 0.7780546477061385,
+          "mean_late": 6.796104864494221,
+          "mean_on_time": 0.07362893898262989
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.018365166570158544,
+          "share": 0.009666267450937793,
+          "mean_late": 0.024316290242446435,
+          "mean_on_time": 0.0026051921927378757
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.0011756743481163767,
+          "share": 0.000618800958906943,
+          "mean_late": 4.885235501058412e-05,
+          "mean_on_time": -0.00011908454105968562
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.0002924317344279871,
+          "share": 0.0001539176541265715,
+          "mean_late": -0.00016182973155770702,
+          "mean_on_time": 3.1576605427554895e-05
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.9548313232421874
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.63445341796875
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.09371853332519531
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.04013788757324219
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.0344721565246582
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.027854179382324217
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.01836515884399414
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.017327038192749025
+        },
+        {
+          "feature": "tfidf:vulnerable",
+          "group": "text",
+          "mean_abs": 0.01623099365234375
+        },
+        {
+          "feature": "cat:sub_issue_Information belongs to someone else",
+          "group": "issue",
+          "mean_abs": 0.015773750495910645
+        },
+        {
+          "feature": "tfidf:consumer",
+          "group": "text",
+          "mean_abs": 0.012706343460083008
+        },
+        {
+          "feature": "tfidf:experian",
+          "group": "text",
+          "mean_abs": 0.012291465950012207
+        },
+        {
+          "feature": "tfidf:significant",
+          "group": "text",
+          "mean_abs": 0.011866849136352539
+        },
+        {
+          "feature": "tfidf:equifax",
+          "group": "text",
+          "mean_abs": 0.011703983497619629
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.01069861936569214
+        },
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.010322300720214844
+        },
+        {
+          "feature": "tfidf:loan",
+          "group": "text",
+          "mean_abs": 0.00983196678161621
+        },
+        {
+          "feature": "cat:sub_product_General-purpose credit card or charge card",
+          "group": "product",
+          "mean_abs": 0.009437972164154053
+        },
+        {
+          "feature": "cat:issue_Incorrect information on your report",
+          "group": "issue",
+          "mean_abs": 0.00931158447265625
+        },
+        {
+          "feature": "tfidf:specifically",
+          "group": "text",
+          "mean_abs": 0.009049547576904297
+        }
+      ]
+    },
+    "lgbm__text__W4": {
+      "window": "W4",
+      "featureset": "text",
+      "sample_rows": 5000,
+      "sample_late": 174,
+      "seed": [
+        42,
+        4
+      ],
+      "expected_value": -6.057420253753662,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 1.6337307371547265,
+          "share": 0.9947322702124587,
+          "mean_late": 3.1092732408286734,
+          "mean_on_time": 1.4839406647620212
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.0010142091092086674,
+          "share": 0.0006175231369095224,
+          "mean_late": 0.00017506936029503033,
+          "mean_on_time": 0.0002754464411756819
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.007637417390345479,
+          "share": 0.00465020665063178,
+          "mean_late": 0.0015746967798606064,
+          "mean_on_time": 0.0004957130298774905
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.20622037963867187
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.16719271850585937
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.11481479034423828
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.09867800598144531
+        },
+        {
+          "feature": "tfidf:credit",
+          "group": "text",
+          "mean_abs": 0.09857413330078126
+        },
+        {
+          "feature": "tfidf:loan",
+          "group": "text",
+          "mean_abs": 0.08076909484863282
+        },
+        {
+          "feature": "tfidf:consumer",
+          "group": "text",
+          "mean_abs": 0.07460089874267578
+        },
+        {
+          "feature": "tfidf:inquiries",
+          "group": "text",
+          "mean_abs": 0.05296631622314453
+        },
+        {
+          "feature": "tfidf:equifax",
+          "group": "text",
+          "mean_abs": 0.05142063293457031
+        },
+        {
+          "feature": "tfidf:experian",
+          "group": "text",
+          "mean_abs": 0.051181857299804685
+        },
+        {
+          "feature": "tfidf:transunion",
+          "group": "text",
+          "mean_abs": 0.049454724884033206
+        },
+        {
+          "feature": "tfidf:collection",
+          "group": "text",
+          "mean_abs": 0.04944310913085938
+        },
+        {
+          "feature": "tfidf:bank",
+          "group": "text",
+          "mean_abs": 0.04724157028198242
+        },
+        {
+          "feature": "tfidf:reporting",
+          "group": "text",
+          "mean_abs": 0.04253916473388672
+        },
+        {
+          "feature": "tfidf:chase",
+          "group": "text",
+          "mean_abs": 0.038337744140625
+        },
+        {
+          "feature": "tfidf:mohela",
+          "group": "text",
+          "mean_abs": 0.03662405166625977
+        },
+        {
+          "feature": "tfidf:inaccurate",
+          "group": "text",
+          "mean_abs": 0.03524673004150391
+        },
+        {
+          "feature": "tfidf:late",
+          "group": "text",
+          "mean_abs": 0.03523576126098633
+        },
+        {
+          "feature": "tfidf:student",
+          "group": "text",
+          "mean_abs": 0.033987371826171876
+        },
+        {
+          "feature": "tfidf:capital one",
+          "group": "text",
+          "mean_abs": 0.032331134033203125
+        }
+      ]
+    },
+    "lgbm__struct__W4": {
+      "window": "W4",
+      "featureset": "struct",
+      "sample_rows": 5000,
+      "sample_late": 174,
+      "seed": [
+        42,
+        4
+      ],
+      "expected_value": -10.656601905822754,
+      "groups": [
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.36479051089603726,
+          "share": 0.0953182062465617,
+          "mean_late": 1.0015867567634762,
+          "mean_on_time": 0.2826773718915783
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.13901863954970337,
+          "share": 0.03632497820232909,
+          "mean_late": 0.14418703087628287,
+          "mean_on_time": 0.08218912711474148
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 3.1564470615951343,
+          "share": 0.824766168627735,
+          "mean_late": 8.658561794579715,
+          "mean_on_time": 2.7702542095540816
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.07371193635266682,
+          "share": 0.019260614907001546,
+          "mean_late": 0.14585059810023027,
+          "mean_on_time": 0.05108152742736129
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.044691125343299776,
+          "share": 0.011677600638240353,
+          "mean_late": 0.0006782494631546135,
+          "mean_on_time": 0.0007039989861288828
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.04842188169767857,
+          "share": 0.012652431378132307,
+          "mean_late": 0.018947903555789677,
+          "mean_on_time": 0.03513333235878175
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 2.3234125
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 1.3282622802734374
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.21632869873046875
+        },
+        {
+          "feature": "cat:sub_product_Federal student loan servicing",
+          "group": "product",
+          "mean_abs": 0.0745875473022461
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.07371192932128906
+        },
+        {
+          "feature": "cat:issue_Other transaction problem",
+          "group": "issue",
+          "mean_abs": 0.05221724624633789
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.04096371078491211
+        },
+        {
+          "feature": "cat:tags_Older American",
+          "group": "tags",
+          "mean_abs": 0.03983776016235351
+        },
+        {
+          "feature": "cat:sub_product_Domestic (US) money transfer",
+          "group": "product",
+          "mean_abs": 0.03883212585449219
+        },
+        {
+          "feature": "cat:sub_product_Checking account",
+          "group": "product",
+          "mean_abs": 0.026761011123657228
+        },
+        {
+          "feature": "cat:sub_issue_Their investigation did not fix an error on your report",
+          "group": "issue",
+          "mean_abs": 0.02563951644897461
+        },
+        {
+          "feature": "cat:sub_issue_Information belongs to someone else",
+          "group": "issue",
+          "mean_abs": 0.02553636245727539
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.024763334274291993
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.021273952102661132
+        },
+        {
+          "feature": "cat:issue_Incorrect information on your report",
+          "group": "issue",
+          "mean_abs": 0.018812992095947265
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.01735053176879883
+        },
+        {
+          "feature": "cat:sub_product_General-purpose credit card or charge card",
+          "group": "product",
+          "mean_abs": 0.01720333595275879
+        },
+        {
+          "feature": "cat:product_Mortgage",
+          "group": "product",
+          "mean_abs": 0.016068027305603028
+        },
+        {
+          "feature": "cat:product_Money transfer, virtual currency, or money service",
+          "group": "product",
+          "mean_abs": 0.015092066383361816
+        },
+        {
+          "feature": "cat:sub_product_Credit card debt",
+          "group": "product",
+          "mean_abs": 0.014272858810424805
+        }
+      ]
+    },
+    "lgbm__both__W4": {
+      "window": "W4",
+      "featureset": "both",
+      "sample_rows": 5000,
+      "sample_late": 174,
+      "seed": [
+        42,
+        4
+      ],
+      "expected_value": -9.745898246765137,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.36918728471044376,
+          "share": 0.10757943918619028,
+          "mean_late": 0.8286613466186707,
+          "mean_on_time": 0.3173277842395041
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.0012831444302169545,
+          "share": 0.0003739022548024355,
+          "mean_late": -0.00022144686484345673,
+          "mean_on_time": 0.00048547380966146124
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0018222394234931785,
+          "share": 0.0005309920015152062,
+          "mean_late": 0.0009366721924118468,
+          "mean_on_time": 0.00034108369768435945
+        },
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.34879610847057224,
+          "share": 0.1016375462904134,
+          "mean_late": 0.9085236875571993,
+          "mean_on_time": 0.3035707927683528
+        },
+        {
+          "group": "issue",
+          "features": 275,
+          "mean_abs": 0.021987643740722495,
+          "share": 0.006407096020405708,
+          "mean_late": 0.009882745895816157,
+          "mean_on_time": 0.013277955587358245
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.6638922965690495,
+          "share": 0.7762456920532288,
+          "mean_late": 7.184489424543819,
+          "mean_on_time": 2.3515959451144113
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.023109703565202654,
+          "share": 0.006734058978367829,
+          "mean_late": 0.03742418333957635,
+          "mean_on_time": 0.01165805075318972
+        },
+        {
+          "group": "state",
+          "features": 60,
+          "mean_abs": 0.000897084206421556,
+          "share": 0.00026140612048790177,
+          "mean_late": 0.0003680581017910111,
+          "mean_on_time": 1.2904695710567667e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.0007888497015541361,
+          "share": 0.00022986709458844713,
+          "mean_late": -6.231384399686886e-05,
+          "mean_on_time": -5.576694865175248e-05
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 1.7294580078125
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 1.27964814453125
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.12633370208740236
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.08426266174316406
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.07778179168701171
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.06190633087158203
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.03990622024536133
+        },
+        {
+          "feature": "tfidf:significant",
+          "group": "text",
+          "mean_abs": 0.028368017959594725
+        },
+        {
+          "feature": "tfidf:vulnerable",
+          "group": "text",
+          "mean_abs": 0.028339822769165038
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.025788343811035157
+        },
+        {
+          "feature": "tfidf:leaving",
+          "group": "text",
+          "mean_abs": 0.02545889091491699
+        },
+        {
+          "feature": "cat:sub_product_Checking account",
+          "group": "product",
+          "mean_abs": 0.024684891510009764
+        },
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.02407703552246094
+        },
+        {
+          "feature": "tfidf:mohela",
+          "group": "text",
+          "mean_abs": 0.02327212448120117
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.02310969352722168
+        },
+        {
+          "feature": "cat:sub_product_Federal student loan servicing",
+          "group": "product",
+          "mean_abs": 0.017015922355651854
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.013474073982238769
+        },
+        {
+          "feature": "tfidf:bank",
+          "group": "text",
+          "mean_abs": 0.012275239562988281
+        },
+        {
+          "feature": "tfidf:late",
+          "group": "text",
+          "mean_abs": 0.0121103120803833
+        },
+        {
+          "feature": "tfidf:platform",
+          "group": "text",
+          "mean_abs": 0.011024700164794923
+        }
+      ]
+    },
+    "lgbm__text__W5": {
+      "window": "W5",
+      "featureset": "text",
+      "sample_rows": 5000,
+      "sample_late": 207,
+      "seed": [
+        42,
+        5
+      ],
+      "expected_value": -6.727531909942627,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 2.1221268757561944,
+          "share": 0.9974533887824099,
+          "mean_late": 3.9415336997822235,
+          "mean_on_time": 1.8980101894342962
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.00013355925411055977,
+          "share": 6.277623272093842e-05,
+          "mean_late": -4.4676788291871195e-06,
+          "mean_on_time": 3.0633026247148406e-05
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.005284470468107747,
+          "share": 0.0024838349848693084,
+          "mean_late": 0.0011552940056350528,
+          "mean_on_time": 0.00015583337565747813
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "tfidf:report",
+          "group": "text",
+          "mean_abs": 0.1976864013671875
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.19495736999511717
+        },
+        {
+          "feature": "tfidf:equifax",
+          "group": "text",
+          "mean_abs": 0.151651171875
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.12928495178222657
+        },
+        {
+          "feature": "tfidf:credit",
+          "group": "text",
+          "mean_abs": 0.10228290100097656
+        },
+        {
+          "feature": "tfidf:experian",
+          "group": "text",
+          "mean_abs": 0.09385979461669922
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.08938151702880859
+        },
+        {
+          "feature": "tfidf:transunion",
+          "group": "text",
+          "mean_abs": 0.08435614318847656
+        },
+        {
+          "feature": "tfidf:loan",
+          "group": "text",
+          "mean_abs": 0.07701187438964843
+        },
+        {
+          "feature": "tfidf:chase",
+          "group": "text",
+          "mean_abs": 0.07413022613525391
+        },
+        {
+          "feature": "tfidf:inquiries",
+          "group": "text",
+          "mean_abs": 0.07030277709960937
+        },
+        {
+          "feature": "tfidf:consumer",
+          "group": "text",
+          "mean_abs": 0.06236515808105469
+        },
+        {
+          "feature": "tfidf:bank",
+          "group": "text",
+          "mean_abs": 0.05586152801513672
+        },
+        {
+          "feature": "tfidf:capital one",
+          "group": "text",
+          "mean_abs": 0.052519287109375
+        },
+        {
+          "feature": "tfidf:wells",
+          "group": "text",
+          "mean_abs": 0.051644210815429685
+        },
+        {
+          "feature": "tfidf:mohela",
+          "group": "text",
+          "mean_abs": 0.042448017883300784
+        },
+        {
+          "feature": "tfidf:chime",
+          "group": "text",
+          "mean_abs": 0.04009521942138672
+        },
+        {
+          "feature": "tfidf:company",
+          "group": "text",
+          "mean_abs": 0.03886844177246094
+        },
+        {
+          "feature": "tfidf:reporting",
+          "group": "text",
+          "mean_abs": 0.035682664489746094
+        },
+        {
+          "feature": "tfidf:student",
+          "group": "text",
+          "mean_abs": 0.03320961875915528
+        }
+      ]
+    },
+    "lgbm__struct__W5": {
+      "window": "W5",
+      "featureset": "struct",
+      "sample_rows": 5000,
+      "sample_late": 207,
+      "seed": [
+        42,
+        5
+      ],
+      "expected_value": -6.576621055603027,
+      "groups": [
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.2337031010654238,
+          "share": 0.15112712219490732,
+          "mean_late": 0.5052514560855543,
+          "mean_on_time": 0.16394197265684096
+        },
+        {
+          "group": "issue",
+          "features": 276,
+          "mean_abs": 0.0899001432207391,
+          "share": 0.05813508621803391,
+          "mean_late": 0.23557305014810262,
+          "mean_on_time": 0.03527796868075059
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 1.1880014638975729,
+          "share": 0.7682364572129333,
+          "mean_late": 4.777855300313033,
+          "mean_on_time": 0.8778745749635082
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.022170413515443216,
+          "share": 0.014336783624972288,
+          "mean_late": 0.02547610964083927,
+          "mean_on_time": 0.0068623832041662825
+        },
+        {
+          "group": "state",
+          "features": 61,
+          "mean_abs": 0.006272640126994608,
+          "share": 0.004056283577904324,
+          "mean_late": 0.002098837793783369,
+          "mean_on_time": 0.00022655043000499334
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.006353027596779543,
+          "share": 0.004108267171248797,
+          "mean_late": 0.004400605184095413,
+          "mean_on_time": 0.0047556184843279194
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 0.957924951171875
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.39826387329101565
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.10450555419921875
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.053174341583251954
+        },
+        {
+          "feature": "cat:issue_Dealing with your lender or servicer",
+          "group": "issue",
+          "mean_abs": 0.036405269241333006
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.034790209197998044
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.03382238693237305
+        },
+        {
+          "feature": "cat:sub_product_Domestic (US) money transfer",
+          "group": "product",
+          "mean_abs": 0.029411795043945314
+        },
+        {
+          "feature": "cat:sub_product_Federal student loan servicing",
+          "group": "product",
+          "mean_abs": 0.023285359573364257
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.022170404052734374
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.01939302501678467
+        },
+        {
+          "feature": "cat:sub_product_General-purpose credit card or charge card",
+          "group": "product",
+          "mean_abs": 0.018451944732666016
+        },
+        {
+          "feature": "cat:sub_product_Checking account",
+          "group": "product",
+          "mean_abs": 0.017339086532592772
+        },
+        {
+          "feature": "cat:issue_Other transaction problem",
+          "group": "issue",
+          "mean_abs": 0.017054289436340332
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.013502540779113769
+        },
+        {
+          "feature": "cat:issue_Attempts to collect debt not owed",
+          "group": "issue",
+          "mean_abs": 0.012632719993591309
+        },
+        {
+          "feature": "cat:product_Money transfer, virtual currency, or money service",
+          "group": "product",
+          "mean_abs": 0.012325692558288574
+        },
+        {
+          "feature": "cat:sub_product_Mobile or digital wallet",
+          "group": "product",
+          "mean_abs": 0.011861652565002441
+        },
+        {
+          "feature": "cat:sub_issue_(missing)",
+          "group": "issue",
+          "mean_abs": 0.008834966850280762
+        },
+        {
+          "feature": "cat:sub_product_Private student loan",
+          "group": "product",
+          "mean_abs": 0.008573564052581787
+        }
+      ]
+    },
+    "lgbm__both__W5": {
+      "window": "W5",
+      "featureset": "both",
+      "sample_rows": 5000,
+      "sample_late": 207,
+      "seed": [
+        42,
+        5
+      ],
+      "expected_value": -8.534530639648438,
+      "groups": [
+        {
+          "group": "text",
+          "features": 20000,
+          "mean_abs": 0.3472193447504553,
+          "share": 0.12736012708903913,
+          "mean_late": 0.7229267958895154,
+          "mean_on_time": 0.30589518058705506
+        },
+        {
+          "group": "lexicon",
+          "features": 2,
+          "mean_abs": 0.000480554382283546,
+          "share": 0.00017626744628763044,
+          "mean_late": 0.0005812708074770212,
+          "mean_on_time": -2.3762595889066905e-05
+        },
+        {
+          "group": "sentiment",
+          "features": 1,
+          "mean_abs": 0.0011231534052077337,
+          "share": 0.00041197290010022247,
+          "mean_late": 0.0007201310841544224,
+          "mean_on_time": 0.0003561047480045494
+        },
+        {
+          "group": "product",
+          "features": 65,
+          "mean_abs": 0.31742660344945595,
+          "share": 0.11643214345047441,
+          "mean_late": 0.9170638530439628,
+          "mean_on_time": 0.27265820477095637
+        },
+        {
+          "group": "issue",
+          "features": 276,
+          "mean_abs": 0.02410668605671147,
+          "share": 0.008842337405149184,
+          "mean_late": 0.023470806332627412,
+          "mean_on_time": 0.011977020210073512
+        },
+        {
+          "group": "company history",
+          "features": 2,
+          "mean_abs": 2.016577046529588,
+          "share": 0.7396808755440483,
+          "mean_late": 6.071642758693672,
+          "mean_on_time": 1.7339502107367684
+        },
+        {
+          "group": "days to company",
+          "features": 1,
+          "mean_abs": 0.01801435257793637,
+          "share": 0.006607668231738771,
+          "mean_late": 0.019306321017070704,
+          "mean_on_time": 0.0053835880277183275
+        },
+        {
+          "group": "state",
+          "features": 61,
+          "mean_abs": 0.0013320819495879733,
+          "share": 0.0004886079331624475,
+          "mean_late": -0.00043687960085965943,
+          "mean_on_time": -8.31896750616633e-05
+        },
+        {
+          "group": "channel",
+          "features": 1,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        },
+        {
+          "group": "tags",
+          "features": 4,
+          "mean_abs": 0.0,
+          "share": 0.0,
+          "mean_late": 0.0,
+          "mean_on_time": 0.0
+        }
+      ],
+      "top_features": [
+        {
+          "feature": "num:company_late_rate",
+          "group": "company history",
+          "mean_abs": 1.3870975830078125
+        },
+        {
+          "feature": "num:company_log_volume",
+          "group": "company history",
+          "mean_abs": 0.8714387451171876
+        },
+        {
+          "feature": "cat:sub_product_Credit reporting",
+          "group": "product",
+          "mean_abs": 0.1536620086669922
+        },
+        {
+          "feature": "cat:product_Credit reporting or other personal consumer reports",
+          "group": "product",
+          "mean_abs": 0.10215738372802734
+        },
+        {
+          "feature": "cat:sub_product_Federal student loan servicing",
+          "group": "product",
+          "mean_abs": 0.07947896881103515
+        },
+        {
+          "feature": "tfidf:vulnerable",
+          "group": "text",
+          "mean_abs": 0.04359075698852539
+        },
+        {
+          "feature": "cat:product_Credit card",
+          "group": "product",
+          "mean_abs": 0.036672303771972656
+        },
+        {
+          "feature": "tfidf:these",
+          "group": "text",
+          "mean_abs": 0.02752554473876953
+        },
+        {
+          "feature": "tfidf:debt",
+          "group": "text",
+          "mean_abs": 0.026154056549072265
+        },
+        {
+          "feature": "cat:sub_product_Checking account",
+          "group": "product",
+          "mean_abs": 0.023857887649536134
+        },
+        {
+          "feature": "tfidf:accounts",
+          "group": "text",
+          "mean_abs": 0.020605801010131836
+        },
+        {
+          "feature": "tfidf:mohela",
+          "group": "text",
+          "mean_abs": 0.0203190486907959
+        },
+        {
+          "feature": "tfidf:leaving",
+          "group": "text",
+          "mean_abs": 0.019333633422851562
+        },
+        {
+          "feature": "cat:product_Checking or savings account",
+          "group": "product",
+          "mean_abs": 0.018848502349853517
+        },
+        {
+          "feature": "num:days_to_company",
+          "group": "days to company",
+          "mean_abs": 0.018014349937438966
+        },
+        {
+          "feature": "cat:product_Debt collection",
+          "group": "product",
+          "mean_abs": 0.01777712173461914
+        },
+        {
+          "feature": "tfidf:bank",
+          "group": "text",
+          "mean_abs": 0.016283258438110352
+        },
+        {
+          "feature": "tfidf:credit",
+          "group": "text",
+          "mean_abs": 0.015793885612487794
+        },
+        {
+          "feature": "tfidf:platform",
+          "group": "text",
+          "mean_abs": 0.01525786304473877
+        },
+        {
+          "feature": "cat:product_Student loan",
+          "group": "product",
+          "mean_abs": 0.013945573806762696
+        }
+      ]
+    }
+  }
+}
