@@ -272,6 +272,17 @@ def tfidf(counts: sp.csr_matrix, idf: np.ndarray, sublinear: bool) -> sp.csr_mat
     return counts
 
 
+def renormalise(x: sp.csr_matrix) -> sp.csr_matrix:
+    """Scale each row to unit L2 norm (all-zero rows stay zero), in place."""
+    x = x.tocsr()
+    squares = sp.csr_matrix((np.square(x.data), x.indices, x.indptr), shape=x.shape)
+    norms = np.sqrt(squares @ np.ones(x.shape[1], dtype=x.dtype))
+    del squares
+    norms[norms == 0] = 1
+    x.data /= np.repeat(norms, np.diff(x.indptr)).astype(x.dtype)
+    return x
+
+
 # --- per window --------------------------------------------------------------------------
 
 
@@ -380,6 +391,8 @@ def load(
     max_terms: int | None = None,
     rows: np.ndarray | None = None,
     root: Path | None = None,
+    terms: np.ndarray | None = None,
+    numeric: list[str] | None = None,
 ) -> dict:
     """Assemble one feature set for one window and split.
 
@@ -387,6 +400,9 @@ def load(
     `rows` keeps only these row positions of the split (each block is sliced before stacking,
     so the full matrix is never built).
     `root` replaces data/features, for a copy of the cache such as the deep-model input.
+    `terms` keeps only these vocabulary columns and re-normalises each row to unit L2 over
+    them, which is the TF-IDF a vocabulary of just those terms would give.
+    `numeric` replaces the feature set's numeric columns (a subset of NUMERIC, in its order).
 
     Returns X (CSR, float32), y, ids, feature names, and the column indices of the numeric
     block, which models should scale inside their Pipeline. The numeric block is the last
@@ -406,6 +422,8 @@ def load(
             x_text = x_text[keep]
         if max_terms is not None and max_terms < len(vocab):
             x_text, vocab = x_text[:, :max_terms], vocab[:max_terms]
+        if terms is not None:
+            x_text, vocab = renormalise(x_text[:, terms]), [vocab[i] for i in terms]
         blocks.append(x_text)
         del x_text
         names += [f"tfidf:{t}" for t in vocab]
@@ -414,7 +432,10 @@ def load(
         blocks.append(x_cat if rows is None else x_cat[keep])
         del x_cat
         names += [f"cat:{c}" for c in meta["categorical_names"]]
-    numeric = {"text": TEXT_NUMERIC, "struct": STRUCT_NUMERIC, "both": NUMERIC}[featureset]
+    if numeric is None:
+        numeric = {"text": TEXT_NUMERIC, "struct": STRUCT_NUMERIC, "both": NUMERIC}[featureset]
+    elif [c for c in NUMERIC if c in numeric] != list(numeric):
+        raise ValueError(f"numeric columns must be a subset of {NUMERIC} in that order")
     cols = [NUMERIC.index(c) for c in numeric]
     first_numeric = len(names)
     # Every numeric entry is stored, zeros included, so a model can center the block in place.

@@ -149,3 +149,35 @@ def test_load_assembles_each_feature_set(tmp_path, monkeypatch):
         subset["X"].toarray(), features.load("W1", "both", "val")["X"][[1]].toarray()
     )
     assert subset["ids"].tolist() == [11] and subset["y"].tolist() == [1]
+
+
+def test_load_keeps_chosen_terms_and_numeric_columns(tmp_path, monkeypatch):
+    monkeypatch.setattr(features, "FEATURES", tmp_path)
+    d = tmp_path / "W1"
+    d.mkdir()
+    (d / "meta.json").write_text(json.dumps({"categorical_names": ["product_x"]}))
+    (d / "vocab.json").write_text(json.dumps({"terms": ["fraud", "not mine", "late"]}))
+    x = tfidf(
+        sp.csr_matrix(np.array([[1, 2, 0], [0, 0, 3]], dtype=np.float32)),
+        np.array([1.0, 2.0, 3.0], dtype=np.float32),
+        sublinear=True,
+    )
+    sp.save_npz(d / "tfidf_val.npz", x)
+    sp.save_npz(d / "cat_val.npz", sp.csr_matrix(np.ones((2, 1), dtype=np.float32)))
+    np.save(d / "num_val.npy", np.arange(12, dtype=np.float32).reshape(2, 6))
+    np.save(d / "y_val.npy", np.array([0, 1], dtype=np.int8))
+    np.save(d / "ids_val.npy", np.array([10, 11]))
+    m = features.load("W1", "both", "val", terms=np.array([0, 2]), numeric=NUMERIC[:5])
+    assert m["names"][:2] == ["tfidf:fraud", "tfidf:late"]
+    assert "num:vader" not in m["names"]
+    # Row 0 keeps only "fraud", so it re-normalises to 1; row 1 keeps "late" alone.
+    np.testing.assert_allclose(m["X"][:, :2].toarray(), [[1, 0], [0, 1]], atol=1e-6)
+    # Same as a vocabulary of just those terms built from scratch.
+    direct = tfidf(
+        sp.csr_matrix(np.array([[1, 0], [0, 3]], dtype=np.float32)),
+        np.array([1.0, 3.0], dtype=np.float32),
+        sublinear=True,
+    )
+    np.testing.assert_allclose(m["X"][:, :2].toarray(), direct.toarray(), atol=1e-6)
+    with pytest.raises(ValueError):
+        features.load("W1", "both", "val", numeric=["vader", "harm"])
