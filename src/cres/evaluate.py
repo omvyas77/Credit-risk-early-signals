@@ -378,6 +378,34 @@ def _find(report: dict, window: str, a: list, b: list) -> dict | None:
     return None
 
 
+def training_caveats(report: dict) -> list[str]:
+    """Bullets on how the fits ended: LightGBM stopping rounds and LR C at the grid's edge."""
+    runs = report.get("training", {}).values()
+    out = []
+    rounds = sorted(m["best_iteration"] for m in runs if m.get("best_iteration") is not None)
+    if rounds:
+        out.append(
+            f"- LightGBM's best validation round ranges from {rounds[0]} to {rounds[-1]} "
+            f"(median {rounds[len(rounds) // 2]}) out of up to "
+            f"{report['models']['lgbm']['num_boost_round']:,}: validation average precision "
+            "peaks early and then falls, so these trees fit the training year more than the "
+            "later quarter. Its parameters were not tuned."
+        )
+    grid = report.get("models", {}).get("lr", {}).get("C")
+    if grid:
+        edge = sorted(
+            f"{m['model']} {m['featureset']} {m['window']} (C={m['C']:g})"
+            for m in runs
+            if m.get("C") in (min(grid), max(grid))
+        )
+        if edge:
+            out.append(
+                "- LR's chosen C sits at the edge of the searched grid "
+                f"({min(grid):g} to {max(grid):g}) for: {', '.join(edge)}."
+            )
+    return out
+
+
 def summary(report: dict) -> str:
     """reports/summary.md, every number read from the metrics report."""
     cells, wins = report["cells"], report["windows"]
@@ -551,6 +579,7 @@ def summary(report: dict) -> str:
         "- Each window trains on the most recent year before its training cutoff.",
         "- LR's C is chosen on validation average precision; LightGBM early-stops on validation "
         "average precision. Test is scored once.",
+        *training_caveats(report),
         *(
             [
                 f"- LightGBM sees the {terms:,} most frequent TF-IDF terms; LR sees the whole "

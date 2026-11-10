@@ -214,3 +214,22 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
         assert sum(row["test"].values()) == 300 and sum(row["val"].values()) == 400
     text = evaluate.SUMMARY.read_text()
     assert "both - struct" in text and "W1" in text
+
+
+def test_training_caveats_report_stopping_rounds_and_c_at_the_grid_edge():
+    from cres.evaluate import training_caveats
+
+    report = {
+        "models": {"lr": {"C": [0.01, 0.1, 1.0]}, "lgbm": {"num_boost_round": 500}},
+        "training": {
+            "lgbm__both__W1": {"best_iteration": 40},
+            "lgbm__text__W1": {"best_iteration": 7},
+            "lgbm__struct__W1": {"best_iteration": 300},
+            "lr__struct__W1": {"model": "lr", "featureset": "struct", "window": "W1", "C": 0.01},
+            "lr__both__W1": {"model": "lr", "featureset": "both", "window": "W1", "C": 0.1},
+        },
+    }
+    lgbm, lr = training_caveats(report)
+    assert "from 7 to 300 (median 40) out of up to 500" in lgbm
+    assert "lr struct W1 (C=0.01)" in lr and "both" not in lr
+    assert training_caveats({"models": {}, "training": {}}) == []
