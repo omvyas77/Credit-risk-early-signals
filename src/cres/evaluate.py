@@ -26,6 +26,9 @@ CURVES = REPORTS / "curves"
 SUMMARY = REPORTS / "summary.md"
 EPS = 1e-15
 DIFF_METRICS = ("pr_auc", "auroc", "log_loss", "brier", "ece")
+# Windows whose test period has a smaller share of complaints with a published narrative are
+# flagged wherever results are shown.
+LOW_NARRATIVE_SHARE = 0.1
 
 
 # --- metrics on score-sorted arrays ------------------------------------------------------
@@ -275,6 +278,7 @@ def comparisons(window: str, draws: dict, results: dict) -> list[dict]:
         pairs += [(m, "text", "lr", "text"), (m, "both", "lr", "both"), (m, "both", "lr", "struct")]
         if m != "lr_sub":
             pairs += [(m, fs, "lr_sub", fs) for fs in ("text", "both")]
+    pairs.append(("scorer", "both", "lr", "both"))  # the in-browser scorer against the full LR
     for ma, fa, mb, fb in pairs:
         a, b = models.cell_name(ma, fa, window), models.cell_name(mb, fb, window)
         d = compare(draws, results, a, b)
@@ -376,6 +380,7 @@ MODEL_LABELS = {
     "lr_sub": "LR, DistilBERT's training subsample",
     "minilm": "MiniLM embeddings + LR",
     "distilbert": "DistilBERT, fine-tuned",
+    "scorer": "In-browser scorer (LR, no VADER, pruned vocabulary)",
 }
 # Text models compared with LR in the deep-model table, in display order.
 TEXT_MODELS = ("lr_sub", "minilm", "distilbert")
@@ -491,6 +496,51 @@ def text_models_section(report: dict) -> list[str]:
             "DistilBERT's checkpoint is the epoch with the best validation average precision.",
             "",
         ]
+    return out
+
+
+def scorer_section(report: dict) -> list[str]:
+    """The in-browser scorer next to the full LR on the same window."""
+    fits = [m for m in report.get("training", {}).values() if m.get("model") == "scorer"]
+    out = []
+    for fit in fits:
+        w = fit["window"]
+        mine = report["cells"].get(models.cell_name("scorer", "both", w))
+        full = report["cells"].get(models.cell_name("lr", "both", w))
+        if not mine or not full:
+            continue
+        d = _find(report, w, ["scorer", "both"], ["lr", "both"])
+        out += [
+            "## In-browser scorer (test, 95% bootstrap CI)",
+            "",
+            f"LR on {w}'s training split with TF-IDF, lexicon counts and the structured fields, "
+            "without VADER (no JavaScript port). Fitted on the whole vocabulary first (C chosen "
+            f"on validation: {fit['full']['C']:g}), then refitted on the {fit['terms']:,} terms "
+            "with the largest mean |coefficient x TF-IDF| on train (C chosen on validation: "
+            f"{fit['C']:g}). Its scores use the bundle's rounded numbers; the bundle is "
+            f"{fit['bundle_bytes'] / 1e6:.2f} MB.",
+            "",
+            "| Model | PR-AUC | AUROC | Log loss | ECE |",
+            "|---|---|---|---|---|",
+        ]
+        for label, c in ((MODEL_LABELS["lr"] + ", `both`", full), (MODEL_LABELS["scorer"], mine)):
+            cols = [
+                _ci(c, k, 4 if k in ("log_loss", "ece") else 3)
+                for k in DIFF_METRICS
+                if k != "brier"
+            ]
+            out.append(f"| {label} | " + " | ".join(cols) + " |")
+        if d:
+            out.append(
+                "| Scorer - LR | "
+                + " | ".join(
+                    _diff(d[k], 4 if k in ("log_loss", "ece") else 3)
+                    for k in DIFF_METRICS
+                    if k != "brier"
+                )
+                + " |"
+            )
+        out.append("")
     return out
 
 
@@ -659,7 +709,9 @@ def summary(report: dict) -> str:
 
     out += text_models_section(report)
 
-    shifted = [w for w in windows if wins[w]["narrative_share_test"] < 0.1]
+    out += scorer_section(report)
+
+    shifted = [w for w in windows if wins[w]["narrative_share_test"] < LOW_NARRATIVE_SHARE]
     out += [
         "## Read with care",
         "",

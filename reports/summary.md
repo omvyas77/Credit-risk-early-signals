@@ -98,6 +98,16 @@ Not run yet: minilm__text__W5, minilm__both__W5, distilbert__text__W5, distilber
 
 Scores of models trained on the subsample are shifted back to the training prior (logit plus the log of the share of negatives kept), which leaves PR-AUC unchanged. DistilBERT's checkpoint is the epoch with the best validation average precision.
 
+## In-browser scorer (test, 95% bootstrap CI)
+
+LR on W5's training split with TF-IDF, lexicon counts and the structured fields, without VADER (no JavaScript port). Fitted on the whole vocabulary first (C chosen on validation: 0.1), then refitted on the 50,000 terms with the largest mean |coefficient x TF-IDF| on train (C chosen on validation: 0.1). Its scores use the bundle's rounded numbers; the bundle is 1.85 MB.
+
+| Model | PR-AUC | AUROC | Log loss | ECE |
+|---|---|---|---|---|
+| LR, `both` | 0.705 (0.687 to 0.724) | 0.956 (0.952 to 0.959) | 0.0770 (0.0741 to 0.0796) | 0.0048 (0.0038 to 0.0058) |
+| In-browser scorer (LR, no VADER, pruned vocabulary) | 0.704 (0.686 to 0.723) | 0.956 (0.952 to 0.959) | 0.0771 (0.0743 to 0.0797) | 0.0048 (0.0039 to 0.0059) |
+| Scorer - LR | -0.001 (-0.001 to -0.000) | -0.000 (-0.000 to -0.000) | +0.0001 (+0.0001 to +0.0002) | +0.0000 (-0.0001 to +0.0001) |
+
 ## Read with care
 
 - Windows W4, W5 test on complaints from the period when only a small share of complaints carried a published narrative, and that subset is late far more often; compare each window's PR-AUC with its own prevalence.
