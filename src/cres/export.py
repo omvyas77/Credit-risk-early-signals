@@ -18,6 +18,8 @@ Writes
   docs/data/explain.json      LR group shares, LightGBM SHAP shares and top terms
   docs/data/scorer.json       how the in-browser scorer was fitted, and its metrics next to
                               the full LR
+  docs/data/manifest.json     the raw files: name, size, sha256 and download time
+  docs/data/v1.json           v1's published numbers and the fixes, from archive/v1.json
   docs/scorer/model.json      the scorer bundle, copied from models/scorer/model.json
 """
 
@@ -35,6 +37,7 @@ DOCS = Path("docs")
 DATA = DOCS / "data"
 SCORER_DIR = DOCS / "scorer"
 REPORTS = Path("reports")
+ARCHIVE = Path("archive")
 DIGITS = 6
 FEATURESET_LABELS = {
     "text": "Narrative only",
@@ -276,8 +279,8 @@ def explain(report: dict) -> dict:
     }
 
 
-def scorer_info(report: dict, fit: dict, bundle: dict, size: int) -> dict:
-    window = fit["window"]
+def scorer_metrics(report: dict, window: str) -> dict:
+    """The scorer's test metrics next to the full LR's, and their paired difference."""
     mine = models.cell_name(scorer.MODEL, scorer.FEATURESET, window)
     full = models.cell_name("lr", "both", window)
     cells = report["cells"]
@@ -292,7 +295,15 @@ def scorer_info(report: dict, fit: dict, bundle: dict, size: int) -> dict:
         None,
     )
     return {
-        "window": window,
+        "scorer": {k: cells[mine][k] for k in ("point", "ci95")} if mine in cells else None,
+        "full": {k: cells[full][k] for k in ("point", "ci95")} if full in cells else None,
+        "scorer_minus_full": compare,
+    }
+
+
+def scorer_info(report: dict, fit: dict, bundle: dict, size: int) -> dict:
+    return {
+        "window": fit["window"],
         "train_dates": bundle["train_dates"],
         "C": fit["C"],
         "C_whole_vocabulary": fit["full"]["C"],
@@ -307,11 +318,43 @@ def scorer_info(report: dict, fit: dict, bundle: dict, size: int) -> dict:
         "days_to_company_default": bundle["defaults"]["days_to_company"],
         "text_check_max_gap": fit["text_check_max_gap"],
         "rounding_max_gap": fit["rounding_max_gap"],
-        "metrics": {
-            "scorer": {k: cells[mine][k] for k in ("point", "ci95")} if mine in cells else None,
-            "full": {k: cells[full][k] for k in ("point", "ci95")} if full in cells else None,
-            "scorer_minus_full": compare,
-        },
+        "metrics": scorer_metrics(report, fit["window"]),
+    }
+
+
+# --- manifest and v1 history --------------------------------------------------------------
+
+
+def manifest(report: dict) -> dict:
+    """The raw files in download order: archive ZIPs by number, then the live file."""
+
+    def order(name: str) -> tuple:
+        parts = name.split("_")
+        return (0, int(parts[2])) if name.startswith("CCDB_Export_") else (1, 0)
+
+    files = [
+        {"name": name, **{k: report[name][k] for k in ("url", "bytes", "sha256", "downloaded")}}
+        for name in sorted(report, key=order)
+    ]
+    return {"files": files}
+
+
+def from_tracked(reports: Path = REPORTS, archive: Path = ARCHIVE) -> dict:
+    """Site files built only from tracked inputs (reports/ and archive/), so a test can rebuild
+    them and compare with docs/data."""
+    report = read(reports / "metrics.json")
+    windows_report = read(reports / "windows.json")
+    curves_dir = reports / "curves"
+    return {
+        "metrics.json": metrics_grid(report),
+        "curves.json": all_curves(curves_dir, report["cells"]),
+        "calibration.json": calibration(curves_dir, report),
+        "timeline.json": timeline(read(reports / "data_profile.json"), windows_report),
+        "windows.json": windows_info(windows_report),
+        "robustness.json": robustness(read(reports / "robustness.json")),
+        "explain.json": explain(read(reports / "explain.json")),
+        "manifest.json": manifest(read(reports / "data_manifest.json")),
+        "v1.json": read(archive / "v1.json"),
     }
 
 
@@ -319,19 +362,8 @@ def main(cfg: dict) -> int:
     report = read(REPORTS / "metrics.json")
     windows_report = read(features.REPORT)
     window = windows_report["windows"][-1]["window"]
-    curves_dir = evaluate.CURVES
-    sizes = {}
-    sizes["metrics.json"] = write(DATA / "metrics.json", metrics_grid(report))
-    sizes["curves.json"] = write(DATA / "curves.json", all_curves(curves_dir, report["cells"]))
-    sizes["calibration.json"] = write(DATA / "calibration.json", calibration(curves_dir, report))
-    profile = read(REPORTS / "data_profile.json")
-    sizes["timeline.json"] = write(DATA / "timeline.json", timeline(profile, windows_report))
-    sizes["windows.json"] = write(DATA / "windows.json", windows_info(windows_report))
+    sizes = {name: write(DATA / name, obj) for name, obj in from_tracked().items()}
     sizes["companies.json"] = write(DATA / "companies.json", companies(cfg, window))
-    sizes["robustness.json"] = write(
-        DATA / "robustness.json", robustness(read(REPORTS / "robustness.json"))
-    )
-    sizes["explain.json"] = write(DATA / "explain.json", explain(read(REPORTS / "explain.json")))
 
     bundle = read(scorer.BUNDLE)
     if bundle["window"] != window:
