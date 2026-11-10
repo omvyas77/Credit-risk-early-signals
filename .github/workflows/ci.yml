@@ -12,6 +12,10 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           version: "0.9.17"
+      # The scorer parity test runs docs/js/scorer.js under Node.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.11.1"
       - run: uv sync --locked
       - run: make lint
       - run: make test
