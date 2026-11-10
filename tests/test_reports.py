@@ -1,5 +1,6 @@
-"""Nothing in reports/ may carry narrative text. Narratives are long free text, usually with
-XXXX redactions; report strings are names, numbers and short generated sentences."""
+"""Nothing in reports/ or the site's data may carry narrative text. Narratives are long free
+text, usually with XXXX redactions; report strings are names, numbers and short generated
+sentences, and the scorer bundle's strings are vocabulary terms and category names."""
 
 import json
 from pathlib import Path
@@ -7,6 +8,8 @@ from pathlib import Path
 import pytest
 
 REPORTS = Path("reports")
+# Site folders written by `python -m cres export`.
+SITE_DATA = [Path("docs/data"), Path("docs/scorer")]
 MAX_JSON_STRING = 200  # longest legitimate value today: a 100-character download URL
 MAX_TEXT_LINE = 1000  # generated markdown, e.g. a list of caveats
 ALLOWED = {".json", ".md"}
@@ -24,14 +27,14 @@ def _strings(obj):
         yield obj
 
 
-def problems(root: Path) -> list[str]:
+def problems(root: Path, allowed: set[str] = ALLOWED) -> list[str]:
     """Every file under root that could hold narrative text, with the reason."""
     out = []
     for path in sorted(p for p in root.rglob("*") if p.is_file()):
         if path.name == ".DS_Store":
             continue
-        if path.suffix not in ALLOWED:
-            out.append(f"{path}: only {sorted(ALLOWED)} files belong in reports/")
+        if path.suffix not in allowed:
+            out.append(f"{path}: only {sorted(allowed)} files belong in {root}/")
             continue
         content = path.read_text(encoding="utf-8")
         if "XXXX" in content:
@@ -48,6 +51,12 @@ def problems(root: Path) -> list[str]:
 def test_reports_hold_no_long_strings():
     assert REPORTS.is_dir()
     assert problems(REPORTS) == []
+
+
+@pytest.mark.parametrize("root", SITE_DATA, ids=str)
+def test_site_data_holds_no_long_strings(root):
+    assert root.is_dir()
+    assert problems(root, {".json"}) == []
 
 
 @pytest.mark.parametrize(
