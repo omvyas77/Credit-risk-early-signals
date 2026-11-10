@@ -144,3 +144,8 @@ def test_load_assembles_each_feature_set(tmp_path, monkeypatch):
     text_names = features.load("W1", "text", "val")["names"]
     assert not any(n.startswith("cat:") for n in text_names)
     assert "num:company_late_rate" not in text_names
+    subset = features.load("W1", "both", "val", rows=np.array([1]))
+    np.testing.assert_array_equal(
+        subset["X"].toarray(), features.load("W1", "both", "val")["X"][[1]].toarray()
+    )
+    assert subset["ids"].tolist() == [11] and subset["y"].tolist() == [1]

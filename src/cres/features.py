@@ -373,10 +373,18 @@ def build_window(con: duckdb.DuckDBPyConnection, win: dict, cfg: dict, labelled:
     return meta
 
 
-def load(window: str, featureset: str, split_name: str, max_terms: int | None = None) -> dict:
+def load(
+    window: str,
+    featureset: str,
+    split_name: str,
+    max_terms: int | None = None,
+    rows: np.ndarray | None = None,
+) -> dict:
     """Assemble one feature set for one window and split.
 
     `max_terms` keeps only the first (most frequent) TF-IDF terms of the vocabulary.
+    `rows` keeps only these row positions of the split (each block is sliced before stacking,
+    so the full matrix is never built).
 
     Returns X (CSR, float32), y, ids, feature names, and the column indices of the numeric
     block, which models should scale inside their Pipeline. The numeric block is the last
@@ -387,17 +395,22 @@ def load(window: str, featureset: str, split_name: str, max_terms: int | None = 
     d = FEATURES / window
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
     vocab = json.loads((d / "vocab.json").read_text(encoding="utf-8"))["terms"]
-    num = np.load(d / f"num_{split_name}.npy")
+    keep = slice(None) if rows is None else np.asarray(rows)
+    num = np.load(d / f"num_{split_name}.npy")[keep]
     blocks, names = [], []
     if featureset in ("text", "both"):
         x_text = sp.load_npz(d / f"tfidf_{split_name}.npz")
+        if rows is not None:
+            x_text = x_text[keep]
         if max_terms is not None and max_terms < len(vocab):
             x_text, vocab = x_text[:, :max_terms], vocab[:max_terms]
         blocks.append(x_text)
         del x_text
         names += [f"tfidf:{t}" for t in vocab]
     if featureset in ("struct", "both"):
-        blocks.append(sp.load_npz(d / f"cat_{split_name}.npz"))
+        x_cat = sp.load_npz(d / f"cat_{split_name}.npz")
+        blocks.append(x_cat if rows is None else x_cat[keep])
+        del x_cat
         names += [f"cat:{c}" for c in meta["categorical_names"]]
     numeric = {"text": TEXT_NUMERIC, "struct": STRUCT_NUMERIC, "both": NUMERIC}[featureset]
     cols = [NUMERIC.index(c) for c in numeric]
@@ -414,8 +427,8 @@ def load(window: str, featureset: str, split_name: str, max_terms: int | None = 
     names += [f"num:{c}" for c in numeric]
     return {
         "X": sp.hstack(blocks, format="csr", dtype=np.float32),
-        "y": np.load(d / f"y_{split_name}.npy"),
-        "ids": np.load(d / f"ids_{split_name}.npy"),
+        "y": np.load(d / f"y_{split_name}.npy")[keep],
+        "ids": np.load(d / f"ids_{split_name}.npy")[keep],
         "names": names,
         "numeric_cols": list(range(first_numeric, len(names))),
     }
