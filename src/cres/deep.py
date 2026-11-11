@@ -47,13 +47,13 @@ from sklearn.model_selection import StratifiedKFold
 from cres import features, models, text
 from cres.evaluate import window_seed
 from cres.ingest import INTERIM
+from cres.split import SPLITS
 
 INPUT = Path("data/deep_input")
 WORK = Path("data/deep")
 DEEP_MODELS = ("minilm", "distilbert")
 ALL_MODELS = (*DEEP_MODELS, "lr_sub")
 FEATURE_SETS = ("text", "both")
-SPLITS = ("train", "val", "test")
 # Per-window files the deep runs read from the feature cache: the structured block, ids,
 # labels and column names. The TF-IDF matrices stay behind.
 STRUCT_FILES = ["meta.json"] + [

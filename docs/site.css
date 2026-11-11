@@ -1,10 +1,3 @@
-/* Hallmark · shape: long report, answer first, sections in the order design.md and the project set · genre: modern-minimal · theme: Console (locked in design.md) · job: understand the finding, then try the scorer · draw: none, the system is locked
- * hero: Stage, the answer on five columns beside the window-by-window grid on seven · nav: masthead · footer: colophon block · imagery: none, the figures are the material · signature: the scorer, a control to try · console: paper
- * axes: light/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V3 · weakest: V, the masthead and the colophon carry over from the first site on purpose so the two read as one project */
-/* Hallmark · sweep: Floor 0 FAIL · Reflex 0 · audit (render, kept): links 8/8, 0 FAIL, 0 REFLEX · Lighthouse accessibility 100 mobile and desktop */
-/* Hallmark · dismissed 59 · the ten sections are the report's agreed order (answer, scorer, threshold, time, calibration, products, data, v1, limits, run); each is one finding */
-/* Hallmark · answered F25 · the product grid scrolls inside its own box at 375 with the training product pinned as the first column */
 @import url("./tokens.css");
 @import url("./base.css");
 

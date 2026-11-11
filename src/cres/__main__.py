@@ -101,8 +101,7 @@ def main(argv: list[str] | None = None) -> int:
         from cres import export
 
         return export.main(cfg)
-    print(f"cres {args.stage}: not implemented yet", file=sys.stderr)
-    return 1
+    raise AssertionError(f"no handler for stage {args.stage}")
 
 
 if __name__ == "__main__":
