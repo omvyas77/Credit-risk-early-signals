@@ -3,127 +3,231 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Credit-risk early signals</title>
-<meta name="description" content="Five models that flag CFPB consumer complaints headed for a dispute or a late response, by Om Hitesh Vyas.">
+<title>Complaint-handling risk: do narratives predict late responses?</title>
+<meta name="description" content="Does what a consumer writes help predict a late company response to a CFPB complaint, beyond the company, product and issue? Results across five held-out quarters, and a scorer to try in the browser.">
+<link rel="preload" href="fonts/host-grotesk-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="site.css">
+<script>document.documentElement.classList.add('js');</script>
+<script type="module" src="js/site.js"></script>
 </head>
 <body>
+<a class="skip" href="#top">Skip to content</a>
 
 <header class="masthead">
   <div class="container">
-    <a class="wordmark" href="#top">Credit-risk early signals</a>
+    <a class="wordmark" href="#top">Complaint-handling risk</a>
     <nav aria-label="Page">
-      <a href="#evidence">Evidence</a>
+      <a href="#evidence">Answer</a>
+      <a href="#try">Scorer</a>
+      <a href="#threshold">Threshold</a>
+      <a href="#time">Over time</a>
       <a href="#limits">Limits</a>
       <a href="#run">Run it</a>
-      <a href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/archive/cfpb_report.pdf">Report (PDF)</a>
       <a href="https://github.com/omvyas77/Credit-risk-early-signals">Code</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
-<section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <h1>Flagging complaints headed for disputes or delays</h1>
-      <p class="lead">Five models trained on 639,149 CFPB complaints, tested on the months after.</p>
+<noscript><p class="noscript container">The figures and charts on this page are read from <a href="https://github.com/omvyas77/Credit-risk-early-signals/tree/main/docs/data">its data files</a> by JavaScript, which is off.</p></noscript>
+
+<section class="hero" id="evidence" aria-labelledby="hero-title">
+  <div class="container stage-grid">
+    <div class="answer-copy">
+      <h1 id="hero-title">The complaint’s words add almost nothing</h1>
+      <p class="lead">Adding the narrative moves mean test PR-AUC from <span class="measured" data-k="struct"></span> to <span class="measured" data-k="both"></span>.</p>
       <div class="actions">
-        <a class="btn btn--primary" href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/archive/cfpb_report.pdf">Read the report</a>
-        <a class="btn" href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/archive/CFPB_Credit_Risk_Early_Signals.ipynb">Open the notebook</a>
+        <a class="btn btn--primary" href="#try">Try the scorer</a>
+        <a class="btn" href="https://github.com/omvyas77/Credit-risk-early-signals">Read the code</a>
       </div>
     </div>
-    <table class="board">
-      <caption>Test months: July 1 to October 15, 2025, 40,659 complaints.</caption>
-      <thead><tr><th scope="col">Model</th><th scope="col"><span class="visually-hidden">PR-AUC as a bar</span></th><th scope="col" class="num">PR-AUC</th><th scope="col" class="num">AUROC</th></tr></thead>
-      <tbody>
-<tr class="lead-row"><td class="model">LightGBM<small>TF-IDF, product, company and state</small></td><td><span class="meter"><i style="width: 89.7%"></i></span></td><td class="num measured big">0.314</td><td class="num measured">0.966</td></tr>
-<tr><td class="model">Logistic regression<small>Same features</small></td><td><span class="meter"><i style="width: 81.7%"></i></span></td><td class="num measured">0.286</td><td class="num measured">0.955</td></tr>
-<tr><td class="model">Fine-tuned transformer<small>Balanced subsample</small></td><td><span class="meter"><i style="width: 34.6%"></i></span></td><td class="num measured">0.121</td><td class="num measured">0.905</td></tr>
-<tr><td class="model">MiniLM + logistic regression<small>Sentence embeddings</small></td><td><span class="meter"><i style="width: 22.0%"></i></span></td><td class="num measured">0.077</td><td class="num measured">0.874</td></tr>
-<tr><td class="model">MiniLM + LightGBM<small>Sentence embeddings</small></td><td><span class="meter"><i style="width: 19.1%"></i></span></td><td class="num measured">0.067</td><td class="num measured">0.880</td></tr>
-<tr class="chance"><td class="model">Chance<small>The share flagged in the test months</small></td><td><span class="meter"><i style="width: 2.0%"></i></span></td><td class="num measured">0.007</td><td class="num measured">0.500</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section class="evidence" id="evidence">
-  <div class="container pair pair--lead">
-    <div>
-      <h2>Simpler features beat bigger models</h2>
-      <p>TF-IDF word features plus product, company and state reached <span class="measured">0.314</span>. A fine-tuned transformer reached <span class="measured">0.121</span>.</p>
-    </div>
-    <figure class="plate">
-      <img src="images/pr-all-models.png" width="889" height="590" alt="Precision against recall for four models on the test months. The two TF-IDF models stay well above the transformer and the MiniLM model at every recall, and all sit far above the chance line at 0.007.">
-      <figcaption>Precision against recall in the test months. The dashed line is chance.</figcaption>
+    <figure class="panel chart-panel">
+      <figcaption class="chart-head">Does what a consumer writes help predict a late response? Test PR-AUC per quarter, with 95% CIs.</figcaption>
+      <div class="chart" id="grid-chart" data-chart></div>
+      <p class="chart-note" id="grid-note"></p>
+      <details class="fallback"><summary>Table: test PR-AUC by window</summary><div class="scroll" id="grid-table"></div></details>
     </figure>
   </div>
 </section>
 
-<section class="evidence">
-  <div class="container pair">
-    <div>
-      <h2>Raw scores overstate the risk</h2>
-      <p>Complaints scored near 0.9 were positive about a third of the time. Isotonic calibration cut the Brier score from <span class="measured">0.068</span> to <span class="measured">0.006</span>.</p>
-    </div>
-    <figure class="plate plate--narrow">
-      <img src="images/reliability.png" width="458" height="470" alt="Reliability curve for logistic regression. Observed frequency stays near zero until predicted probability passes 0.8, and reaches only about 0.32 at a predicted 0.94, far below the diagonal.">
-      <figcaption>Logistic regression before calibration. The diagonal is a perfect fit.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<section class="evidence">
-  <div class="container pair">
-    <div>
-      <h2>It leans on company names</h2>
-      <p>The strongest features are the product and the company, such as Experian, TransUnion and Equifax. Trained on credit reporting and tested on debt collection, PR-AUC fell to <span class="measured">0.124</span>.</p>
-    </div>
-    <figure class="plate">
-      <img src="images/shap-importance.png" width="1231" height="547" alt="LightGBM feature importance. The top features are the credit card product and the companies Experian, TransUnion and Equifax, followed by more product and company indicators; a word count is the only text feature near the top.">
-      <figcaption>LightGBM feature importance, strongest at the top.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<section class="evidence">
-  <div class="container pair">
-    <div>
-      <h2>The label shifted in 2017</h2>
-      <p>A complaint counts as risky if the consumer disputed the response or it came late. The CFPB stopped taking disputes on April 24, 2017, and the flagged share fell from about 25% to 2%.</p>
-    </div>
-    <figure class="plate">
-      <img src="images/risk-rate-over-time.png" width="855" height="393" alt="Monthly share of complaints flagged, 2015 to 2025. It sits between 0.23 and 0.30 until early 2017, drops sharply, and stays near 0.02 afterwards.">
-      <figcaption>Share of complaints flagged each month.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<section class="limits" id="limits">
+<section class="section section--try" id="try" aria-labelledby="try-title">
   <div class="container">
-    <h2>What this can’t tell you</h2>
-    <div class="row"><h3>The label is a proxy</h3><p>It marks disputes and late responses, not fraud or default.</p></div>
-    <div class="row"><h3>It uses one shard</h3><p>Every fifth row: 679,808 complaints with a narrative.</p></div>
-    <div class="row"><h3>The narratives are gone</h3><p>The CFPB removed them in September 2026, so a rerun needs a saved export.</p></div>
+    <div class="head head--split">
+      <h2 id="try-title">Score a complaint</h2>
+      <p class="lead">Write one or pick an example. Nothing leaves your browser.</p>
+    </div>
+    <div class="workbench" id="scorer">
+      <form class="panel scorer-input" id="scorer-form">
+        <fieldset class="examples">
+          <legend>Hand-written examples</legend>
+          <div class="chips" id="examples"></div>
+        </fieldset>
+        <label for="s-text">Complaint text</label>
+        <textarea id="s-text" name="text" rows="7" spellcheck="true"></textarea>
+        <div class="pickers">
+          <div><label for="s-product">Product</label><select id="s-product" name="product"></select></div>
+          <div><label for="s-issue">Issue</label><select id="s-issue" name="issue"></select></div>
+          <div class="wide"><label for="s-company">Company</label><select id="s-company" name="company"></select></div>
+        </div>
+      </form>
+      <div class="panel readout" aria-live="polite" id="scorer-out">
+        <p class="readout-label">Chance of a late response</p>
+        <p class="readout-value measured" id="s-prob"></p>
+        <div class="compare" id="s-compare"></div>
+        <div class="words">
+          <p class="readback" id="s-readback"></p>
+          <p class="legend"><span class="key key--up"></span>raises <span class="key key--down"></span>lowers</p>
+        </div>
+        <details class="fallback"><summary>Log-odds by field</summary><dl class="parts" id="s-parts"></dl></details>
+      </div>
+    </div>
+    <p class="note" id="scorer-note"></p>
   </div>
 </section>
 
-<section class="run" id="run">
+<section class="section section--band" id="threshold" aria-labelledby="threshold-title">
   <div class="container">
-    <h2>Run the notebook</h2>
-    <div class="run-grid">
-      <ul class="facts">
-        <li>Written for Google Colab</li>
-        <li>An export running to <span class="measured">2025-10-15</span></li>
-        <li>Split by date on <span class="measured">2025-07-01</span></li>
-        <li>F2-best threshold <span class="measured">0.80</span>, F2 <span class="measured">0.39</span></li>
-      </ul>
-<pre class="code"><span class="c"># install the dependencies</span>
-pip install -r requirements.txt
-<span class="c"># in the first cell, point at your saved export</span>
-DATA_PATH = Path("/content/drive/MyDrive/complaints.csv")
-<span class="c"># outside Colab, drop the drive.mount line and use a local path</span></pre>
+    <div class="head head--split">
+      <h2 id="threshold-title">Pick a threshold</h2>
+      <p class="lead">A flag costs a review; a miss costs a late reply. Thresholds from validation, counts from test.</p>
+    </div>
+    <div class="workbench workbench--threshold">
+      <div class="panel controls">
+        <div class="field"><label for="t-window">Window</label><select id="t-window"></select></div>
+        <div class="field">
+          <label for="t-slider">Threshold <output class="measured" id="t-value" for="t-slider"></output></label>
+          <input type="range" id="t-slider" min="0" max="1" step="1" value="0">
+          <p class="hint" id="t-hint"></p>
+        </div>
+        <div class="costs">
+          <div class="field"><label for="t-fp">Cost of a needless review</label><input type="number" id="t-fp" min="0" step="1" inputmode="decimal"></div>
+          <div class="field"><label for="t-fn">Cost of a missed late reply</label><input type="number" id="t-fn" min="0" step="1" inputmode="decimal"></div>
+        </div>
+        <button class="btn" type="button" id="t-best">Cheapest on validation</button>
+      </div>
+      <div class="panel matrix-panel" aria-live="polite">
+        <dl class="figures" id="t-figures"></dl>
+        <table class="matrix" id="t-matrix">
+          <caption id="t-caption"></caption>
+          <thead><tr><td></td><th scope="col">Flagged</th><th scope="col">Not flagged</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Late</th><td class="cell cell--ok" id="t-tp"></td><td class="cell cell--bad" id="t-fn-n"></td></tr>
+            <tr><th scope="row">On time</th><td class="cell cell--bad" id="t-fp-n"></td><td class="cell" id="t-tn"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="time" aria-labelledby="time-title">
+  <div class="container">
+    <div class="head head--split">
+      <h2 id="time-title">Does it hold up over time</h2>
+      <p class="lead" id="time-lead"></p>
+    </div>
+    <figure class="figure-wide">
+      <div class="chart" id="time-chart" data-chart></div>
+      <figcaption>Logistic regression, 95% CIs. The dash is chance, the test late rate.</figcaption>
+      <details class="fallback"><summary>Table: each window’s test period, prevalence and PR-AUC</summary><div class="scroll" id="time-table"></div></details>
+    </figure>
+    <figure class="figure-wide figure-drift">
+      <div class="chart" id="drift-chart" data-chart></div>
+      <figcaption>Drift: late rate and mean score by test month.</figcaption>
+      <details class="fallback"><summary>Table: late rate and mean score by test month</summary><div class="scroll" id="drift-table"></div></details>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="calibration" aria-labelledby="cal-title">
+  <div class="container split split--chart">
+    <div class="head">
+      <h2 id="cal-title">Can you trust the probabilities</h2>
+      <p class="lead">Class weighting inflates scores; refitting on validation fixes it.</p>
+      <div class="field field--inline"><label for="c-window">Window</label><select id="c-window"></select></div>
+      <div class="scroll"><table class="data" id="cal-stats"></table></div>
+    </div>
+    <figure class="panel chart-panel">
+      <div class="chart chart--square" id="cal-chart" data-chart></div>
+      <figcaption>Late rate against mean score in ten equal-count test bins, on square-root axes.</figcaption>
+      <details class="fallback"><summary>Table: reliability bins</summary><div class="scroll" id="cal-table"></div></details>
+    </figure>
+  </div>
+</section>
+
+<section class="section section--band" id="products" aria-labelledby="products-title">
+  <div class="container">
+    <div class="head head--split">
+      <h2 id="products-title">Across products</h2>
+      <p class="lead">Train on one product, test on another: rows trained, columns tested.</p>
+    </div>
+    <fieldset class="seg" id="p-set"><legend>Features</legend></fieldset>
+    <div class="scroll"><table class="heat" id="p-heat"></table></div>
+    <p class="note" id="p-note"></p>
+    <details class="fallback"><summary>The same grid with 95% CIs</summary><div class="scroll" id="p-ci"></div></details>
+  </div>
+</section>
+
+<section class="section" id="data" aria-labelledby="data-title">
+  <div class="container">
+    <div class="head head--split">
+      <h2 id="data-title">Why the data looks like this</h2>
+      <p class="lead" id="data-lead"></p>
+    </div>
+    <figure class="figure-wide">
+      <div class="chart" id="volume-chart" data-chart></div>
+      <figcaption>Complaints received a month.</figcaption>
+    </figure>
+    <figure class="figure-wide figure-drift">
+      <div class="chart" id="late-chart" data-chart></div>
+      <figcaption>Share answered late a month.</figcaption>
+      <details class="fallback"><summary>Table: complaints, narratives and late rates by month</summary><div class="scroll" id="data-table"></div></details>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="v1" aria-labelledby="v1-title">
+  <div class="container">
+    <div class="head head--split">
+      <h2 id="v1-title">What I corrected from v1</h2>
+      <div>
+        <p class="lead" id="v1-lead"></p>
+        <p class="links"><a href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/archive/cfpb_report.pdf">v1 report (PDF)</a> <a href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/archive/CFPB_Credit_Risk_Early_Signals.ipynb">v1 notebook</a></p>
+      </div>
+    </div>
+    <div class="scroll"><table class="data fixes" id="v1-fixes"><caption class="visually-hidden">What v1 did and what this version does instead</caption></table></div>
+  </div>
+</section>
+
+<section class="section section--limits" id="limits" aria-labelledby="limits-title">
+  <div class="container">
+    <h2 id="limits-title">What this can’t tell you</h2>
+    <div class="rows" id="limits-rows">
+      <div class="row"><h3>The label is a proxy</h3><p>Lateness measures complaint handling, not who was right.</p></div>
+      <div class="row"><h3>2026 is a different population</h3><p id="limit-shift"></p></div>
+      <div class="row"><h3>Deep models are not run yet</h3><p id="limit-deep"></p></div>
+      <div class="row"><h3>Results are pinned to one download</h3><p id="limit-live"></p></div>
+      <div class="row"><h3>Not for credit decisions</h3><p>It scores how companies handle complaints, not anyone’s credit.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--run" id="run" aria-labelledby="run-title">
+  <div class="container">
+    <div class="head head--split">
+      <h2 id="run-title">Run it</h2>
+      <p class="lead" id="run-lead"></p>
+    </div>
+    <dl class="figures figures--three figures--wide" id="run-figures"></dl>
+    <div class="split split--run">
+<pre class="code"><code><span class="c"># Python 3.12 via uv</span>
+uv sync
+<span class="c"># download to export</span>
+make all
+<span class="c"># tests and scorer parity (Node)</span>
+make test</code></pre>
+      <details class="fallback manifest"><summary>The data manifest, every file</summary><div class="scroll"><table class="data" id="manifest"><caption id="manifest-caption"></caption></table></div></details>
     </div>
   </div>
 </section>
@@ -131,7 +235,7 @@ DATA_PATH = Path("/content/drive/MyDrive/complaints.csv")
 
 <footer class="colophon">
   <div class="container">
-    <p>Credit-risk early signals is by Om Hitesh Vyas. The code is on <a href="https://github.com/omvyas77/Credit-risk-early-signals">GitHub</a> under the MIT license, the method is in <a href="https://github.com/omvyas77/Credit-risk-early-signals/blob/main/archive/cfpb_report.pdf">the written report</a>, and the data comes from the CFPB Consumer Complaint Database. Reach me on <a href="https://www.linkedin.com/in/om-hitesh-vyas-97340a204/">LinkedIn</a>.</p>
+    <p>By Om Hitesh Vyas. Code on <a href="https://github.com/omvyas77/Credit-risk-early-signals">GitHub</a>, MIT license. Data from the CFPB complaint database and its Narratives Archive; every figure is read from <a href="https://github.com/omvyas77/Credit-risk-early-signals/tree/main/docs/data">the site’s data files</a>. <a href="https://www.linkedin.com/in/om-hitesh-vyas-97340a204/">LinkedIn</a></p>
   </div>
 </footer>
 </body>
