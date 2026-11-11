@@ -1,6 +1,6 @@
 [project]
 name = "cres"
-version = "2.0.0.dev0"
+version = "2.0.0"
 description = "Predict late company responses to CFPB consumer complaints from what is known at intake."
 readme = "README.md"
 license = "MIT"
