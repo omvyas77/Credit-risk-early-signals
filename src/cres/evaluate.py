@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from cres import features, models
+from cres import config, features, models
 
 REPORTS = Path("reports")
 METRICS = REPORTS / "metrics.json"
@@ -321,13 +321,32 @@ def not_run(cfg: dict, cells: dict) -> list[str]:
     return [c for c in expected if c not in cells]
 
 
-def main(cfg: dict) -> int:
+SETTINGS = ("seed", "evaluate", "models", "deep")
+
+
+def current(paths: list[Path], cfg: dict) -> bool:
+    """True if the reports are newer than every input, were built with the same settings and
+    cover exactly these files."""
+    inputs = [*paths, *models.MODELS.glob("*.json"), features.REPORT]
+    if features.stale(METRICS, inputs) or features.stale(SUMMARY, inputs):
+        return False
+    if config.settings_changed("evaluate", config.settings(cfg, SETTINGS)):
+        return False
+    cells = json.loads(METRICS.read_text(encoding="utf-8"))["cells"]
+    return set(cells) == {p.stem for p in paths}
+
+
+def main(cfg: dict, force: bool = False) -> int:
     ecfg = cfg["evaluate"]
     if not ecfg.get("costs"):
         raise SystemExit("evaluate: set evaluate.costs.fp and .fn in config")
     paths = sorted(models.PREDS.glob("*.parquet"))
     if not paths:
         raise SystemExit("evaluate: no prediction files in data/preds/")
+    if not force and current(paths, cfg):
+        config.record_settings("evaluate", config.settings(cfg, SETTINGS))
+        print("evaluate: reports are newer than the prediction files, nothing to do")
+        return 0
     by_window: dict = {}
     for path in paths:
         by_window.setdefault(parse_name(path)[2], []).append(path)
@@ -365,6 +384,7 @@ def main(cfg: dict) -> int:
     }
     METRICS.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     SUMMARY.write_text(summary(report), encoding="utf-8")
+    config.record_settings("evaluate", config.settings(cfg, SETTINGS))
     return 0
 
 

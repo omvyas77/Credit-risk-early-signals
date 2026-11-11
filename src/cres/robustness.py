@@ -349,7 +349,17 @@ def errors(window: str, cfg: dict) -> dict:
     }
 
 
-def main(cfg: dict) -> int:
+def main(cfg: dict, force: bool = False) -> int:
+    # The prediction files it reads (the error threshold in metrics.json comes from them too).
+    preds = {models.cell_name(m, fs, "*") for m, fs in DRIFT_MODELS}
+    inputs = [
+        *(p for pattern in sorted(preds) for p in models.PREDS.glob(f"{pattern}.parquet")),
+        *features.FEATURES.glob("W*/meta.json"),
+        features.REPORT,
+    ]
+    if not force and not features.stale(OUT, inputs):
+        print(f"robustness: {OUT} is newer than its inputs, nothing to do")
+        return 0
     windows = [w["window"] for w in json.loads(features.REPORT.read_text("utf-8"))["windows"]]
     latest = windows[-1]
     t0 = time.time()

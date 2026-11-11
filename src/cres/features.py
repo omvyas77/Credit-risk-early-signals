@@ -30,7 +30,7 @@ from cres.ingest import INTERIM
 FEATURES = Path("data/features")
 REPORT = Path("reports/windows.json")
 
-# Banned as features (CLAUDE.md rule 2). The only outcome-derived feature is company history,
+# Outcome fields, banned as features. The only outcome-derived feature is company history,
 # which uses other complaints received before date - gap_days.
 BANNED = {
     "timely_response",
@@ -464,8 +464,8 @@ def stale(output: Path, inputs: list[Path]) -> bool:
     return not output.exists() or any(output.stat().st_mtime < p.stat().st_mtime for p in inputs)
 
 
-def main(cfg: dict) -> int:
-    from cres.config import DEFAULT
+def main(cfg: dict, force: bool = False) -> int:
+    from cres import config
 
     profile = json.loads(Path("reports/data_profile.json").read_text(encoding="utf-8"))
     data_end = dt.date.fromisoformat(profile["label"]["data_end"])
@@ -473,8 +473,20 @@ def main(cfg: dict) -> int:
     labelled_path = INTERIM / "labelled.parquet"
     labelled = f"read_parquet('{labelled_path}')"
     live = f"read_parquet('{INTERIM / 'live.parquet'}')"
-    code = [Path(__file__), Path(text.__file__), Path(split.__file__)]
-    inputs = [labelled_path, DEFAULT, *code]
+    inputs = [labelled_path]
+    rows_path = FEATURES / "rows.parquet"
+    metas = [FEATURES / w["window"] / "meta.json" for w in wins]
+    settings = config.settings(
+        cfg, ("seed", "label", "windows", "features"), tokenizer=text.spec_hash()
+    )
+    force = force or config.settings_changed("features", settings)
+    current = not stale(rows_path, inputs) and not any(
+        stale(m, [*inputs, rows_path]) for m in metas
+    )
+    if not force and current and REPORT.exists() and (FEATURES / "splits.parquet").exists():
+        config.record_settings("features", settings)
+        print("features: every window is newer than labelled.parquet, nothing to do")
+        return 0
 
     FEATURES.mkdir(parents=True, exist_ok=True)
     scratch = FEATURES / "features.duckdb"
@@ -490,8 +502,7 @@ def main(cfg: dict) -> int:
     )
     first = min(w["train"][0] for w in wins)
 
-    rows_path = FEATURES / "rows.parquet"
-    if stale(rows_path, inputs):
+    if force or stale(rows_path, inputs):
         tagged = (
             f"(select * from {labelled} "
             f"where date_received between date '{first}' and date '{data_end}')"
@@ -526,7 +537,7 @@ def main(cfg: dict) -> int:
     }
     for win in wins:
         meta_path = FEATURES / win["window"] / "meta.json"
-        if stale(meta_path, [*inputs, rows_path]):
+        if force or stale(meta_path, [*inputs, rows_path]):
             meta = build_window(con, win, cfg, labelled)
         else:
             print(f"{win['window']}: features are current")
@@ -537,6 +548,7 @@ def main(cfg: dict) -> int:
     con.close()
     scratch.unlink()
     REPORT.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    config.record_settings("features", settings)
     return 0
 
 

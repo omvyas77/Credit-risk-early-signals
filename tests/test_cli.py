@@ -23,3 +23,20 @@ def test_default_config_has_one_seed():
     cfg = config.load()
     assert isinstance(cfg["seed"], int)
     assert cfg["label"]["received_from"] == "2017-05-01"
+
+
+def test_settings_record_tracks_only_the_sections_a_stage_reads(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "STAMPS", tmp_path / "stamps")
+    cfg = {"seed": 42, "label": {"received_from": "2017-05-01"}, "scorer": {"digits": 7}}
+    keys = ("seed", "label")
+    current = config.settings(cfg, keys, tokenizer="abc")
+    # No record yet: outputs built before records existed count as unchanged.
+    assert not config.settings_changed("label", current)
+    config.record_settings("label", current)
+    assert not config.settings_changed("label", config.settings(cfg, keys, tokenizer="abc"))
+    other = {**cfg, "scorer": {"digits": 3}}
+    assert not config.settings_changed("label", config.settings(other, keys, tokenizer="abc"))
+    assert config.settings_changed(
+        "label", config.settings({**cfg, "seed": 1}, keys, tokenizer="abc")
+    )
+    assert config.settings_changed("label", config.settings(cfg, keys, tokenizer="xyz"))

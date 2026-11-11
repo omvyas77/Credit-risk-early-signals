@@ -3,7 +3,6 @@
 import calendar
 import datetime as dt
 import statistics
-from pathlib import Path
 
 import duckdb
 
@@ -89,18 +88,20 @@ def apply_label(
 NARRATIVES_REF = 3_851_415  # total narratives reported by the cfpb-complaints-analysis project
 
 
-def main(cfg: dict) -> int:
-    from cres.config import DEFAULT
+def main(cfg: dict, force: bool = False) -> int:
+    from cres import config
     from cres.ingest import INTERIM, write_profile
 
     out = INTERIM / "labelled.parquet"
-    inputs = [
-        INTERIM / "complaints.parquet",
-        INTERIM / "narratives.parquet",
-        DEFAULT,
-        Path(__file__),
-    ]
-    if out.exists() and all(out.stat().st_mtime > p.stat().st_mtime for p in inputs):
+    inputs = [INTERIM / "complaints.parquet", INTERIM / "narratives.parquet"]
+    settings = config.settings(cfg, ("label", "data_end"))
+    if (
+        not force
+        and not config.settings_changed("label", settings)
+        and out.exists()
+        and all(out.stat().st_mtime > p.stat().st_mtime for p in inputs)
+    ):
+        config.record_settings("label", settings)
         print("label: labelled.parquet is newer than its inputs, nothing to do")
         return 0
 
@@ -187,4 +188,5 @@ def main(cfg: dict) -> int:
     for key, value in drops.items():
         print(f"  {key}: {value:,}")
     print(f"  late: {late_rate[1]:,} ({late_rate[0]:.4f})")
+    config.record_settings("label", settings)
     return 0

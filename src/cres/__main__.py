@@ -45,6 +45,8 @@ def build_parser() -> argparse.ArgumentParser:
     deep.add_argument("--window", help="window, e.g. W5 (default: the first of deep.windows)")
     deep.add_argument("--force", action="store_true", help="redo cells whose files exist")
     stages["scorer"].add_argument("--force", action="store_true", help="refit when current")
+    for name in ("label", "features", "evaluate", "explain", "robustness"):
+        stages[name].add_argument("--force", action="store_true", help="rerun when current")
     return parser
 
 
@@ -62,11 +64,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.stage == "label":
         from cres import label
 
-        return label.main(cfg)
+        return label.main(cfg, args.force)
     if args.stage == "features":
         from cres import features
 
-        return features.main(cfg)
+        return features.main(cfg, args.force)
     if args.stage == "train":
         from cres import models
 
@@ -86,15 +88,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.stage == "evaluate":
         from cres import evaluate
 
-        return evaluate.main(cfg)
+        return evaluate.main(cfg, args.force)
     if args.stage == "explain":
         from cres import explain
 
-        return explain.main(cfg)
+        return explain.main(cfg, args.force)
     if args.stage == "robustness":
         from cres import robustness
 
-        return robustness.main(cfg)
+        return robustness.main(cfg, args.force)
     if args.stage == "export":
         from cres import export
 

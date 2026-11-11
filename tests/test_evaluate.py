@@ -143,7 +143,7 @@ def test_bootstrap_ci_brackets_the_estimate_and_collapses_for_a_perfect_model():
 def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
     import json
 
-    from cres import evaluate, features, models
+    from cres import config, evaluate, features, models
 
     monkeypatch.setattr(features, "FEATURES", tmp_path / "features")
     monkeypatch.setattr(features, "REPORT", tmp_path / "windows.json")
@@ -152,6 +152,7 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
     monkeypatch.setattr(evaluate, "METRICS", tmp_path / "metrics.json")
     monkeypatch.setattr(evaluate, "CURVES", tmp_path / "curves")
     monkeypatch.setattr(evaluate, "SUMMARY", tmp_path / "summary.md")
+    monkeypatch.setattr(config, "STAMPS", tmp_path / "stamps")
     rng = np.random.default_rng(0)
     d = features.FEATURES / "W1"
     d.mkdir(parents=True)
@@ -233,6 +234,12 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
     sub_row = next(r for r in text.splitlines() if "DistilBERT's training subsample |" in r)
     assert sub_row.count("not run") == 1  # text was run, both was not
     assert "Not run yet: lr_sub__both__W1, minilm__text__W1" in text
+    # A rerun with nothing new is skipped; a removed prediction file makes it run again.
+    paths = sorted(models.PREDS.glob("*.parquet"))
+    assert evaluate.current(paths, cfg)
+    assert not evaluate.current(paths[1:], cfg)
+    assert evaluate.current(paths, {**cfg, "scorer": {"digits": 3}})  # a section it doesn't read
+    assert not evaluate.current(paths, {**cfg, "seed": 7})
 
 
 def test_training_caveats_report_stopping_rounds_and_c_at_the_grid_edge():

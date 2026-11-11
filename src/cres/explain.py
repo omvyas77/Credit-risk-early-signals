@@ -175,9 +175,14 @@ def shap_groups(booster, X, y: np.ndarray, names: list[str], n: int, seed: list[
     }
 
 
-def main(cfg: dict) -> int:
+def main(cfg: dict, force: bool = False) -> int:
     import lightgbm as lgb
 
+    # The LR and LightGBM fits it reads; a change to their features or config refits them.
+    inputs = [*models.MODELS.glob("lr__*"), *models.MODELS.glob("lgbm__*"), features.REPORT]
+    if not force and not features.stale(OUT, inputs):
+        print(f"explain: {OUT} is newer than the fitted models, nothing to do")
+        return 0
     windows = [w["window"] for w in json.loads(features.REPORT.read_text("utf-8"))["windows"]]
     latest = windows[-1]
     max_terms = cfg["models"]["lgbm"]["max_text_terms"]
