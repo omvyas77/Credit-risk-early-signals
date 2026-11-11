@@ -19,6 +19,7 @@ STAGES = {
     "explain": "coefficients by group and SHAP",
     "robustness": "cross-product matrix and test-period drift",
     "export": "write site JSON and the scorer bundle into docs/",
+    "writeup": "fill the generated numbers in README.md and MODEL_CARD.md from reports/",
 }
 
 
@@ -101,6 +102,10 @@ def main(argv: list[str] | None = None) -> int:
         from cres import export
 
         return export.main(cfg)
+    if args.stage == "writeup":
+        from cres import writeup
+
+        return writeup.main(cfg)
     raise AssertionError(f"no handler for stage {args.stage}")
 
 
