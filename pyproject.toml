@@ -4,7 +4,7 @@ version = "2.0.0"
 description = "Predict late company responses to CFPB consumer complaints from what is known at intake."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "duckdb==2.0.0",
     "lightgbm==4.7.0",

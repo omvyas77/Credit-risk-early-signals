@@ -27,7 +27,7 @@ TF-IDF LR on DistilBERT's training subsample) runs on the laptop with `make deep
    Set Runtime > Change runtime type > T4 GPU (or better).
 
 4. **Run all cells** (Runtime > Run all) and allow Drive access when asked. The cells:
-   check the GPU and Python 3.12, mount Drive, clone `v2` and `pip install ".[deep]"` (this
+   check the GPU and Python (3.12 or 3.13), mount Drive, clone `v2` and `pip install ".[deep]"` (this
    replaces Colab's torch with the pinned version; pip's warnings about torchvision or
    torchaudio don't matter here), copy `deep_input` into `data/`, run MiniLM and copy its
    files to Drive, then run DistilBERT and copy its files to Drive. On a T4, expect about 15
