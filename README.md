@@ -1,347 +1,193 @@
-# Credit-Risk Early Signals from CFPB Consumer Complaints
+# Does a complaint's text predict a late company response?
 
-## Project Overview
-This project builds an early-warning machine learning pipeline to detect elevated credit-risk signals from CFPB consumer complaint narratives. The goal is not to predict confirmed fraud directly, but to identify complaints associated with risky downstream outcomes using proxy supervisory signals derived from complaint resolution fields.
+When a consumer files a complaint with the Consumer Financial Protection Bureau (CFPB), the
+company has 15 days to respond. This project asks whether what the consumer writes helps
+predict which complaints will get a late response, beyond what the complaint form already
+says (company, product, issue, state, channel) and the company's own track record.
+
+**[Read the results and try the scorer in your browser](https://omvyas77.github.io/Credit-risk-early-signals/)**
+
+This is about **complaint-handling risk**: how companies respond to complaints. It is not a
+credit-risk model and must not be used for credit decisions or to judge individual consumers.
+See [MODEL_CARD.md](MODEL_CARD.md).
+
+## The answer
+
+<!-- generated:answer -->
+Across 5 rolling quarterly test windows, a logistic regression on the intake fields and the company's history reaches a mean test PR-AUC of 0.614. Adding the narrative gives 0.605 (its paired 95% CI is below zero in 4 of 5 windows), and the narrative alone gives 0.180, against 0.020 by chance. Most of the signal is the company: its own trailing late rate, with no model, reaches 0.564.
+<!-- /generated:answer -->
 
 ## Results
 
-Tested on the latest period: 40,659 complaints, 0.7% flagged.
+<!-- generated:results -->
+| Model | Features | Mean test PR-AUC, 5 windows | W5 test PR-AUC (95% CI) |
+|---|---|---|---|
+| Chance (share of late responses) | none | 0.020 | 0.040 |
+| Company late rate alone | company history | 0.564 | 0.660 (0.641 to 0.679) |
+| LR | narrative only | 0.180 | 0.328 (0.308 to 0.348) |
+| LR | intake fields + company history | 0.614 | 0.713 (0.695 to 0.732) |
+| LR | narrative + intake fields + company history | 0.605 | 0.705 (0.687 to 0.724) |
+| LightGBM | narrative only | 0.172 | 0.318 (0.299 to 0.338) |
+| LightGBM | intake fields + company history | 0.509 | 0.607 (0.586 to 0.628) |
+| LightGBM | narrative + intake fields + company history | 0.460 | 0.626 (0.607 to 0.647) |
+| In-browser scorer (LR, no VADER, pruned vocabulary) | narrative + intake fields + company history | W5 only | 0.704 (0.686 to 0.723) |
+<!-- /generated:results -->
 
-| Model | PR-AUC | AUROC |
-| --- | --- | --- |
-| LightGBM, TF-IDF + structured features | 0.314 | 0.966 |
-| Logistic regression, same features | 0.286 | 0.955 |
-| Fine-tuned transformer (balanced subsample) | 0.121 | 0.905 |
-| MiniLM embeddings + logistic regression | 0.077 | 0.874 |
-| MiniLM embeddings + LightGBM | 0.067 | 0.880 |
+PR-AUC is the area under the precision-recall curve; a model that guesses scores the share of
+late responses. Every test window has its own per-window table with bootstrap CIs in
+[reports/summary.md](reports/summary.md), and the model card has calibration and thresholds.
+The numbers in this file are filled in from `reports/` by `make writeup`, and a test fails if
+they drift.
 
-At the F2-optimal threshold of 0.80, logistic regression scores F2 0.39. Trained on one product and tested on another, PR-AUC falls to 0.12.
+## How it works
 
-![Probability calibration](archive/images/Probabilitycalibration_4.png)
+- **Data.** Complaint narratives from the CFPB's archive, joined on complaint ID to the live
+  complaints file, which supplies every other field and the outcome.
+- **Label.** A complaint is late if the live file marks its response untimely. Outcome fields
+  are never features; only what is known when a complaint arrives is.
+- **Windows.** Five rolling quarterly test windows generated from the data's end date. Each has
+  its own training year and validation quarter, with a 30-day gap between them.
+- **Features.** TF-IDF word 1-2 grams, urgency and harm word counts and VADER sentiment from
+  the narrative; product, issue, state, channel and tags from the form; and the company's late
+  rate over the year ending 30 days before the complaint.
+- **Models.** Logistic regression and LightGBM on narrative only, intake fields only, and both;
+  the company's late rate alone as a baseline; class-weighted LR with Platt and isotonic
+  recalibration. MiniLM embeddings and a fine-tuned DistilBERT run on a GPU in Colab.
+- **Evaluation.** Thresholds, recalibration, early stopping and regularisation are chosen on
+  validation; test is scored once. 95% CIs come from a stratified bootstrap of each test
+  quarter, paired across models.
+- **Explanations.** Coefficient contributions by feature group, LightGBM SHAP, a cross-product
+  transfer matrix and month-by-month drift.
+- **Site.** A static page in `docs/` reads every number from `docs/data/*.json`. Its scorer is
+  a JavaScript port of the LR whose tokenizer is tested against the Python one in CI.
 
-## Business Objective
-Financial institutions receive large volumes of consumer complaints, but only a small fraction may indicate meaningful operational, compliance, or credit-risk concerns. A model that flags high-risk complaint narratives can support:
-- early triage and prioritization,
-- faster manual review,
-- downstream risk monitoring,
-- and more interpretable complaint surveillance.
+## Run it
 
-## Modeling Objective
-Using complaint text, product metadata, company identity, and state-level information, the task is to predict a proxy risk label (`risk_flag`) built from post-complaint outcomes such as dispute and untimely response. Because the positive class is rare, the project emphasizes rare-event evaluation, threshold selection, interpretability, and deployment-oriented validation.
-
-## What this notebook includes
-This notebook covers:
-1. data loading and sharding,
-2. text preprocessing and proxy label construction,
-3. temporal train/test splitting,
-4. feature engineering with TF-IDF, metadata, and domain lexicons,
-5. classical ML baselines and hybrid models,
-6. embedding-based and fine-tuned transformer models,
-7. model interpretability with coefficients and SHAP,
-8. threshold optimization and cost-sensitive evaluation,
-9. calibration analysis,
-10. robustness checks including cross-product generalization.
-
-## How to run
-The analysis is in [CFPB_Credit_Risk_Early_Signals.ipynb](archive/CFPB_Credit_Risk_Early_Signals.ipynb), written for Google Colab. It reads the full CFPB consumer complaint database as a CSV, available from the [CFPB](https://www.consumerfinance.gov/data-research/consumer-complaints/). The CFPB's public export no longer includes complaint narratives, and the model is built on them, so the notebook needs a saved copy of an earlier export. The results here come from an export running through October 15, 2025. Set `DATA_PATH` in the first cell, then:
+You need [uv](https://docs.astral.sh/uv/) (it installs Python 3.12), `make`, and Node.js for
+the scorer parity test.
 
 ```bash
-pip install -r archive/requirements.txt
+git clone https://github.com/omvyas77/Credit-risk-early-signals.git
 ```
 
-The written report is [cfpb_report.pdf](archive/cfpb_report.pdf).
-
-## Final Takeaway
-LightGBM on TF-IDF and structured features scores highest (PR-AUC 0.31). Logistic regression on the same features is close behind (0.29) and easier to explain, so it is the better choice when reviewers need to see why a complaint was flagged.
-## 2. Text preprocessing and proxy label construction
-
-This section prepares the raw CFPB complaint shard for modeling.
-
-The preprocessing pipeline includes:
-- standardizing column names,
-- parsing dates,
-- cleaning and normalizing complaint narratives,
-- removing rows without usable text,
-- constructing a proxy risk target (`risk_flag`),
-- and creating early domain features such as sentiment and urgency/dispute indicators.
-
-### Proxy target definition
-The target in this project is a **proxy risk label**, not a direct fraud outcome. A complaint is labeled as `risk_flag = 1` if it is associated with at least one downstream risk-related signal, such as:
-- the consumer disputed the company response, or
-- the company response was marked untimely.
-
-This framing is useful for early-warning complaint triage in risk-monitoring settings.
-
-### Why this matters
-Consumer complaint text is noisy, inconsistent, and highly imbalanced. Careful preprocessing is essential before building rare-event models for risk detection.
-## 3. Temporal train/test split and exploratory analysis
-
-Because complaint data evolves over time, evaluating models with a random split can lead to overly optimistic performance estimates. Instead, this project uses a **temporal split** that mimics real-world deployment.
-
-### Temporal validation strategy
-The dataset is divided using a cutoff date:
-
-- **Training set:** complaints received before the cutoff  
-- **Test set:** complaints received on or after the cutoff  
-
-This ensures that models are evaluated on **future complaints**, preventing leakage from future information.
-
-### Why this matters for risk modeling
-In financial applications such as credit risk or fraud detection, models are deployed to score **future events**, not randomly sampled historical observations. Temporal validation better reflects how models behave in production.
-
-### Rare-event modeling
-The target variable `risk_flag` is highly imbalanced. Therefore, evaluation focuses on:
-
-- **PR-AUC** (precision–recall AUC)
-- **threshold optimization**
-- **recall-oriented metrics**
-
-rather than relying solely on ROC-AUC.
-
-### Exploratory goals
-This section examines:
-
-- class imbalance
-- complaint volume over time
-- risk rate over time
-- distribution across products and companies
-
-![Exploratorygoals_1.png](archive/images/Exploratorygoals_1.png)
-
-
-![Exploratorygoals_2.png](archive/images/Exploratorygoals_2.png)
-
-
-![Exploratorygoals_3.png](archive/images/Exploratorygoals_3.png)
-
-## 4. Feature engineering
-
-This section converts the cleaned complaint data into machine learning features.
-
-The project combines **multiple feature families** to capture different types of signals:
-
-### 1. Text features
-The complaint narratives are transformed using **TF-IDF vectorization**.  
-This captures important words and phrases that indicate potential risk signals in consumer complaints.
-
-Example patterns:
-- dispute language
-- identity theft / unauthorized activity
-- account closure or incorrect balances
-
-### 2. Structured metadata
-Additional context is captured through structured variables:
-
-- product
-- company
-- state
-
-These are encoded using **one-hot encoding**.
-
-### 3. Domain features
-Additional handcrafted signals include:
-
-- sentiment scores from the complaint narrative
-- urgency indicators
-- dispute keyword counts
-
-These features help capture domain knowledge about complaint severity.
-
-### Final feature matrix
-The final model input combines:
-
-- TF-IDF text features
-- structured metadata
-- domain features
-
-This hybrid approach balances **predictive performance and interpretability**, which is important for risk modeling applications.
-## 5. Baseline models and rare-event evaluation
-
-This section trains baseline machine learning models for the complaint risk prediction task.
-
-Two model families are used:
-
-### Logistic Regression
-Logistic regression is widely used in financial modeling because it provides:
-
-- strong performance with sparse features
-- interpretability through coefficients
-- straightforward probability outputs
-
-### LightGBM
-LightGBM is used as a nonlinear challenger model. Tree-based models can capture:
-
-- nonlinear interactions
-- feature combinations
-- complex patterns in high-dimensional data
-
-### Class imbalance handling
-The target variable is highly imbalanced, so models use class weighting or `scale_pos_weight` to correct for the rare positive class.
-
-### Evaluation metrics
-Because this is a rare-event problem, we emphasize:
-
-- **PR-AUC (Precision–Recall AUC)**
-- **F2 score**
-- **threshold optimization**
-- **cost-based evaluation**
-
-rather than relying only on ROC-AUC.
-
-### Probability calibration
-For deployment in risk monitoring systems, probability estimates must be reliable. Therefore this section also evaluates:
-
-- Brier score
-- reliability curves
-- calibrated probability models
-
-![Probabilitycalibration_4.png](archive/images/Probabilitycalibration_4.png)
-
-
-![Probabilitycalibration_5.png](archive/images/Probabilitycalibration_5.png)
-
-## 6. Model interpretability and feature importance
-
-In financial risk modeling, interpretability is critical.  
-Stakeholders must understand why a model flags certain cases as risky.
-
-This section analyzes model behavior using three approaches:
-
-### Logistic Regression Coefficients
-Logistic regression provides direct interpretability through model coefficients.  
-Positive coefficients increase predicted risk, while negative coefficients decrease risk.
-
-### Tree-based Feature Importance
-LightGBM feature importance highlights which variables contribute most to model decisions.
-
-### SHAP Analysis
-SHAP (SHapley Additive exPlanations) provides a unified framework for explaining model predictions.  
-It quantifies the contribution of each feature to individual predictions.
-
-Interpretability is essential for:
-
-- regulatory compliance
-- model validation
-- stakeholder trust
-- diagnosing model bias
-
-![SHAPAnalysis_6.png](archive/images/SHAPAnalysis_6.png)
-
-
-![SHAPAnalysis_7.png](archive/images/SHAPAnalysis_7.png)
-
-
-![SHAPAnalysis_8.png](archive/images/SHAPAnalysis_8.png)
-
-## 7. Dense semantic embeddings with MiniLM
-
-Sparse text features such as TF-IDF are often strong baselines, especially in risk modeling tasks with domain-specific vocabulary. However, they may miss deeper semantic similarity across complaints.
-
-To test whether dense semantic representations improve performance, this section uses **MiniLM sentence embeddings**.
-
-### Why embeddings?
-MiniLM embeddings convert each complaint narrative into a dense vector representation that captures semantic meaning beyond individual keywords.
-
-This allows the project to compare:
-
-- sparse lexical features (TF-IDF)
-- dense semantic features (MiniLM embeddings)
-
-### Experimental goal
-The goal is to evaluate whether embedding-based models improve performance over the stronger interpretable baselines built earlier.
-
-### Models tested
-Two classical models are trained on MiniLM embeddings:
-
-- Logistic Regression
-- LightGBM
-
-This comparison helps determine whether semantic embeddings outperform sparse hybrid feature pipelines in this task.
-
-![Modelstested_9.png](archive/images/Modelstested_9.png)
-
-## 8. Fine-tuned transformer classifier
-
-While MiniLM embeddings provide strong semantic representations, they remain **static features** when used with classical models.
-
-This section evaluates a **fine-tuned transformer classifier**, where the language model itself is trained on the complaint classification task.
-
-### Why fine-tuning?
-Fine-tuning allows the model to adapt to domain-specific language patterns such as:
-
-- dispute descriptions
-- identity theft reports
-- credit reporting errors
-- collection complaints
-
-### Training approach
-Because transformer models are computationally expensive and the dataset is highly imbalanced, training uses a **balanced subset of the data**.
-
-This allows the model to learn meaningful patterns while remaining computationally feasible in a notebook environment.
-
-### Goal of this experiment
-The goal is to compare whether **fine-tuning improves performance beyond:**
-
-- sparse TF-IDF hybrid models
-- MiniLM embedding models
-
-This helps evaluate whether deep models provide additional value in this complaint-risk detection task.
-## 9. Cross-product generalization and domain shift
-
-Models trained on historical complaint data may rely heavily on product-specific language patterns.  
-However, in real financial environments, models are often applied to **new complaint categories or evolving products**.
-
-This section evaluates **domain robustness** by testing whether models trained on one product group generalize to another.
-
-### Experiment design
-
-1. Train a model using complaints from **one product family**.
-2. Evaluate the model on complaints from a **different product family**.
-
-This helps determine whether the model captures **general complaint risk signals** or relies heavily on **product-specific vocabulary**.
-
-### Why this matters
-For real-world deployment:
-
-- Models should generalize across complaint categories.
-- Heavy reliance on product identifiers may reduce portability.
-- Domain shift analysis helps assess how models behave outside the training distribution.
-
-![Whythismatters_10.png](archive/images/Whythismatters_10.png)
-
-## 10. Final conclusions
-
-This project built an end-to-end machine learning pipeline for detecting elevated credit-risk signals from consumer complaint narratives.
-
-### Key findings
-
-**1. Hybrid sparse models performed strongly**
-
-Logistic regression using TF-IDF text features combined with structured metadata and domain features achieved strong performance while remaining interpretable.
-
-**2. Gradient boosting provided a competitive nonlinear alternative**
-
-LightGBM captured feature interactions but offered less transparency compared to logistic regression.
-
-**3. Dense embeddings did not consistently outperform sparse lexical features**
-
-MiniLM embeddings captured semantic information but did not significantly outperform the strongest TF-IDF hybrid models.
-
-**4. Transformer fine-tuning improved semantic understanding**
-
-Fine-tuned transformer models demonstrated competitive performance but require greater computational resources.
-
-**5. Domain shift affects model portability**
-
-Cross-product experiments showed reduced performance when models trained on one complaint category were applied to another, highlighting the importance of domain-specific adaptation.
-
-### Practical implications
-
-For real financial complaint monitoring systems:
-
-- interpretable logistic regression models remain strong baselines
-- hybrid feature pipelines balance performance and transparency
-- transformer models can provide improvements when computational resources allow
-- domain shift should be monitored when deploying models across product categories
-
-
+```bash
+cd Credit-risk-early-signals && uv sync
+```
+
+```bash
+make all
+```
+
+`make all` downloads the data and runs every stage in order. Each stage skips work whose
+outputs are newer than its inputs and were built with the same settings, so after an
+interruption run it again and it picks up where it stopped; a rerun with nothing new takes
+seconds. After changing pipeline code, rerun the affected stage with
+`uv run python -m cres <stage> --force`.
+
+| Target | What it does |
+|---|---|
+| `make download` | Raw ZIPs into `$CRES_DATA_DIR/raw/`, checksums into `reports/data_manifest.json` |
+| `make data` | Unzip, join the archive to the live file, build the label |
+| `make features` | Windows and feature matrices into `data/features/` |
+| `make train` | Classical models and the in-browser scorer's model into `data/preds/` and `models/` |
+| `make evaluate` | Every prediction file into `reports/metrics.json` and `reports/summary.md` |
+| `make explain` | Coefficients, SHAP, cross-product transfer and drift into `reports/` |
+| `make export` | Site data into `docs/data/` and the scorer into `docs/scorer/` |
+| `make writeup` | The generated numbers in this README and the model card |
+| `make deep-input` | The slim input for the GPU models on Colab |
+| `make deep-baseline` | TF-IDF LR on DistilBERT's training subsample, for a same-data comparison |
+| `make test`, `make lint` | pytest (including the scorer parity check under Node) and ruff |
+| `make help` | This list |
+
+**Where the data goes.** Raw downloads go to `$CRES_DATA_DIR/raw/`; set `CRES_DATA_DIR` to put
+them on another disk (it defaults to `data/`). Everything derived goes under `data/` and
+`models/`, which are not tracked. The unzipped CSVs and feature matrices take tens of gigabytes,
+so check free disk space first.
+
+**On an 8 GB laptop.** The pipeline was built on one. DuckDB spills to disk past
+`duckdb_memory_limit`, each window trains on one year (`windows.train_years`), the TF-IDF
+vocabulary is capped, matrices are float32 sparse, and each model is fitted in a fresh process
+so memory is returned between fits. Lower `features.workers` and `models.lgbm.num_threads` in
+`config/default.yaml` on a machine with fewer cores.
+<!-- generated:compute -->
+The largest single fit peaked at 4.9 GB of memory, and the recorded model fits took 9.2 hours in all (from `reports/metrics.json`, `training`).
+<!-- /generated:compute -->
+
+**Deep models.** MiniLM and DistilBERT need a GPU. `notebooks/colab_deep.ipynb` runs them on
+Colab; [notebooks/README.md](notebooks/README.md) has the steps. Copy their prediction files into
+`data/preds/` and run `make evaluate` again.
+
+## Data
+
+Two public CFPB sources, listed in [config/sources.yaml](config/sources.yaml):
+
+1. The [Narratives Archive](https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/)
+   in the FOIA Reading Room: one ZIP per period with the narrative text, which the public
+   complaints export no longer includes.
+2. The [live complaints file](https://files.consumerfinance.gov/ccdb/complaints.csv.zip), which
+   supplies every other field, including the outcome.
+
+<!-- generated:data -->
+- Downloaded 2026-11-08: 21 archive ZIPs and the live file (19,020,152 complaints). Their sha256 checksums and download times are in `reports/data_manifest.json`.
+- 3,851,366 narratives join to the live file; 3,674,640 of them were received 2017-05-01 to 2026-06-30 with a settled outcome and are labelled, and 36,901 (1.00%) of those were answered late.
+<!-- /generated:data -->
+
+The live file is updated daily, so a fresh clone downloads a newer copy and can shift the
+results slightly; the manifest records which download the published numbers come from.
+[DATA.md](DATA.md) describes the schema as found and the caveats. Narrative text never leaves
+`data/`: it is not in git, `reports/` or the site.
+
+## What changed from v1
+
+<!-- generated:v1 -->
+v1 reported a test PR-AUC of 0.314 (LightGBM, TF-IDF and structured features) on a "disputed or late" label, with 287 test positives and its threshold chosen on test. Its data export is gone, so those numbers can't be reproduced or compared with this version's.
+
+| v1 | This version |
+|---|---|
+| Disputes and lateness in one label | Late responses only, after disputes ended |
+| Threshold and checkpoint chosen on test | Everything tuned on validation |
+| One split, about 287 positives, no CIs | Rolling quarterly windows, bootstrap CIs |
+| Calibration gain mostly undid class weighting | Weighted and unweighted models, recalibrated on validation |
+| 4,336 one-hot company columns | The company's earlier late rate |
+<!-- /generated:v1 -->
+
+v1's notebook, report and figures are in [archive/](archive/).
+
+## Limits
+
+**Narratives thin out in 2026.**
+<!-- generated:shift -->
+W4 and W5 test on 2026-01-01 to 2026-06-30, when 3.4% and 3.0% of complaints carry a published narrative and 3.4% and 4.0% of those are late; W1's test quarter had 26.3% and 1.0%. Those windows are drawn from a different, much smaller selection of complaints, so compare each window's PR-AUC with its own chance level.
+<!-- /generated:shift -->
+
+**One year of training per window.** Each window trains on the most recent year before its
+training cutoff, so the matrices fit in memory on an 8 GB laptop. Earlier complaints are not
+used.
+
+**Deep models are pending.**
+<!-- generated:deep -->
+Not run yet: `minilm__text__W5`, `minilm__both__W5`, `distilbert__text__W5`, `distilbert__both__W5`. They need a GPU; `notebooks/README.md` has the Colab steps, and `make evaluate` adds them to every table once their prediction files are in `data/preds/`.
+<!-- /generated:deep -->
+
+**The in-browser scorer has no VADER.**
+<!-- generated:scorer_gap -->
+The in-browser scorer leaves out VADER sentiment (it has no JavaScript port) and keeps 50,000 terms. On W5 test its PR-AUC is 0.704 against 0.705 for the full LR; the paired difference is -0.001 (-0.001 to -0.000).
+<!-- /generated:scorer_gap -->
+
+**The label is about companies.** Whether a response is late depends on the company, so the
+strongest predictor is which company the complaint is about, and the narrative's most useful
+words are mostly company names. The model card has the fairness and proxy caveats.
+
+## Repository
+
+| Path | Contents |
+|---|---|
+| `src/cres/` | The pipeline, one module per stage (`python -m cres --help`) |
+| `config/` | Every setting and the one seed; download URLs |
+| `tests/` | pytest on small hand-built fixtures, plus the scorer parity check |
+| `reports/` | Pipeline outputs: metrics, curves, explanations, data profile and manifest |
+| `docs/` | The site, served by GitHub Pages |
+| `notebooks/` | The Colab notebook for the GPU models |
+| `archive/` | v1 |
+
+MIT licensed. The CFPB complaint data is public; complaints are not verified by the CFPB.
