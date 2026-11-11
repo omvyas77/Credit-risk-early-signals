@@ -88,10 +88,10 @@ export function dotStrip(container, rows, { label, fmt }) {
     let prevGroup = null;
     for (const r of layout) {
       if (r.group && r.group !== prevGroup) {
-        el("text", { x: 0, y: r.at - rowH / 2 - 8, class: "lbl lbl--group" }, svg, r.group);
+        el("text", { x: 0, y: r.at - rowH / 2 - 8, class: "lbl lbl--group" }, svg, small && r.groupShort ? r.groupShort : r.group);
         prevGroup = r.group;
       }
-      el("text", { x: 0, y: r.at + 4, class: "lbl" }, svg, r.label);
+      el("text", { x: 0, y: r.at + 4, class: "lbl" }, svg, small && r.short ? r.short : r.label);
       if (r.chance !== undefined) {
         const cx = x(r.chance);
         el("line", { x1: cx, x2: cx, y1: r.at - 8, y2: r.at + 8, class: "chance" }, svg);

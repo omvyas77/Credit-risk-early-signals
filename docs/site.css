@@ -1,3 +1,11 @@
+/* Hallmark · shape: long report, answer first, sections in the order design.md and the project set · genre: modern-minimal · theme: Console (locked in design.md) · job: understand the finding, then try the scorer · draw: none, the system is locked
+ * hero: Stage, the answer on five columns beside the window-by-window grid on seven · nav: masthead · footer: colophon block · imagery: none, the figures are the material · signature: the scorer, a control to try · console: paper
+ * axes: light/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V3 · weakest: V, the masthead and the colophon carry over from the first site on purpose so the two read as one project */
+/* Hallmark · sweep: Floor 0 FAIL · Reflex 0 · audit (render, kept): links 8/8, 0 FAIL, 0 REFLEX · Lighthouse accessibility 100 mobile and desktop */
+/* Hallmark · dismissed 59 · the sections are the report's agreed order (answer, how to read it, scorer, threshold, time, calibration, products, data, v1, limits, run); each is one finding a newcomer needs */
+/* Hallmark · dismissed 58 · the owner asked for plain words and a how-to-read section so a newcomer can follow every chart; that costs words, and every screen stays under the hard limit */
+/* Hallmark · answered F25 · the product grid scrolls inside its own box at 375 with the training product pinned as the first column */
 @import url("./tokens.css");
 @import url("./base.css");
 
@@ -133,6 +141,14 @@ tr.flag td, tr.flag th { background: var(--color-paper-3); }
 .split .head .field, .split .head .scroll { margin-top: var(--space-xl); }
 .note { margin-top: var(--space-lg); max-width: 75ch; }
 
+/* how to read the numbers */
+.section--read { padding-block: calc(var(--section-gap-l) + var(--space-2xl)); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.section--read h2 { font-size: var(--text-section); margin-bottom: var(--space-2xl); }
+.defs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-columns); margin: 0; }
+.defs > div { padding-top: var(--space-lg); border-top: 2px solid var(--color-ink); }
+.defs dt { font-size: var(--text-title); font-weight: 500; color: var(--color-ink); letter-spacing: var(--tracking-display); }
+.defs dd { margin: var(--space-sm) 0 0; color: var(--color-muted); max-width: 40ch; }
+
 /* scorer */
 .workbench { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: stretch; }
 .scorer-input { display: grid; gap: var(--space-md); padding: var(--space-xl); align-content: start; }
@@ -226,8 +242,9 @@ pre.code .c { color: var(--color-muted); }
 
 @media (max-width: 60rem) {
   .hero { min-height: 0; }
-  .stage-grid, .split, .workbench, .workbench--threshold, .head--split, .row { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .defs, .stage-grid, .split, .workbench, .workbench--threshold, .head--split, .row { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .head--split { gap: var(--space-md); }
+  .section--read { padding-block: var(--section-gap-s); }
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-lg); }
   .figures > div:nth-child(3) { padding-left: 0; border-left: 0; }
 }

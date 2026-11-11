@@ -34,24 +34,20 @@
   ],
   "fixes": [
     {
-      "v1": "Disputes and lateness in one label",
-      "v2": "Late responses only, after disputes ended"
+      "v1": "Disputes and late replies mixed in one label",
+      "v2": "Late replies only"
     },
     {
-      "v1": "Threshold and checkpoint chosen on test",
-      "v2": "Everything tuned on validation"
+      "v1": "Settings picked on the test data",
+      "v2": "Settings picked on an earlier quarter"
     },
     {
-      "v1": "One split, about 287 positives, no CIs",
-      "v2": "Rolling quarterly windows, bootstrap CIs"
+      "v1": "One test period, about 287 late cases, no error ranges",
+      "v2": "Rolling test quarters, each with a 95% range"
     },
     {
-      "v1": "Calibration gain mostly undid class weighting",
-      "v2": "Weighted and unweighted models, recalibrated on validation"
-    },
-    {
-      "v1": "4,336 one-hot company columns",
-      "v2": "The company's earlier late rate"
+      "v1": "4,336 columns, one per company",
+      "v2": "The company's own past late rate"
     }
   ]
 }

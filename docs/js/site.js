@@ -2,14 +2,10 @@
 import { dotStrip, bandCI, lines, reliability } from "./charts.js";
 import { initScorer } from "./try.js";
 import { initThreshold } from "./threshold.js";
-import { f3, pct, int, monthName, MONTHS, h } from "./util.js";
+import { f3, pct, int, monthName, MONTHS, h, quarter, SEES, SEES_SHORT, MODEL, MODEL_SHORT } from "./util.js";
 
 const FILES = ["metrics", "curves", "calibration", "timeline", "windows", "robustness", "scorer", "manifest", "v1"];
 
-const quarter = (date) => {
-  const [y, m] = date.split("-").map(Number);
-  return `Q${Math.floor((m - 1) / 3) + 1} ${y}`;
-};
 const listJoin = (xs) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
 
 function setK(key, text) {
@@ -54,17 +50,19 @@ function answer(d, cells) {
   const aw = metrics.across_windows;
   setK("struct", f3(aw.lr__struct.pr_auc.mean));
   setK("both", f3(aw.lr__both.pr_auc.mean));
-  const fs = metrics.featureset_labels;
+  const qname = new Map(windows.windows.map((w) => [w.window, quarter(w.dates.test[0])]));
   const models = [
-    ["lr", metrics.model_labels.lr],
-    ["lgbm", metrics.model_labels.lgbm],
+    ["lr", MODEL.lr],
+    ["lgbm", MODEL.lgbm],
   ];
   const rows = [];
   for (const [m, name] of models) {
     for (const s of ["text", "struct", "both"]) {
       rows.push({
         group: name,
-        label: fs[s],
+        groupShort: MODEL_SHORT[m],
+        label: SEES[s],
+        short: SEES_SHORT[s],
         model: m,
         set: s,
         points: metrics.windows.map((w) => {
@@ -75,10 +73,11 @@ function answer(d, cells) {
       });
     }
   }
-  const base = metrics.model_labels.company_rate;
   rows.push({
-    group: "Baselines",
-    label: base,
+    group: "Without a model",
+    groupShort: "No model",
+    label: MODEL.company_rate.replace(", no model", ""),
+    short: MODEL_SHORT.company_rate,
     model: "company_rate",
     set: "struct",
     points: metrics.windows.map((w) => {
@@ -88,18 +87,16 @@ function answer(d, cells) {
     mean: aw.company_rate__struct.pr_auc.mean,
   });
   rows.push({
-    group: "Baselines",
-    label: "Chance (test late rate)",
+    group: "Without a model",
+    groupShort: "No model",
+    label: "Guessing (the share late)",
+    short: "Guessing",
     points: [],
     chance: aw.company_rate__struct.prevalence.mean,
     mean: aw.company_rate__struct.prevalence.mean,
   });
-  for (const r of rows) {
-    r.full = r.label;
-    r.label = r.label.replace("Narrative and structured fields", "Both").replace("Structured fields only", "Structured").replace("Narrative only", "Narrative").replace("Company late rate alone", "Company rate").replace("Chance (test late rate)", "Chance");
-  }
   dotStrip(document.getElementById("grid-chart"), rows, {
-    label: `Test PR-AUC by model and features across ${metrics.windows.length} windows. Mean for logistic regression: narrative only ${f3(aw.lr__text.pr_auc.mean)}, structured only ${f3(aw.lr__struct.pr_auc.mean)}, both ${f3(aw.lr__both.pr_auc.mean)}.`,
+    label: `Score from 0 to 1 in each of ${metrics.windows.length} test quarters. Average for the linear model: text only ${f3(aw.lr__text.pr_auc.mean)}, company, product and issue ${f3(aw.lr__struct.pr_auc.mean)}, both together ${f3(aw.lr__both.pr_auc.mean)}. Guessing scores ${f3(aw.company_rate__struct.prevalence.mean)}.`,
     fmt: f3,
   });
 
@@ -108,29 +105,37 @@ function answer(d, cells) {
     const comps = metrics.comparisons.filter((c) => c.a[0] === m && c.a[1] === "both" && c.b[0] === m && c.b[1] === "struct");
     const below = comps.filter((c) => c.metrics.pr_auc.ci95[1] < 0).length;
     const above = comps.filter((c) => c.metrics.pr_auc.ci95[0] > 0).length;
-    return `${name} below zero in ${below}, above in ${above}`;
+    return `${MODEL_SHORT[m]}, worse in ${below} and better in ${above}`;
   });
-  const lowNames = [...low];
+  const lowNames = [...low].map((w) => qname.get(w));
+  setText("grid-note", `A dot is one test quarter; hollow ones are ${listJoin(lowNames)}. Blue tick: the average.`);
+
+  // How to read the numbers.
+  const ws = windows.windows;
   setText(
-    "grid-note",
-    `Hollow dots: ${listJoin(lowNames)}, tested in 2026. Blue tick: the mean.`,
+    "def-score",
+    `From 0 to 1: how well a model ranks the complaints answered late first. Guessing scores about ${f3(aw.company_rate__struct.prevalence.mean)}.`,
+  );
+  setText(
+    "def-quarter",
+    `A model learns from a year of complaints, then is tested once on a later quarter it never saw: ${qname.get(ws[0].window)} to ${qname.get(ws.at(-1).window)} (${ws[0].window} to ${ws.at(-1).window} in the code).`,
   );
 
-  const head = ["Model and features", ...metrics.windows, "Mean"];
+  const head = ["Model, what it sees", ...metrics.windows.map((w) => `${qname.get(w)} (${w})`), "Average"];
   const body = rows
     .filter((r) => r.points.length)
     .map((r) => [
-      `${r.group === "Baselines" ? "" : `${r.group}, `}${r.full}`,
+      r.model === "company_rate" ? MODEL.company_rate : `${r.group}, ${r.label}`,
       ...metrics.windows.map((w) => {
         const c = cells.get(`${r.model}__${r.set}__${w}`);
         return ciText(c.point.pr_auc, c.ci95.pr_auc);
       }),
       f3(r.mean),
     ]);
-  body.push(["Chance (test late rate)", ...windows.windows.map((w) => f3(w.test.prevalence)), f3(aw.company_rate__struct.prevalence.mean)]);
+  body.push(["Guessing (the share late)", ...windows.windows.map((w) => f3(w.test.prevalence)), f3(aw.company_rate__struct.prevalence.mean)]);
   document.getElementById("grid-table").append(
     table(head, body, {
-      caption: `Paired 95% CI of adding the narrative to the structured fields: ${parts.join("; ")}, of ${metrics.windows.length} windows.`,
+      caption: `Score with 95% range. Adding the text to company, product and issue, judged by a paired 95% range: ${parts.join("; ")} of ${metrics.windows.length} quarters.`,
     }),
   );
 }
@@ -143,17 +148,17 @@ function overTime(d, cells) {
   const low = ws.filter((w) => w.low_narrative_share);
   setText(
     "time-lead",
-    `Each window trains on a year and is tested once on a later quarter. ${listJoin(low.map((w) => w.window))} test on 2026.`,
+    `Each model is scored once on a quarter it never saw. In ${listJoin(low.map((w) => quarter(w.dates.test[0])))}, few complaints had published text, and more of those were late.`,
   );
   const series = [
-    { key: "lr__text", cls: "s-muted", label: metrics.featureset_labels.text },
-    { key: "lr__struct", cls: "s-ink", label: metrics.featureset_labels.struct },
-    { key: "lr__both", cls: "s-cool", label: metrics.featureset_labels.both },
-    { key: "company_rate__struct", cls: "s-ink", hollow: true, label: metrics.model_labels.company_rate },
+    { key: "lr__text", cls: "s-muted", label: SEES.text },
+    { key: "lr__struct", cls: "s-ink", label: SEES.struct },
+    { key: "lr__both", cls: "s-cool", label: SEES.both },
+    { key: "company_rate__struct", cls: "s-ink", hollow: true, label: MODEL.company_rate },
   ];
   const bands = ws.map((w) => ({
-    name: w.window,
-    sub: [quarter(w.dates.test[0]).replace(" 20", " \u2019"), pct(w.test.prevalence), pct(w.narrative_share.test, 0)],
+    name: quarter(w.dates.test[0]),
+    sub: [pct(w.test.prevalence), pct(w.narrative_share.test, 0)],
     shade: w.low_narrative_share,
     chance: w.test.prevalence,
   }));
@@ -168,10 +173,10 @@ function overTime(d, cells) {
     bands,
     series,
     values,
-    label: `Test PR-AUC per window for logistic regression; ${listJoin(low.map((w) => w.window))} are shaded as the low narrative share period.`,
-    shadeLabel: "Few narratives",
-    subPrefix: ["", "late ", "narrative "],
-    subShort: ["", "late", "narr."],
+    label: `Score in each test quarter for the linear model; ${listJoin(low.map((w) => quarter(w.dates.test[0])))} are shaded: few complaints had published text.`,
+    shadeLabel: "Little published text",
+    subPrefix: ["late ", "with text "],
+    subShort: ["late", "text"],
     fmt: f3,
   });
   chart.after(
@@ -181,9 +186,9 @@ function overTime(d, cells) {
       series.map((s) => h("span", {}, h("span", { class: `swatch ${s.cls}` }), s.label)),
     ),
   );
-  const head = ["Window", "Test period", "Test rows", "Late (chance)", "Narrative share", ...series.map((s) => s.label)];
+  const head = ["Test quarter", "Dates", "Complaints", "Answered late (guessing)", "With published text", ...series.map((s) => s.label)];
   const body = ws.map((w, i) => [
-    w.window + (w.low_narrative_share ? " (2026)" : ""),
+    `${quarter(w.dates.test[0])} (${w.window})`,
     `${w.dates.test[0]} to ${w.dates.test[1]}`,
     int(w.test.rows),
     pct(w.test.prevalence),
@@ -201,7 +206,7 @@ function overTime(d, cells) {
     for (const r of rows) months.push({ ...r, window: w.window });
     if (w.low_narrative_share) shades.push({ from: from - 0.5, to: months.length - 0.5 });
   }
-  const merged = shades.length ? [{ from: Math.max(shades[0].from, 0), to: Math.min(shades.at(-1).to, months.length - 1), text: "Few narratives" }] : [];
+  const merged = shades.length ? [{ from: Math.max(shades[0].from, 0), to: Math.min(shades.at(-1).to, months.length - 1), text: "Little published text" }] : [];
   const yMax = Math.max(...months.map((m) => Math.max(m.prevalence, m["lr__both:mean_score"]))) * 1.15;
   const step = yMax > 0.04 ? 0.01 : 0.005;
   const ticks = [];
@@ -218,16 +223,16 @@ function overTime(d, cells) {
     yFmt: (t) => pct(t, t < 0.01 && t > 0 ? 1 : 0),
     xLabels: months.map((m, i) => ({ i, text: MONTHS[+m.month.slice(5) - 1] })),
     shades: merged,
-    label: "Late rate and mean model score per test month; the two move together, including the jump in 2026.",
+    label: "The share answered late and the model's average chance in each test month; the two move together, including the jump in 2026.",
     height: 200,
   });
   driftChart.after(
-    h("p", { class: "keys" }, h("span", {}, h("span", { class: "swatch s-ink" }), "Late rate"), h("span", {}, h("span", { class: "swatch s-cool" }), "Mean score")),
+    h("p", { class: "keys" }, h("span", {}, h("span", { class: "swatch s-ink" }), "Share answered late"), h("span", {}, h("span", { class: "swatch s-cool" }), "Model’s average chance")),
   );
   document.getElementById("drift-table").append(
     table(
-      ["Month", "Window", "Test rows", "Late rate", "Mean score", "PR-AUC"],
-      months.map((m) => [monthName(m.month), m.window, int(m.rows), pct(m.prevalence, 2), pct(m["lr__both:mean_score"], 2), f3(m["lr__both:pr_auc"])]),
+      ["Month", "Test quarter", "Complaints", "Answered late", "Average chance", "Score"],
+      months.map((m) => [monthName(m.month), quarter(`${m.month}-01`), int(m.rows), pct(m.prevalence, 2), pct(m["lr__both:mean_score"], 2), f3(m["lr__both:pr_auc"])]),
       { numFrom: 2 },
     ),
   );
@@ -236,7 +241,14 @@ function overTime(d, cells) {
 // --- 5. calibration -----------------------------------------------------------------------
 
 function calibrationSection(d) {
-  const { calibration, metrics } = d;
+  const { calibration, metrics, windows } = d;
+  const qname = new Map(windows.windows.map((w) => [w.window, quarter(w.dates.test[0])]));
+  const CAL = {
+    lr_balanced: "Weighted, uncorrected",
+    lr_balanced_platt: "Weighted, corrected (Platt)",
+    lr_balanced_isotonic: "Weighted, corrected (isotonic)",
+    lr: "Unweighted",
+  };
   const order = [
     ["lr_balanced", "s-muted"],
     ["lr_balanced_platt", "s-cool"],
@@ -244,7 +256,7 @@ function calibrationSection(d) {
     ["lr", "s-accent"],
   ];
   const select = document.getElementById("c-window");
-  for (const w of metrics.windows) select.append(h("option", { value: w }, w));
+  for (const w of metrics.windows) select.append(h("option", { value: w }, qname.get(w)));
   select.value = metrics.windows.at(-1);
   const chart = document.getElementById("cal-chart");
   const draw = () => {
@@ -254,26 +266,26 @@ function calibrationSection(d) {
     chart.replaceChildren();
     reliability(chart, {
       series: shown.map(([m, cls]) => ({ points: cellsFor.get(m).reliability.map(([x, y]) => [x, y]), cls })),
-      label: `Reliability for window ${w}: the class-weighted model sits far right of the diagonal, the recalibrated one on it.`,
+      label: `Honest chances, ${qname.get(w)}: the weighted, uncorrected model sits far right of the diagonal; the corrected one sits on it.`,
     });
     const stats = document.getElementById("cal-stats");
     stats.replaceChildren(
       ...table(
-        ["Model, both feature sets", "ECE", "Brier", "Log loss"],
+        ["Linear model, both together", "Average gap (ECE)", "Brier", "Log loss"],
         order
           .filter(([m]) => cellsFor.has(m))
           .map(([m, cls]) => {
             const c = cellsFor.get(m);
-            return [h("span", {}, h("span", { class: `swatch ${cls}` }), metrics.model_labels[m]), f3(c.ece.point), f3(c.brier.point), f3(c.log_loss.point)];
+            return [h("span", {}, h("span", { class: `swatch ${cls}` }), CAL[m]), f3(c.ece.point), f3(c.brier.point), f3(c.log_loss.point)];
           }),
-        { caption: `Window ${w}, test split` },
+        { caption: `${qname.get(w)}; lower is better` },
       ).childNodes,
     );
     const binTable = document.getElementById("cal-table");
     binTable.replaceChildren(
       table(
-        ["Model", "Bin", "Mean score", "Observed late rate", "Rows"],
-        shown.flatMap(([m]) => cellsFor.get(m).reliability.map(([x, y, n], i) => [metrics.model_labels[m], String(i + 1), x.toFixed(4), y.toFixed(4), int(n)])),
+        ["Model", "Group", "Chance given", "Share actually late", "Complaints"],
+        shown.flatMap(([m]) => cellsFor.get(m).reliability.map(([x, y, n], i) => [CAL[m], String(i + 1), x.toFixed(4), y.toFixed(4), int(n)])),
         { numFrom: 1 },
       ),
     );
@@ -295,7 +307,9 @@ function products(d) {
   const cp = d.robustness.cross_product;
   const names = cp.products.map((p) => SHORT[p] ?? p);
   const seg = document.getElementById("p-set");
-  const labels = d.metrics.featureset_labels;
+  const labels = SEES;
+  const win = d.windows.windows.find((w) => w.window === cp.window);
+  const q = quarter(win.dates.test[0]);
   for (const s of Object.keys(cp.featuresets)) {
     seg.append(
       h("input", { type: "radio", name: "pset", id: `p-${s}`, value: s, checked: s === "both" }),
@@ -307,8 +321,8 @@ function products(d) {
     const s = seg.querySelector("input:checked").value;
     const fs = cp.featuresets[s];
     heat.replaceChildren(
-      h("caption", { class: "visually-hidden" }, `Test PR-AUC, ${labels[s]}, rows trained on, columns tested on`),
-      h("thead", {}, h("tr", {}, h("th", { scope: "col" }, "Trained on, tested on"), names.map((n) => h("th", { scope: "col", class: "num" }, n)))),
+      h("caption", { class: "visually-hidden" }, `Score, ${labels[s]}; rows: where the model learned, columns: where it was tested`),
+      h("thead", {}, h("tr", {}, h("th", { scope: "col" }, "Learned on, tested on"), names.map((n) => h("th", { scope: "col", class: "num" }, n)))),
       h(
         "tbody",
         {},
@@ -330,15 +344,15 @@ function products(d) {
       h(
         "tfoot",
         {},
-        h("tr", {}, h("th", { scope: "row" }, `Pooled ${cp.window} model`), fs.pooled.map((v) => h("td", { style: "--v:0" }, f3(v)))),
-        h("tr", {}, h("th", { scope: "row" }, "Chance (late rate)"), fs.chance.map((v) => h("td", { style: "--v:0" }, f3(v)))),
+        h("tr", {}, h("th", { scope: "row" }, "One model for all products"), fs.pooled.map((v) => h("td", { style: "--v:0" }, f3(v)))),
+        h("tr", {}, h("th", { scope: "row" }, "Guessing (the share late)"), fs.chance.map((v) => h("td", { style: "--v:0" }, f3(v)))),
       ),
     );
     document.getElementById("p-ci").replaceChildren(
       table(
-        ["Trained on", ...names],
+        ["Learned on", ...names],
         names.map((n, i) => [n, ...fs.pr_auc[i].map((v, j) => ciText(v, fs.pr_auc_ci95[i][j]))]),
-        { caption: `${labels[s]}: test PR-AUC with 95% CI, rows trained on, columns tested on.` },
+        { caption: `${labels[s]}: score with 95% range; rows: where it learned, columns: where it was tested.` },
       ),
     );
   };
@@ -346,7 +360,7 @@ function products(d) {
   draw();
   setText(
     "p-note",
-    `${cp.window} test, logistic regression. Outlined cells are in-domain.`,
+    `${q} test quarter, linear model. Outlined cells learned and were tested on the same product.`,
   );
 }
 
@@ -371,7 +385,7 @@ function timelineSection(d) {
   const b = months[idx(end)];
   setText(
     "data-lead",
-    `Narratives covered ${pct(a.narrative_share, 0)} of complaints in ${monthName(yearAgo)}, ${pct(b.narrative_share, 0)} by ${monthName(end)}. data_end is the last month with ${pct(t.data_end_rule.min_ratio, 0)} of its trailing ${t.data_end_rule.trailing_months}-month median.`,
+    `Complaints kept coming, but the share published with the consumer’s text fell from ${pct(a.narrative_share, 0)} in ${monthName(yearAgo)} to ${pct(b.narrative_share, 0)} by ${monthName(end)}. The data stops in ${monthName(end)}, the last month with at least ${pct(t.data_end_rule.min_ratio, 0)} of the usual amount of text.`,
   );
   const years = [];
   months.forEach((m, i) => {
@@ -381,8 +395,8 @@ function timelineSection(d) {
   const lastTest = idx(t.windows.at(-1).test[1].slice(0, 7));
   const events = [
     { i: idx(disputesEnd), text: `Disputes end, ${monthName(disputesEnd)}`, short: "Disputes end", row: 0 },
-    { i: idx(end), text: `data_end, ${monthName(end)}`, short: "data_end", cls: "event--data", row: 1 },
-    { i: idx(lastNarr), text: `Archive ends, ${monthName(lastNarr)}`, short: "Archive ends", row: 0 },
+    { i: idx(end), text: `Data used ends, ${monthName(end)}`, short: "Data ends", cls: "event--data", row: 1 },
+    { i: idx(lastNarr), text: `Text archive ends, ${monthName(lastNarr)}`, short: "Text ends", row: 0 },
   ];
   const maxC = Math.max(...months.map((m) => m.complaints));
   const step = maxC > 600000 ? 200000 : 100000;
@@ -400,14 +414,14 @@ function timelineSection(d) {
     xLabels: years,
     events,
     shades: [{ from: firstTest, to: lastTest, text: "" }],
-    label: `Complaints per month from ${monthName(months[0].month)} to ${monthName(months.at(-1).month)}, and those with a narrative, which collapse from late 2025.`,
+    label: `Complaints per month from ${monthName(months[0].month)} to ${monthName(months.at(-1).month)}, and those published with the consumer’s text, which collapse from late 2025.`,
   });
   document.getElementById("volume-chart").after(
     h(
       "p",
       { class: "keys" },
       h("span", {}, h("span", { class: "swatch s-ink" }), "All complaints"),
-      h("span", {}, h("span", { class: "swatch s-cool" }), "With a narrative"),
+      h("span", {}, h("span", { class: "swatch s-cool" }), "With published text"),
       h("span", {}, h("span", { class: "swatch s-muted" }), "Shaded: the test quarters"),
     ),
   );
@@ -425,7 +439,7 @@ function timelineSection(d) {
     yFmt: (v) => pct(v, 0),
     xLabels: years,
     events: events.map((e) => ({ ...e, text: "", short: "", row: 0 })),
-    label: "Share of complaints answered late each month, for complaints with a narrative and for all complaints.",
+    label: "Share of complaints answered late each month, for complaints with published text and for all complaints.",
     height: 180,
   });
   document.getElementById("late-chart").after(
@@ -433,12 +447,12 @@ function timelineSection(d) {
       "p",
       { class: "keys" },
       h("span", {}, h("span", { class: "swatch s-ink" }), "All complaints"),
-      h("span", {}, h("span", { class: "swatch s-cool" }), "With a narrative (the label)"),
+      h("span", {}, h("span", { class: "swatch s-cool" }), "With published text (what is predicted)"),
     ),
   );
   document.getElementById("data-table").append(
     table(
-      ["Month", "Complaints", "With a narrative", "Narrative share", "Late, all", "Late, with narrative"],
+      ["Month", "Complaints", "With published text", "Share with text", "Late, all", "Late, with text"],
       months.map((m) => [
         monthName(m.month),
         int(m.complaints),
@@ -458,11 +472,11 @@ function history(d) {
   const best = v1.models[0];
   setText(
     "v1-lead",
-    `v1 reported PR-AUC ${f3(best.pr_auc)} on one split, threshold chosen on ${v1.threshold.chosen_on}. Quoted as history.`,
+    `The first version scored ${f3(best.pr_auc)} on one test period, with its cut-off picked on that ${v1.threshold.chosen_on} data. Quoted as history.`,
   );
   const t = document.getElementById("v1-fixes");
   t.append(
-    h("thead", {}, h("tr", {}, h("th", { scope: "col" }, "v1"), h("th", { scope: "col" }, "Now"))),
+    h("thead", {}, h("tr", {}, h("th", { scope: "col" }, "The first version"), h("th", { scope: "col" }, "Now"))),
     h("tbody", {}, v1.fixes.map((f) => h("tr", {}, h("td", {}, f.v1), h("td", {}, f.v2)))),
   );
 }
@@ -473,14 +487,14 @@ function limits(d) {
   const first = windows.windows[0];
   setText(
     "limit-shift",
-    `${listJoin(low.map((w) => w.window))}: narrative on ${listJoin(low.map((w) => pct(w.narrative_share.test)))}, late ${listJoin(low.map((w) => pct(w.test.prevalence)))}. ${first.window}: ${pct(first.narrative_share.test)} and ${pct(first.test.prevalence)}.`,
+    `By ${quarter(low.at(-1).dates.test[0])}, ${pct(low.at(-1).narrative_share.test, 0)} of complaints had published text and ${pct(low.at(-1).test.prevalence, 0)} of those were late; in ${quarter(first.dates.test[0])}, ${pct(first.narrative_share.test, 0)} and ${pct(first.test.prevalence, 0)}.`,
   );
   const notRun = metrics.not_run;
   const models = [...new Set(notRun.map((c) => c.split("__")[0]))].map((m) => (metrics.model_labels[m] ?? m).split(/[ ,]/)[0]);
   setText(
     "limit-deep",
     notRun.length
-      ? `${listJoin(models)} read “not run” until the Colab run.`
+      ? `${listJoin(models)} need a GPU; until then they read “not run”.`
       : "Every planned model has been run.",
   );
   const live = manifest.files.find((f) => !f.name.startsWith("CCDB_Export_"));
@@ -545,11 +559,11 @@ async function main() {
   };
   const steps = [
     [["metrics", "windows"], async () => answer(d, await withCells())],
-    [["scorer"], () => initScorer(d)],
+    [["scorer", "windows"], () => initScorer(d)],
     [["curves", "metrics", "windows"], () => initThreshold(d)],
     [["metrics", "windows", "robustness"], async () => overTime(d, await withCells())],
-    [["calibration", "metrics"], () => calibrationSection(d)],
-    [["robustness", "metrics"], () => products(d)],
+    [["calibration", "metrics", "windows"], () => calibrationSection(d)],
+    [["robustness", "metrics", "windows"], () => products(d)],
     [["timeline", "manifest"], () => timelineSection(d)],
     [["v1"], () => history(d)],
     [["windows", "metrics", "manifest"], () => limits(d)],

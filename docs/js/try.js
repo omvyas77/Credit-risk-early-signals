@@ -1,34 +1,34 @@
 // The in-browser scorer: text plus product, issue and company pickers. The model file is
 // fetched once at load, so scoring keeps working offline afterwards.
 import { loadModel, score } from "./scorer.js";
-import { f3, pct, int, h } from "./util.js";
+import { f3, pct, h, quarter } from "./util.js";
 
 // Written by hand for this page; none of these is a real complaint.
 const EXAMPLES = [
   {
     name: "Student loan",
-    text: "My servicer put my payment on the wrong loan and now says I am past due. I sent proof twice and nobody has answered.",
+    text: "My servicer put my payment on the wrong loan and says I am past due. Nobody answers.",
     product: "Student loan",
     issue: "Dealing with your lender or servicer",
     company: "MOHELA",
   },
   {
     name: "Credit report",
-    text: "An account I never opened is on my credit report. I disputed it in writing a month ago and it is still there.",
+    text: "An account I never opened is on my credit report. I disputed it a month ago.",
     product: "Credit reporting or other personal consumer reports",
     issue: "Incorrect information on your report",
     company: "EQUIFAX, INC.",
   },
   {
     name: "Debt collector",
-    text: "A collector keeps calling me at work about a debt I do not owe. I asked for proof and they threatened to sue.",
+    text: "A collector keeps calling me at work about a debt I do not owe and threatened to sue.",
     product: "Debt collection",
     issue: "Attempts to collect debt not owed",
     company: "Portfolio Recovery Associates, LLC",
   },
   {
     name: "Money transfer",
-    text: "Someone sent money from my account that I did not authorize. I reported the fraud at once and the app will not refund me.",
+    text: "Someone sent money from my account that I did not authorize, and the app will not refund me.",
     product: "Money transfer, virtual currency, or money service",
     issue: "Fraud or scam",
     company: "Block, Inc.",
@@ -58,7 +58,7 @@ export async function initScorer(d) {
   const info = d.scorer;
   const m = info.metrics;
   document.getElementById("scorer-note").textContent =
-    `A smaller model: ${int(info.terms)} terms, no VADER. ${info.window} test PR-AUC ${f3(m.scorer.point.pr_auc)} (${f3(m.scorer.ci95.pr_auc[0])} to ${f3(m.scorer.ci95.pr_auc[1])}), full model ${f3(m.full.point.pr_auc)}. Not for credit decisions.`;
+    `A smaller copy of the linear model. On ${quarter(d.windows.windows.find((w) => w.window === info.window).dates.test[0])} it scores ${f3(m.scorer.point.pr_auc)}; the full model, ${f3(m.full.point.pr_auc)}. Not for credit decisions.`;
 
   out.setAttribute("aria-busy", "true");
   probNode.textContent = "Loading the model";
@@ -150,7 +150,7 @@ export async function initScorer(d) {
       const p = full.parts;
       compare.replaceChildren(
         bar("Text alone", alone.probability, true),
-        bar("Text, product, issue and company", full.probability, false),
+        bar("With company, product, issue", full.probability, false),
       );
       document.getElementById("s-parts").replaceChildren(
           ...[

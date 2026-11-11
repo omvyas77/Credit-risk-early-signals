@@ -24,3 +24,19 @@ export function h(tag, attrs = {}, ...children) {
   for (const c of children.flat()) if (c !== null && c !== undefined) node.append(c);
   return node;
 }
+
+/** "2025-04-01" -> "Q2 2025". The site names each test window by its quarter. */
+export const quarter = (date) => {
+  const [y, m] = date.split("-").map(Number);
+  return `Q${Math.floor((m - 1) / 3) + 1} ${y}`;
+};
+
+// Plain names for what each model sees and for the models themselves.
+export const SEES = { text: "Text only", struct: "Company, product, issue", both: "Both together" };
+export const SEES_SHORT = { text: "Text", struct: "Company etc.", both: "Both" };
+export const MODEL = {
+  lr: "Linear model (logistic regression)",
+  lgbm: "Tree model (LightGBM)",
+  company_rate: "Company’s past late rate, no model",
+};
+export const MODEL_SHORT = { lr: "Linear model", lgbm: "Tree model", company_rate: "Company history" };

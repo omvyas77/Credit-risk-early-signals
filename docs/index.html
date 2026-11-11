@@ -19,6 +19,7 @@
     <a class="wordmark" href="#top">Complaint-handling risk</a>
     <nav aria-label="Page">
       <a href="#evidence">Answer</a>
+      <a href="#read">How to read</a>
       <a href="#try">Scorer</a>
       <a href="#threshold">Threshold</a>
       <a href="#time">Over time</a>
@@ -36,18 +37,29 @@
   <div class="container stage-grid">
     <div class="answer-copy">
       <h1 id="hero-title">The complaint’s words add almost nothing</h1>
-      <p class="lead">Adding the narrative moves mean test PR-AUC from <span class="measured" data-k="struct"></span> to <span class="measured" data-k="both"></span>.</p>
+      <p class="lead">Company, product and issue score <span class="measured" data-k="struct"></span>; adding what the consumer wrote, <span class="measured" data-k="both"></span>.</p>
       <div class="actions">
         <a class="btn btn--primary" href="#try">Try the scorer</a>
         <a class="btn" href="https://github.com/omvyas77/Credit-risk-early-signals">Read the code</a>
       </div>
     </div>
     <figure class="panel chart-panel">
-      <figcaption class="chart-head">Does what a consumer writes help predict a late response? Test PR-AUC per quarter, with 95% CIs.</figcaption>
+      <figcaption class="chart-head">Does what a consumer writes help predict a late reply? Score from 0 to 1 in each test quarter, with its 95% range.</figcaption>
       <div class="chart" id="grid-chart" data-chart></div>
       <p class="chart-note" id="grid-note"></p>
-      <details class="fallback"><summary>Table: test PR-AUC by window</summary><div class="scroll" id="grid-table"></div></details>
+      <details class="fallback"><summary>The same as a table</summary><div class="scroll" id="grid-table"></div></details>
     </figure>
+  </div>
+</section>
+
+<section class="section section--read" id="read" aria-labelledby="read-title">
+  <div class="container">
+    <h2 id="read-title">How to read the numbers</h2>
+    <dl class="defs">
+      <div><dt>The score (PR-AUC)</dt><dd id="def-score"></dd></div>
+      <div><dt>A test quarter</dt><dd id="def-quarter"></dd></div>
+      <div><dt>The 95% range</dt><dd>The line around a result: where it would likely land on another sample.</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -55,7 +67,7 @@
   <div class="container">
     <div class="head head--split">
       <h2 id="try-title">Score a complaint</h2>
-      <p class="lead">Write one or pick an example. Nothing leaves your browser.</p>
+      <p class="lead">Write one or pick an example; nothing you type leaves your browser.</p>
     </div>
     <div class="workbench" id="scorer">
       <form class="panel scorer-input" id="scorer-form">
@@ -79,7 +91,7 @@
           <p class="readback" id="s-readback"></p>
           <p class="legend"><span class="key key--up"></span>raises <span class="key key--down"></span>lowers</p>
         </div>
-        <details class="fallback"><summary>Log-odds by field</summary><dl class="parts" id="s-parts"></dl></details>
+        <details class="fallback"><summary>What moved it (log-odds)</summary><dl class="parts" id="s-parts"></dl></details>
       </div>
     </div>
     <p class="note" id="scorer-note"></p>
@@ -90,13 +102,13 @@
   <div class="container">
     <div class="head head--split">
       <h2 id="threshold-title">Pick a threshold</h2>
-      <p class="lead">A flag costs a review; a miss costs a late reply. Thresholds from validation, counts from test.</p>
+      <p class="lead">Choose how many complaints to flag for review. A flag costs a review; a miss costs a late reply.</p>
     </div>
     <div class="workbench workbench--threshold">
       <div class="panel controls">
-        <div class="field"><label for="t-window">Window</label><select id="t-window"></select></div>
+        <div class="field"><label for="t-window">Test quarter</label><select id="t-window"></select></div>
         <div class="field">
-          <label for="t-slider">Threshold <output class="measured" id="t-value" for="t-slider"></output></label>
+          <label for="t-slider">Flag when the chance is at least <output class="measured" id="t-value" for="t-slider"></output></label>
           <input type="range" id="t-slider" min="0" max="1" step="1" value="0">
           <p class="hint" id="t-hint"></p>
         </div>
@@ -104,7 +116,7 @@
           <div class="field"><label for="t-fp">Cost of a needless review</label><input type="number" id="t-fp" min="0" step="1" inputmode="decimal"></div>
           <div class="field"><label for="t-fn">Cost of a missed late reply</label><input type="number" id="t-fn" min="0" step="1" inputmode="decimal"></div>
         </div>
-        <button class="btn" type="button" id="t-best">Cheapest on validation</button>
+        <button class="btn" type="button" id="t-best">Use the cheapest setting</button>
       </div>
       <div class="panel matrix-panel" aria-live="polite">
         <dl class="figures" id="t-figures"></dl>
@@ -129,13 +141,13 @@
     </div>
     <figure class="figure-wide">
       <div class="chart" id="time-chart" data-chart></div>
-      <figcaption>Logistic regression, 95% CIs. The dash is chance, the test late rate.</figcaption>
-      <details class="fallback"><summary>Table: each window’s test period, prevalence and PR-AUC</summary><div class="scroll" id="time-table"></div></details>
+      <figcaption>The linear model (logistic regression), with 95% ranges. The dash is guessing: the share answered late.</figcaption>
+      <details class="fallback"><summary>Table: each test quarter, its late share and scores</summary><div class="scroll" id="time-table"></div></details>
     </figure>
     <figure class="figure-wide figure-drift">
       <div class="chart" id="drift-chart" data-chart></div>
-      <figcaption>Drift: late rate and mean score by test month.</figcaption>
-      <details class="fallback"><summary>Table: late rate and mean score by test month</summary><div class="scroll" id="drift-table"></div></details>
+      <figcaption>Month by month, the model’s average chance follows the real late share.</figcaption>
+      <details class="fallback"><summary>Table: late share and average chance by month</summary><div class="scroll" id="drift-table"></div></details>
     </figure>
   </div>
 </section>
@@ -144,14 +156,14 @@
   <div class="container split split--chart">
     <div class="head">
       <h2 id="cal-title">Can you trust the probabilities</h2>
-      <p class="lead">Class weighting inflates scores; refitting on validation fixes it.</p>
-      <div class="field field--inline"><label for="c-window">Window</label><select id="c-window"></select></div>
+      <p class="lead">When it says 10%, about 10% should be late. Weighting the rare late cases inflates every chance; a correction brings them back.</p>
+      <div class="field field--inline"><label for="c-window">Test quarter</label><select id="c-window"></select></div>
       <div class="scroll"><table class="data" id="cal-stats"></table></div>
     </div>
     <figure class="panel chart-panel">
       <div class="chart chart--square" id="cal-chart" data-chart></div>
-      <figcaption>Late rate against mean score in ten equal-count test bins, on square-root axes.</figcaption>
-      <details class="fallback"><summary>Table: reliability bins</summary><div class="scroll" id="cal-table"></div></details>
+      <figcaption>Share actually late against the chance given, in ten groups of complaints. On the diagonal is honest.</figcaption>
+      <details class="fallback"><summary>Table: the ten groups</summary><div class="scroll" id="cal-table"></div></details>
     </figure>
   </div>
 </section>
@@ -160,12 +172,12 @@
   <div class="container">
     <div class="head head--split">
       <h2 id="products-title">Across products</h2>
-      <p class="lead">Train on one product, test on another: rows trained, columns tested.</p>
+      <p class="lead">Learn from one product, predict another. Rows: where it learned. Columns: where it was tested.</p>
     </div>
-    <fieldset class="seg" id="p-set"><legend>Features</legend></fieldset>
+    <fieldset class="seg" id="p-set"><legend>The model sees</legend></fieldset>
     <div class="scroll"><table class="heat" id="p-heat"></table></div>
     <p class="note" id="p-note"></p>
-    <details class="fallback"><summary>The same grid with 95% CIs</summary><div class="scroll" id="p-ci"></div></details>
+    <details class="fallback"><summary>The same grid with 95% ranges</summary><div class="scroll" id="p-ci"></div></details>
   </div>
 </section>
 
@@ -177,12 +189,12 @@
     </div>
     <figure class="figure-wide">
       <div class="chart" id="volume-chart" data-chart></div>
-      <figcaption>Complaints received a month.</figcaption>
+      <figcaption>Complaints received each month.</figcaption>
     </figure>
     <figure class="figure-wide figure-drift">
       <div class="chart" id="late-chart" data-chart></div>
-      <figcaption>Share answered late a month.</figcaption>
-      <details class="fallback"><summary>Table: complaints, narratives and late rates by month</summary><div class="scroll" id="data-table"></div></details>
+      <figcaption>Share answered late each month.</figcaption>
+      <details class="fallback"><summary>Table: complaints, published text and late shares by month</summary><div class="scroll" id="data-table"></div></details>
     </figure>
   </div>
 </section>
@@ -204,9 +216,9 @@
   <div class="container">
     <h2 id="limits-title">What this can’t tell you</h2>
     <div class="rows" id="limits-rows">
-      <div class="row"><h3>The label is a proxy</h3><p>Lateness measures complaint handling, not who was right.</p></div>
+      <div class="row"><h3>Late is a stand-in</h3><p>A late reply shows how a company handles complaints, not who was right.</p></div>
       <div class="row"><h3>2026 is a different population</h3><p id="limit-shift"></p></div>
-      <div class="row"><h3>Deep models are not run yet</h3><p id="limit-deep"></p></div>
+      <div class="row"><h3>Two language models are not run yet</h3><p id="limit-deep"></p></div>
       <div class="row"><h3>Results are pinned to one download</h3><p id="limit-live"></p></div>
       <div class="row"><h3>Not for credit decisions</h3><p>It scores how companies handle complaints, not anyone’s credit.</p></div>
     </div>

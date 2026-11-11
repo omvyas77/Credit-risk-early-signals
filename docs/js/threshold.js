@@ -1,6 +1,6 @@
 // Threshold workbench: a slider over the validation threshold grid of logistic regression on
 // narrative and structured fields, with live test counts and editable costs.
-import { f3, pct, int, h } from "./util.js";
+import { pct, int, h, quarter } from "./util.js";
 
 const MODEL = "lr__both";
 
@@ -28,7 +28,7 @@ export function initThreshold(d) {
   fp.value = metrics.costs.fp;
   fn.value = metrics.costs.fn;
   for (const w of windows.windows) {
-    select.append(h("option", { value: w.window }, `${w.window}${w.low_narrative_share ? ", 2026" : ""}`));
+    select.append(h("option", { value: w.window }, quarter(w.dates.test[0])));
   }
   select.value = windows.windows.at(-1).window;
 
@@ -71,19 +71,19 @@ export function initThreshold(d) {
     const precision = tp + fpN ? tp / (tp + fpN) : null;
     const recall = tp / (tp + fnN);
     const cost = ((cfp * fpN + cfn * fnN) / n) * 1000;
-    valueOut.textContent = r[0] < 0.001 ? r[0].toExponential(1) : f3(r[0]);
-    slider.setAttribute("aria-valuetext", `threshold ${valueOut.textContent}, flags ${pct(valFlag)} of validation complaints`);
+    valueOut.textContent = pct(r[0], r[0] < 0.001 ? 3 : r[0] < 0.1 ? 1 : 0);
+    slider.setAttribute("aria-valuetext", `flag at a chance of ${valueOut.textContent}, which flags ${pct(valFlag)} of complaints in the tuning quarter`);
     const isBest = +slider.value === cheapest();
-    hint.textContent = `Flags ${pct(valFlag)} on validation${isBest ? ", the cheapest there" : ""}.`;
+    hint.textContent = `Flags ${pct(valFlag)} of the earlier tuning quarter${isBest ? ", the cheapest there" : ""}.`;
     figures.replaceChildren(
       ...[
-        ["Precision", precision === null ? "n/a" : pct(precision, 0)],
-        ["Recall", pct(recall, 0)],
+        ["Flags that were late", precision === null ? "n/a" : pct(precision, 0)],
+        ["Late replies caught", pct(recall, 0)],
         ["Flagged a month", int((tp + fpN) / months)],
-        ["Cost per 1,000", cost.toFixed(0)],
+        ["Cost per 1,000 complaints", cost.toFixed(0)],
       ].map(([k, v]) => h("div", {}, h("dt", {}, k), h("dd", {}, v))),
     );
-    caption.textContent = `${win.window} test: ${int(n)} complaints, ${int(tp + fnN)} late.`;
+    caption.textContent = `${quarter(win.dates.test[0])}: ${int(n)} complaints, ${int(tp + fnN)} answered late.`;
     cell("t-tp").textContent = int(tp);
     cell("t-fn-n").textContent = int(fnN);
     cell("t-fp-n").textContent = int(fpN);

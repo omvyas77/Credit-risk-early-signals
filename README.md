@@ -144,11 +144,10 @@ v1 reported a test PR-AUC of 0.314 (LightGBM, TF-IDF and structured features) on
 
 | v1 | This version |
 |---|---|
-| Disputes and lateness in one label | Late responses only, after disputes ended |
-| Threshold and checkpoint chosen on test | Everything tuned on validation |
-| One split, about 287 positives, no CIs | Rolling quarterly windows, bootstrap CIs |
-| Calibration gain mostly undid class weighting | Weighted and unweighted models, recalibrated on validation |
-| 4,336 one-hot company columns | The company's earlier late rate |
+| Disputes and late replies mixed in one label | Late replies only |
+| Settings picked on the test data | Settings picked on an earlier quarter |
+| One test period, about 287 late cases, no error ranges | Rolling test quarters, each with a 95% range |
+| 4,336 columns, one per company | The company's own past late rate |
 <!-- /generated:v1 -->
 
 v1's notebook, report and figures are in [archive/](archive/).
