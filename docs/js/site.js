@@ -494,7 +494,7 @@ function limits(d) {
   setText(
     "limit-deep",
     notRun.length
-      ? `${listJoin(models)} need a GPU; until then they read “not run”.`
+            ? `${notRun.length} planned language-model results were not run for lack of a GPU (${listJoin(models)}); they read “not run”.`
       : "Every planned model has been run.",
   );
   const live = manifest.files.find((f) => !f.name.startsWith("CCDB_Export_"));
