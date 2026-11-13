@@ -157,8 +157,6 @@ def scorer_gap(r: dict) -> str:
 
 
 def deep(r: dict) -> str:
-    """Deep-model cells that were run, with test PR-AUC against LR on the same features, and
-    the expected cells that were not."""
     m = r["metrics"]
     out = []
     for name, cell in sorted(m["cells"].items()):
@@ -166,23 +164,15 @@ def deep(r: dict) -> str:
         if model not in ("minilm", "distilbert"):
             continue
         lo, hi = cell["ci95"]["pr_auc"]
-        line = (
-            f"`{name}` reached a test PR-AUC of {cell['point']['pr_auc']:.3f} "
-            f"({lo:.3f} to {hi:.3f})"
-        )
+        line = f"`{name}` reached a test PR-AUC of {cell['point']['pr_auc']:.3f} ({lo:.3f} to {hi:.3f})"
         ref = next(
-            (
-                c["metrics"]["pr_auc"]
-                for c in m["comparisons"]
-                if c["window"] == w and c["a"] == [model, fs] and c["b"] == ["lr", fs]
-            ),
+            (c["metrics"]["pr_auc"] for c in m["comparisons"]
+             if c["window"] == w and c["a"] == [model, fs] and c["b"] == ["lr", fs]),
             None,
         )
         if ref:
             dlo, dhi = ref["ci95"]
-            line += (
-                f", {ref['diff']:+.3f} ({dlo:+.3f} to {dhi:+.3f}) against LR on the same features"
-            )
+            line += f", {ref['diff']:+.3f} ({dlo:+.3f} to {dhi:+.3f}) against LR on the same features"
         out.append(line + ".")
     if m["not_run"]:
         out.append(

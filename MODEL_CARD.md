@@ -14,9 +14,7 @@ test fails if they drift. The full tables are in [reports/summary.md](reports/su
   complaint. Regularisation is chosen on validation average precision.
 - **Also evaluated.** The same LR on narrative only and on intake fields only; LightGBM on
   each feature set; the company's late rate alone, with no model; class-weighted LR with and
-  without Platt or isotonic recalibration. MiniLM embeddings with LR on the narrative
-  (latest window); MiniLM with the intake fields and a fine-tuned DistilBERT are built but
-  were not run.
+  without Platt or isotonic recalibration. MiniLM embeddings with LR on the narrative (latest window); MiniLM with the intake fields and a fine-tuned DistilBERT are built but were not run.
 - **In-browser scorer.** The LR refitted on the latest window without VADER and with a pruned
   vocabulary, shipped as `docs/scorer/model.json` and run by `docs/js/scorer.js`.
 - **Version.** v2.0, by Om Vyas. MIT licensed.

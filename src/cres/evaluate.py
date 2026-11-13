@@ -501,7 +501,7 @@ def text_models_section(report: dict) -> list[str]:
     out.append("")
     if report.get("not_run"):
         out += [
-            f"Not run: {', '.join(report['not_run'])}. No GPU was available to finish them; "
+                        f"Not run: {', '.join(report['not_run'])}. No GPU was available to finish them; "
             "`notebooks/README.md` has the steps.",
             "",
         ]

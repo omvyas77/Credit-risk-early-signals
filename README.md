@@ -52,9 +52,7 @@ they drift.
   rate over the year ending 30 days before the complaint.
 - **Models.** Logistic regression and LightGBM on narrative only, intake fields only, and both;
   the company's late rate alone as a baseline; class-weighted LR with Platt and isotonic
-  recalibration. MiniLM embeddings with LR on the narrative
-  were run on Colab; MiniLM with the intake fields and a fine-tuned DistilBERT are built but
-  were not run.
+  recalibration. MiniLM embeddings with LR on the narrative were run on Colab; MiniLM with the intake fields and a fine-tuned DistilBERT are built but were not run.
 - **Evaluation.** Thresholds, recalibration, early stopping and regularisation are chosen on
   validation; test is scored once. 95% CIs come from a stratified bootstrap of each test
   quarter, paired across models.
@@ -115,8 +113,7 @@ so memory is returned between fits. Lower `features.workers` and `models.lgbm.nu
 The largest single fit peaked at 4.9 GB of memory, and the recorded model fits took 9.3 hours in all (from `reports/metrics.json`, `training`).
 <!-- /generated:compute -->
 
-**Deep models.** `notebooks/colab_deep.ipynb` runs MiniLM and DistilBERT on a Colab GPU;
-[notebooks/README.md](notebooks/README.md) has the steps. Only MiniLM on the narrative was run.
+**Deep models.** \notebooks/colab_deep.ipynb` runs MiniLM and DistilBERT on a Colab GPU; notebooks/README.md has the steps. Only MiniLM on the narrative was run.`
 
 ## Data
 
@@ -165,9 +162,6 @@ training cutoff, so the matrices fit in memory on an 8 GB laptop. Earlier compla
 used.
 
 **Deep models were only partly run.**
-<!-- generated:deep -->
-`minilm__text__W5` reached a test PR-AUC of 0.296 (0.276 to 0.315), -0.032 (-0.043 to -0.020) against LR on the same features. Not run: `minilm__both__W5`, `distilbert__text__W5`, `distilbert__both__W5`. No GPU was available to finish them; `notebooks/README.md` has the steps.
-<!-- /generated:deep -->
 
 **The in-browser scorer has no VADER.**
 <!-- generated:scorer_gap -->
