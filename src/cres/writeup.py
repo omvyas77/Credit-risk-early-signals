@@ -157,14 +157,29 @@ def scorer_gap(r: dict) -> str:
 
 
 def deep(r: dict) -> str:
-    missing = r["metrics"]["not_run"]
-    if not missing:
-        return "Every deep-model cell the config expects has a prediction file."
-    return (
-        f"Not run yet: {', '.join(f'`{c}`' for c in missing)}. They need a GPU; "
-        "`notebooks/README.md` has the Colab steps, and `make evaluate` adds them to every "
-        "table once their prediction files are in `data/preds/`."
-    )
+    m = r["metrics"]
+    out = []
+    for name, cell in sorted(m["cells"].items()):
+        model, fs, w = name.split("__")
+        if model not in ("minilm", "distilbert"):
+            continue
+        lo, hi = cell["ci95"]["pr_auc"]
+        line = f"`{name}` reached a test PR-AUC of {cell['point']['pr_auc']:.3f} ({lo:.3f} to {hi:.3f})"
+        ref = next(
+            (c["metrics"]["pr_auc"] for c in m["comparisons"]
+             if c["window"] == w and c["a"] == [model, fs] and c["b"] == ["lr", fs]),
+            None,
+        )
+        if ref:
+            dlo, dhi = ref["ci95"]
+            line += f", {ref['diff']:+.3f} ({dlo:+.3f} to {dhi:+.3f}) against LR on the same features"
+        out.append(line + ".")
+    if m["not_run"]:
+        out.append(
+            f"Not run: {', '.join(f'`{c}`' for c in m['not_run'])}. No GPU was available to "
+            "finish them; `notebooks/README.md` has the steps."
+        )
+    return " ".join(out) or "Every deep-model cell the config expects has a prediction file."
 
 
 def compute(r: dict) -> str:
