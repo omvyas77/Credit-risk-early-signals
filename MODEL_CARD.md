@@ -14,8 +14,9 @@ test fails if they drift. The full tables are in [reports/summary.md](reports/su
   complaint. Regularisation is chosen on validation average precision.
 - **Also evaluated.** The same LR on narrative only and on intake fields only; LightGBM on
   each feature set; the company's late rate alone, with no model; class-weighted LR with and
-  without Platt or isotonic recalibration. MiniLM embeddings with LR and a fine-tuned DistilBERT
-  are built and pending a GPU run.
+  without Platt or isotonic recalibration. MiniLM embeddings with LR on the narrative
+  (latest window); MiniLM with the intake fields and a fine-tuned DistilBERT are built but
+  were not run.
 - **In-browser scorer.** The LR refitted on the latest window without VADER and with a pruned
   vocabulary, shipped as `docs/scorer/model.json` and run by `docs/js/scorer.js`.
 - **Version.** v2.0, by Om Vyas. MIT licensed.
@@ -180,7 +181,7 @@ On W5 test, company-history features carry 76% of the LR's contribution (product
   sometimes sits at the edge of the searched grid. Both are listed in `reports/summary.md`.
 
 <!-- generated:deep -->
-Not run yet: `minilm__text__W5`, `minilm__both__W5`, `distilbert__text__W5`, `distilbert__both__W5`. They need a GPU; `notebooks/README.md` has the Colab steps, and `make evaluate` adds them to every table once their prediction files are in `data/preds/`.
+`minilm__text__W5` reached a test PR-AUC of 0.296 (0.276 to 0.315), -0.032 (-0.043 to -0.020) against LR on the same features. Not run: `minilm__both__W5`, `distilbert__text__W5`, `distilbert__both__W5`. No GPU was available to finish them; `notebooks/README.md` has the steps.
 <!-- /generated:deep -->
 
 ## Maintenance

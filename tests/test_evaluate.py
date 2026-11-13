@@ -233,7 +233,7 @@ def test_evaluate_stage_on_a_hand_built_window(tmp_path, monkeypatch):
     assert "| W1 | DistilBERT, fine-tuned | train subsample | not run | not run |  |  |" in text
     sub_row = next(r for r in text.splitlines() if "DistilBERT's training subsample |" in r)
     assert sub_row.count("not run") == 1  # text was run, both was not
-    assert "Not run yet: lr_sub__both__W1, minilm__text__W1" in text
+    assert "Not run: lr_sub__both__W1, minilm__text__W1" in text
     # A rerun with nothing new is skipped; a removed prediction file makes it run again.
     paths = sorted(models.PREDS.glob("*.parquet"))
     assert evaluate.current(paths, cfg)
