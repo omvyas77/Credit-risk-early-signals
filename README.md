@@ -110,7 +110,7 @@ vocabulary is capped, matrices are float32 sparse, and each model is fitted in a
 so memory is returned between fits. Lower `features.workers` and `models.lgbm.num_threads` in
 `config/default.yaml` on a machine with fewer cores.
 <!-- generated:compute -->
-The largest single fit peaked at 4.9 GB of memory, and the recorded model fits took 9.2 hours in all (from `reports/metrics.json`, `training`).
+The largest single fit peaked at 4.9 GB of memory, and the recorded model fits took 9.3 hours in all (from `reports/metrics.json`, `training`).
 <!-- /generated:compute -->
 
 **Deep models.** \notebooks/colab_deep.ipynb` runs MiniLM and DistilBERT on a Colab GPU; notebooks/README.md has the steps. Only MiniLM on the narrative was run.`

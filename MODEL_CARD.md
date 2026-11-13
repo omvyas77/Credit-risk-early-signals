@@ -179,7 +179,7 @@ On W5 test, company-history features carry 76% of the LR's contribution (product
   sometimes sits at the edge of the searched grid. Both are listed in `reports/summary.md`.
 
 <!-- generated:deep -->
-Not run yet: `minilm__text__W5`, `minilm__both__W5`, `distilbert__text__W5`, `distilbert__both__W5`. They need a GPU; `notebooks/README.md` has the Colab steps, and `make evaluate` adds them to every table once their prediction files are in `data/preds/`.
+`minilm__text__W5` reached a test PR-AUC of 0.296 (0.276 to 0.315), -0.032 (-0.043 to -0.020) against LR on the same features. Not run: `minilm__both__W5`, `distilbert__text__W5`, `distilbert__both__W5`. No GPU was available to finish them; `notebooks/README.md` has the steps.
 <!-- /generated:deep -->
 
 ## Maintenance

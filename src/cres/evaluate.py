@@ -477,13 +477,13 @@ def text_models_section(report: dict) -> list[str]:
     out = [
         "## Better text models (test PR-AUC, 95% bootstrap CI)",
         "",
-        f"DistilBERT is fine-tuned on {sub_text}. {MODEL_LABELS['lr_sub']} is TF-IDF LR on "
-        "exactly those rows, so the two differ only in model type. MiniLM embeddings feed an LR "
-        "trained on all training rows. For DistilBERT and the subsample LR, `both` stacks the "
-        "text score with the structured fields in an LR fitted on validation (cross-fitted); "
-        "for LR and MiniLM it is one model fitted on the training rows. The stacker learns from "
-        "the validation quarter, which sits closer in time to test, so compare stacked `both` "
-        "cells with each other rather than with LR's `both`.",
+        f"DistilBERT is set up to fine-tune on {sub_text}. {MODEL_LABELS['lr_sub']} is TF-IDF LR"
+        " on exactly those rows, so the two differ only in model type. MiniLM embeddings feed "
+        "an LR trained on all training rows. For DistilBERT and the subsample LR, `both` stacks"
+        " the text score with the structured fields in an LR fitted on validation (cross-"
+        "fitted); for LR and MiniLM it is one model fitted on the training rows. The stacker "
+        "learns from the validation quarter, which sits closer in time to test, so compare "
+        "stacked `both` cells with each other rather than with LR's `both`.",
         "",
         "| Window | Model | Trained on | text | both | text - LR text | both - LR struct |",
         "|---|---|---|---|---|---|---|",
